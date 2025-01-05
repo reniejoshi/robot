@@ -77,7 +77,7 @@ public class ChassisConstants {
                     .withBeepOnConfig(true));
 
     public static final MagnetSensorConfigs encoderConfiguration = new MagnetSensorConfigs()
-            .withAbsoluteSensorRange(AbsoluteSensorRangeValue.Unsigned_0To1)
+            .withAbsoluteSensorDiscontinuityPoint(1)
             .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive);
 
     public static double clampAccel(double value) {
