@@ -1,4 +1,4 @@
-package org.tahomarobotics.robot.whoami;
+package org.tahomarobotics.robot.util;
 
 @SuppressWarnings("ALL")
 public enum Identity {
