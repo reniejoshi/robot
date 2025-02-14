@@ -6,12 +6,13 @@ import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.tahomarobotics.robot.chassis.Chassis;
+import org.tahomarobotics.robot.util.shims.FauxWatchdog;
+import org.tahomarobotics.robot.windmill.Windmill;
 import org.tahomarobotics.robot.climber.Climber;
 import org.tahomarobotics.robot.collector.Collector;
-import org.tahomarobotics.robot.elevator.Elevator;
 import org.tahomarobotics.robot.indexer.Indexer;
+import org.tahomarobotics.robot.grabber.Grabber;
 import org.tahomarobotics.robot.util.SubsystemIF;
-import org.tahomarobotics.robot.util.shims.FauxWatchdog;
 import org.tahomarobotics.robot.vision.Vision;
 import org.tinylog.Logger;
 
@@ -25,12 +26,14 @@ public class Robot extends TimedRobot {
     private final Chassis chassis = Chassis.getInstance();
     @Logged(name = "Vision")
     private final Vision vision = Vision.getInstance();
-    @Logged(name = "Elevator")
-    private final Elevator elevator = Elevator.getInstance();
+    @Logged(name = "Windmill")
+    private final Windmill windmill = Windmill.getInstance();
     @Logged(name = "Collector")
     private final Collector collector = Collector.getInstance();
     @Logged(name = "Indexer")
     private final Indexer indexer = Indexer.getInstance();
+    @Logged(name = "Grabber")
+    private final Grabber grabber = Grabber.getInstance();
     @Logged(name = "Climber")
     private final Climber climber = Climber.getInstance();
     @Logged(name = "OI")
@@ -40,10 +43,11 @@ public class Robot extends TimedRobot {
     private final List<SubsystemIF> subsystems = List.of(
         chassis.initialize(),
         vision.initialize(),
-        elevator.initialize(),
+        windmill.initialize(),
         indexer.initialize(),
         collector.initialize(),
         climber.initialize(),
+        grabber.initialize(),
         oi.initialize()
     );
 

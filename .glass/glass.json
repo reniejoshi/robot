@@ -1,0 +1,105 @@
+{
+  "NetworkTables": {
+    "Retained Values": {
+      "open": false
+    },
+    "transitory": {
+      "Robot": {
+        "Windmill": {
+          "open": true
+        },
+        "open": true
+      },
+      "SmartDashboard": {
+        "BEEF": {
+          "Directions": {
+            "0": {
+              "open": false
+            }
+          },
+          "Points": {
+            "0": {
+              "double[]##v_/SmartDashboard/BEEF/Points/0/Position": {
+                "open": false
+              },
+              "double[]##v_/SmartDashboard/BEEF/Points/0/Tangent": {
+                "open": false
+              }
+            },
+            "1": {
+              "Position": {
+                "open": true
+              },
+              "open": true
+            },
+            "3": {
+              "Position": {
+                "open": false
+              },
+              "open": false
+            },
+            "open": true
+          },
+          "open": true
+        },
+        "double[]##v_/SmartDashboard/Trajectory Editor Input": {
+          "open": false
+        },
+        "open": true
+      }
+    },
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/AlignSwerve": "Command",
+      "/SmartDashboard/Arm Horizontal": "Command",
+      "/SmartDashboard/Arm Upright": "Command",
+      "/SmartDashboard/Calibrate Arm": "Command",
+      "/SmartDashboard/Calibrate Elevator": "Command",
+      "/SmartDashboard/Elevator Down": "Command",
+      "/SmartDashboard/Elevator Up": "Command",
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Run Trajectory Editor's Path": "Command",
+      "/SmartDashboard/Set Arm Collecting": "Command",
+      "/SmartDashboard/Set Elevator Collecting": "Command",
+      "/SmartDashboard/Set Grabber Collecting": "Command",
+      "/SmartDashboard/Set Grabber Disabled": "Command",
+      "/SmartDashboard/Set Grabber Ejecting": "Command",
+      "/SmartDashboard/Set Grabber Holding": "Command",
+      "/SmartDashboard/Trajectory Editor Visualization": "Field2d",
+      "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d"
+    },
+    "windows": {
+      "/SmartDashboard/Trajectory Editor Visualization": {
+        "Trajectory": {
+          "arrows": false
+        },
+        "Trajectory2": {
+          "arrows": false,
+          "style": ""
+        },
+        "bottom": 1476,
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
+        "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables Info": {
+    "BEEF [Beef's Editor (Extra Fancy!!)]@4": {
+      "Publishers": {
+        "open": false
+      },
+      "open": false
+    },
+    "visible": true
+  },
+  "NetworkTables Settings": {
+    "serverTeam": "2046",
+    "visible": false
+  }
+}

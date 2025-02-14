@@ -17,12 +17,13 @@ import org.tahomarobotics.robot.climber.Climber;
 import org.tahomarobotics.robot.climber.commands.ClimberCommands;
 import org.tahomarobotics.robot.collector.Collector;
 import org.tahomarobotics.robot.collector.CollectorCommands;
-import org.tahomarobotics.robot.elevator.Elevator;
-import org.tahomarobotics.robot.elevator.ElevatorConstants;
+import org.tahomarobotics.robot.grabber.Grabber;
 import org.tahomarobotics.robot.indexer.Indexer;
 import org.tahomarobotics.robot.indexer.IndexerCommands;
 import org.tahomarobotics.robot.util.SubsystemIF;
 import org.tahomarobotics.robot.util.sysid.SysIdTests;
+import org.tahomarobotics.robot.windmill.Windmill;
+import org.tahomarobotics.robot.windmill.WindmillConstants;
 
 import java.util.List;
 import java.util.function.Function;
@@ -44,9 +45,10 @@ public class OI extends SubsystemIF {
     private final Climber climber = Climber.getInstance();
     private final Collector collector = Collector.getInstance();
     private final Chassis chassis = Chassis.getInstance();
-    private final Elevator elevator = Elevator.getInstance();
+    private final Windmill windmill = Windmill.getInstance();
+    private final Grabber grabber = Grabber.getInstance();
 
-    private final List<SubsystemIF> subsystems = List.of(indexer, collector, chassis, elevator, climber);
+    private final List<SubsystemIF> subsystems = List.of(indexer, collector, chassis, climber, windmill, grabber);
 
     // -- Controllers --
 
@@ -96,19 +98,47 @@ public class OI extends SubsystemIF {
         // Elevator
         // TODO: Temporary Controls
 
-        controller.y().onTrue(Commands.runOnce(
-            () -> elevator.setElevatorHeight(ElevatorConstants.ELEVATOR_HIGH_POSE)
-        ));
+        SmartDashboard.putData("Elevator Up", Commands.runOnce(
+            () -> windmill.setElevatorHeight(WindmillConstants.ELEVATOR_HIGH_POSE))
+        );
 
-        controller.b().onTrue(Commands.runOnce(
-            () -> elevator.setElevatorHeight(ElevatorConstants.ELEVATOR_MID_POSE)
-        ));
+        SmartDashboard.putData("Elevator Down", Commands.runOnce(
+            () -> windmill.setElevatorHeight(WindmillConstants.ELEVATOR_LOW_POSE))
+        );
 
-        controller.a().onTrue(Commands.runOnce(
-            () -> elevator.setElevatorHeight(ElevatorConstants.ELEVATOR_LOW_POSE)
-        ));
+        // Arm
+        // TODO: Temporary Controls
 
         controller.start().onTrue(ClimberCommands.getClimberCommand());
+
+        SmartDashboard.putData("Arm Upright", Commands.runOnce(
+            () -> windmill.setArmPosition(WindmillConstants.ARM_UPRIGHT_POSE))
+        );
+
+        SmartDashboard.putData("Arm Horizontal", Commands.runOnce(
+            () -> windmill.setArmPosition(WindmillConstants.ARM_TEST_POSE))
+        );
+
+        SmartDashboard.putData("Run Trajectory Editor's Path", windmill.runTrajectoryEditorTrajectory());
+
+        SmartDashboard.putData(
+            "Set Elevator Collecting", Commands.runOnce(
+                () -> windmill.setElevatorHeight(WindmillConstants.ELEVATOR_COLLECT_POSE)));
+        SmartDashboard.putData(
+            "Set Arm Collecting", Commands.runOnce(() -> windmill.setArmPosition(WindmillConstants.ARM_COLLECT_POSE)));
+
+        SmartDashboard.putData(
+            "Set Grabber Collecting",
+            Commands.runOnce(() -> grabber.setGrabberState(Grabber.GrabberState.COLLECTING_CORAL))
+        );
+        SmartDashboard.putData(
+            "Set Grabber Holding", Commands.runOnce(() -> grabber.setGrabberState(Grabber.GrabberState.HOLDING_ALGAE)));
+        SmartDashboard.putData(
+            "Set Grabber Ejecting",
+            Commands.runOnce(() -> grabber.setGrabberState(Grabber.GrabberState.EJECTING_CORAL))
+        );
+        SmartDashboard.putData(
+            "Set Grabber Disabled", Commands.runOnce(() -> grabber.setGrabberState(Grabber.GrabberState.DISABLED)));
     }
 
     public void setDefaultCommands() {
