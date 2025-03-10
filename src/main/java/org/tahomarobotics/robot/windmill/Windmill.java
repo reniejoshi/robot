@@ -179,6 +179,7 @@ public class Windmill extends SubsystemIF {
         zeroed = true;
         Logger.info("Windmill Calibrated");
         enableBrakeMode();
+        setTargetState(TrajectoryState.STOW);
     }
 
     public void enableBrakeMode() {
