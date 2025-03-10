@@ -14,33 +14,40 @@ public class WindmillConstants {
     // States
 
     public enum TrajectoryState {
-        HIGH_DESCORE(new Translation2d(-0.4, 0.90)),
-        LOW_DESCORE(new Translation2d(-0.4, 0.54)),
-        COLLECT(new Translation2d(-0.025, -0.22)),
-        STOW(new Translation2d(0, 0.7)),
-        L4(new Translation2d(-0.332, 1.59)),
-        L3(new Translation2d(-0.369, 0.984)),
-        L2(new Translation2d(-0.35, 0.572)),
-        START(new Translation2d(0, ARM_LENGTH));
+        HIGH_DESCORE( Units.inchesToMeters(15.257), Units.degreesToRadians( 127.820)),  // ALGAE: B button
+        LOW_DESCORE(  Units.inchesToMeters( 0.815), Units.degreesToRadians( 127.742)),  // ALGAE: A button
+        COLLECT(      Units.inchesToMeters(17.069), Units.degreesToRadians( 267.809)),  // X button toggle
+        STOW(         Units.inchesToMeters( 1.901), Units.degreesToRadians(  89.913)),  // X button toggle
+        L4(           Units.inchesToMeters(40.344), Units.degreesToRadians( 120.548)),  // Y button
+        L3(           Units.inchesToMeters(17.500), Units.degreesToRadians( 124.398)),  // CORAL: B button
+        L2(           Units.inchesToMeters( 1.364), Units.degreesToRadians( 124.791)),  // CORAL: A button
+        START(        Units.inchesToMeters( 0.468), Units.degreesToRadians(  90.089));  // startup only
 
-        public final Translation2d t2d;
+        public final double elev;
+        public final double arm;
+        public final WindmillState state;
 
-        TrajectoryState(Translation2d t2d) {
-            this.t2d = t2d;
+        TrajectoryState(double elev, double arm) {
+            this.elev = elev;
+            this.arm = arm;
+            this.state = new WindmillState(0,
+                                           new WindmillState.ElevatorState(elev,0,0),
+                                           new WindmillState.ArmState(arm, 0,0));
         }
     }
 
-    // Gearing
+    public static final double SMALL_PULLBACK = Units.degreesToRadians(10.0);
+    public static final double STANDARD_PULLBACK = Units.degreesToRadians(20.0);
+    public static final double LARGE_PULLBACK = Units.degreesToRadians(30.0);
 
+    // Gearing
     public static final double ELEVATOR_GEAR_REDUCTION;
 
     // Pulley
-
     public static final double ELEVATOR_MAIN_PULLEY_RADIUS = Units.inchesToMeters(1.1056);
     public static final double ELEVATOR_MAIN_PULLEY_CIRCUMFERENCE = 2 * Math.PI * ELEVATOR_MAIN_PULLEY_RADIUS;
 
     // Poses
-
     public static final double ELEVATOR_MAX_POSE = 1.035; // Meters
     public static final double ELEVATOR_MIN_POSE = 0.01; // Meters
 
@@ -68,21 +75,21 @@ public class WindmillConstants {
 
     // Poses
 
-    public static final double ARM_CALIBRATION_POSE = 0.25;
-    public static final double ARM_COLLECT_POSE = 0.75;
-    public static final double ARM_UPRIGHT_POSE = 0.25;
-    public static final double ARM_TEST_POSE = 0; // TODO: temporary
+    public static final double ARM_CALIBRATION_POSE = 0.25; // Rotation (used for motor only)
+    public static final double ARM_COLLECT_POSE = Units.rotationsToRadians(0.75);
+    public static final double ARM_UPRIGHT_POSE = Units.rotationsToRadians(0.25);
+    public static final double ARM_TEST_POSE = Units.rotationsToRadians(0); // TODO: temporary
 
     // Tolerances
 
-    public static final double ARM_POSITION_TOLERANCE = 0.005; // Rotations
-    public static final double ARM_VELOCITY_TOLERANCE = 0.01; // Rotations / sec
+    public static final double ARM_POSITION_TOLERANCE = Units.rotationsToRadians(0.005); // Radians
+    public static final double ARM_VELOCITY_TOLERANCE = Units.rotationsToRadians(0.01); // Radians / sec
 
     // Motion
 
-    public static final double ARM_MAX_VELOCITY = 1.5; // Rotations / sec
-    public static final double ARM_MAX_ACCELERATION = 4; // Rotations / sec^2
-    public static final double ARM_MAX_JERK = ARM_MAX_ACCELERATION * 4; // Rotations / sec^3
+    public static final double ARM_MAX_VELOCITY = Units.rotationsToRadians(1.5); // Radians / sec
+    public static final double ARM_MAX_ACCELERATION = Units.rotationsToRadians(4); // Radians / sec^2
+    public static final double ARM_MAX_JERK = ARM_MAX_ACCELERATION * 4; // Radians / sec^3
 
     // Constants
 

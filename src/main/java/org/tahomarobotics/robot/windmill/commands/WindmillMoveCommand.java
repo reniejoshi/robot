@@ -1,17 +1,16 @@
 package org.tahomarobotics.robot.windmill.commands;
 
 import edu.wpi.first.math.Pair;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import org.tahomarobotics.robot.windmill.Windmill;
+import org.tahomarobotics.robot.windmill.*;
 import org.tahomarobotics.robot.windmill.WindmillConstants.TrajectoryState;
-import org.tahomarobotics.robot.windmill.WindmillKinematics;
-import org.tahomarobotics.robot.windmill.WindmillState;
-import org.tahomarobotics.robot.windmill.WindmillTrajectory;
 import org.tinylog.Logger;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class WindmillMoveCommand extends Command {
@@ -30,6 +29,7 @@ public class WindmillMoveCommand extends Command {
     // State
 
     private final Timer timer = new Timer();
+    List<double[]> data = new ArrayList<>();
 
     // Command
 
@@ -44,47 +44,69 @@ public class WindmillMoveCommand extends Command {
 
     @Override
     public void initialize() {
+        // TODO: why are we checking for at target state
         if (!windmill.isAtTargetTrajectoryState()) {
             Logger.error(
-                "Windmill was not within tolerance for starting state! Arm was at ({}, {}) but needs to be at ({}, {})", windmill.getWindmillPositionX(),
-                windmill.getWindmillPositionY(), fromTo.getFirst().t2d.getX(), fromTo.getFirst().t2d.getY()
-            );
+                "Windmill was not within tolerance for starting state! Arm was at ({}, {}) but needs to be at ({}, {})", windmill.getElevatorHeight(),
+                windmill.getArmPosition(), fromTo.getFirst().elev, fromTo.getFirst().arm );
             cancel();
             return;
         }
 
         windmill.setTargetState(fromTo.getSecond());
-        windmill.field.getObject("Trajectory").setTrajectory(trajectory.getBackingTrajectory());
 
-        Logger.info("Running trajectory: '{}'", WindmillTrajectory.getFileNameWithExtension(fromTo));
+        Logger.info("Running trajectory: '{}'", trajectory.name);
         timer.restart();
     }
 
     @Override
     public void execute() {
         double time = timer.get();
-        try {
-            WindmillState state = trajectory.sampleWindmillState(time);
-            windmill.setState(state);
+        WindmillState state = trajectory.sample(time);
+        windmill.setState(state);
 
-            if (DEBUG) {
-                Pose2d sample = trajectory.sampleBackingTrajectory(time).poseMeters;
-                Logger.info(
-                    """
-                        Endpoint ({0.0} seconds): ({+0.000;-0.000} meters, {+0.000;-0.000} meters) -> State: ({+0.000;-0.000} meters, {+0.000;-0.000} degrees)
-                        """.trim(), time, sample.getX(), sample.getY(), state.elevatorState().heightMeters(),
-                    Units.radiansToDegrees(state.armState().angleRadians())
-                );
-            }
-        } catch (WindmillKinematics.KinematicsException e) {
-            Logger.error("Kinematics Error: {}", e);
-            cancel();
+        var current = windmill.getCurrentState();
+
+        data.add(new double[] {
+            time,
+            state.elevatorState().heightMeters(),
+            state.elevatorState().velocityMetersPerSecond(),
+            state.armState().angleRadians(),
+            state.armState().velocityRadiansPerSecond(),
+
+            current.elevatorState().heightMeters(),
+            current.elevatorState().velocityMetersPerSecond(),
+            current.armState().angleRadians(),
+            current.armState().velocityRadiansPerSecond()
+        });
+
+        if (DEBUG) {
+            Logger.info(
+                """
+                Endpoint ({0.0} seconds): State: ({+0.000;-0.000} meters, {+0.000;-0.000} degrees)
+                """.trim(), time, state.elevatorState().heightMeters(),
+                Units.radiansToDegrees(state.armState().angleRadians())
+            );
         }
     }
 
     @Override
     public boolean isFinished() {
-        return windmill.isAtTargetTrajectoryState() || timer.hasElapsed(trajectory.getDuration() + TIME_ELAPSED_TOLERANCE);
+        return windmill.isAtTargetTrajectoryState() || timer.hasElapsed(trajectory.getTotalTimeSeconds() + TIME_ELAPSED_TOLERANCE);
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        if (!data.isEmpty()) {
+            double raw[] = new double[data.size() * data.get(0).length];
+            int i = 0;
+            for (var d : data) {
+                for (var r : d) {
+                    raw[i++] = r;
+                }
+            }
+            SmartDashboard.putNumberArray("WindmillMoveCommand", raw);
+        }
     }
 
     @Override

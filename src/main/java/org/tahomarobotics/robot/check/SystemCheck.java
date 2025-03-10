@@ -1,6 +1,7 @@
 package org.tahomarobotics.robot.check;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -113,11 +114,11 @@ public class SystemCheck {
             ),
             windmill.runOnce(() -> windmill.setElevatorHeight(WindmillConstants.ELEVATOR_MID_POSE))
                     .andThen(Commands.waitUntil(windmill::isElevatorAtPosition))
-                    .andThen(windmill.runOnce(() -> windmill.setArmPosition(0.05)))
+                    .andThen(windmill.runOnce(() -> windmill.setArmPosition(Units.rotationsToRadians(0.05))))
                     .andThen(Commands.waitUntil(windmill::isArmAtPosition))
-                    .andThen(windmill.runOnce(() -> windmill.setArmPosition(0.45)))
+                    .andThen(windmill.runOnce(() -> windmill.setArmPosition(Units.rotationsToRadians(0.45))))
                     .andThen(Commands.waitUntil(windmill::isArmAtPosition))
-                    .andThen(windmill.runOnce(() -> windmill.setArmPosition(0.25)))
+                    .andThen(windmill.runOnce(() -> windmill.setArmPosition(Units.rotationsToRadians(0.25))))
                     .andThen(Commands.waitUntil(windmill::isArmAtPosition))
                     .andThen(windmill.runOnce(() -> windmill.setElevatorHeight(WindmillConstants.ELEVATOR_MIN_POSE)))
                     .andThen(Commands.waitUntil(windmill::isElevatorAtPosition))

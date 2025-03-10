@@ -9,19 +9,20 @@ import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.RobotState;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.*;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.tahomarobotics.robot.Robot;
 import org.tahomarobotics.robot.RobotConfiguration;
 import org.tahomarobotics.robot.RobotMap;
 import org.tahomarobotics.robot.collector.Collector;
@@ -69,8 +70,12 @@ public class Windmill extends SubsystemIF {
 
     // State
 
-    private double targetHeight;
-    private double targetAngle;
+    private double targetHeight; // Meters
+    private double targetAngle;  // Radians
+    private double simHeight;
+    private double simAngle;
+    private double simElevVelocity;
+    private double simArmVelocity;
     private WindmillState targetState = WindmillState.fromPrevious(0, 0, 0, null);
     private TrajectoryState targetTrajectoryState = TrajectoryState.STOW;
 
@@ -79,10 +84,13 @@ public class Windmill extends SubsystemIF {
 
     // Trajectory
 
-    public final Field2d field = new Field2d();
-
+    public final WindmillMechanism windmillMechanism;
     // -- Initialization --
 
+    /**
+     *   Arm Angle must be in units of Radians for the Robot.  The CTRE interfaces (control and feedback) are Rotations.  Only convert to and from Radians and
+     *   Rotations for those interfaces.
+     */
     private Windmill() {
         // Create Hardware
 
@@ -131,6 +139,8 @@ public class Windmill extends SubsystemIF {
 
         ParentDevice.optimizeBusUtilizationForAll(
             elevatorLeftMotor, elevatorRightMotor, elevatorEncoder, armMotor);
+
+        windmillMechanism = new WindmillMechanism();
     }
 
     public static Windmill getInstance() {
@@ -164,6 +174,8 @@ public class Windmill extends SubsystemIF {
         elevatorEncoder.setPosition(0);
         armEncoder.setPosition(ARM_CALIBRATION_POSE / ARM_BELT_REDUCTION);
 
+        simHeight = TrajectoryState.START.elev;
+        simAngle = TrajectoryState.START.arm;
         zeroed = true;
         Logger.info("Windmill Calibrated");
         enableBrakeMode();
@@ -180,37 +192,10 @@ public class Windmill extends SubsystemIF {
 
     // -- Getters --
 
-    @AutoLogOutput(key = "Windmill/Position")
-    public Translation2d getWindmillPosition() {
-        double armAngleRotations = MathUtil.inputModulus(getArmPosition(), 0, 1);
-
-        return WindmillKinematics.forwardKinematics(
-            elevatorPosition.getValueAsDouble(),
-            Units.rotationsToRadians(armAngleRotations),
-            true
-        );
-    }
-
-    public double getWindmillPositionX() {
-        return getWindmillPosition().getX();
-    }
-
-    public double getWindmillPositionY() {
-        return getWindmillPosition().getY();
-    }
-
     public WindmillState getCurrentState() {
-        WindmillState.ElevatorState elevatorState = new WindmillState.ElevatorState(
-            elevatorPosition.getValueAsDouble(),
-            elevatorVelocity.getValueAsDouble(),
-            elevatorLeftMotor.getAcceleration().refresh().getValueAsDouble()
-        );
+        WindmillState.ElevatorState elevatorState = new WindmillState.ElevatorState(getElevatorHeight(), getElevatorVelocity(), getElevatorAcceleration());
 
-        WindmillState.ArmState armState = new WindmillState.ArmState(
-            armPosition.getValueAsDouble(),
-            armVelocity.getValueAsDouble(),
-            armMotor.getAcceleration().refresh().getValueAsDouble()
-        );
+        WindmillState.ArmState armState = new WindmillState.ArmState(getArmPosition(), getArmVelocity(), getArmAcceleration());
 
         return new WindmillState(0, elevatorState, armState);
     }
@@ -238,7 +223,15 @@ public class Windmill extends SubsystemIF {
 
     @AutoLogOutput(key = "Windmill/Elevator/Height")
     public double getElevatorHeight() {
-        return elevatorPosition.getValueAsDouble();
+        return Robot.isReal() ? elevatorPosition.getValueAsDouble() : simHeight;
+    }
+
+    private double getElevatorVelocity() {
+        return Robot.isReal() ? elevatorVelocity.getValueAsDouble() : simElevVelocity;
+    }
+
+    private double getElevatorAcceleration() {
+        return elevatorLeftMotor.getAcceleration().refresh().getValueAsDouble();
     }
 
     @AutoLogOutput(key = "Windmill/Elevator/Target Height")
@@ -248,12 +241,12 @@ public class Windmill extends SubsystemIF {
 
     @AutoLogOutput(key = "Windmill/Elevator/Is at Position?")
     public boolean isElevatorAtPosition() {
-        return Math.abs(targetHeight - getElevatorHeight()) <= ELEVATOR_POSITION_TOLERANCE;
+        return Math.abs(getElevatorTarget() - getElevatorHeight()) < ELEVATOR_POSITION_TOLERANCE;
     }
 
     @AutoLogOutput(key = "Windmill/Elevator/Is Moving?")
     public boolean isElevatorMoving() {
-        return Math.abs(elevatorVelocity.refresh().getValueAsDouble()) >= ELEVATOR_VELOCITY_TOLERANCE;
+        return Math.abs(getElevatorVelocity()) > ELEVATOR_VELOCITY_TOLERANCE;
     }
 
     public double getElevatorLeftCurrent() {
@@ -268,32 +261,37 @@ public class Windmill extends SubsystemIF {
 
     @AutoLogOutput(key = "Windmill/Arm/Position")
     public double getArmPosition() {
-        return armPosition.getValueAsDouble();
+        return Robot.isReal() ? Units.rotationsToRadians(armPosition.getValueAsDouble()) : simAngle;
+    }
+
+    public double getArmVelocity() {
+        return Robot.isReal() ? Units.rotationsToRadians(armVelocity.refresh().getValueAsDouble()) : simArmVelocity;
+    }
+
+    private double getArmAcceleration() {
+        return Units.rotationsToRadians(armMotor.getAcceleration().refresh().getValueAsDouble());
     }
 
     @AutoLogOutput(key = "Windmill/Arm/Target Position")
-    public double getArmTarget() {
+    private double getArmTarget() {
         return targetAngle;
     }
 
     @AutoLogOutput(key = "Windmill/Arm/Is at Position?")
     public boolean isArmAtPosition() {
-        return Math.abs(getArmPosition() - targetAngle) < ARM_POSITION_TOLERANCE;
+        return Math.abs(getArmPosition() - getArmTarget()) < ARM_POSITION_TOLERANCE;
     }
 
     @AutoLogOutput(key = "Windmill/Arm/Is Moving?")
     public boolean isArmMoving() {
-        return Math.abs(armVelocity.refresh().getValueAsDouble()) >= ARM_VELOCITY_TOLERANCE;
-    }
-
-    @AutoLogOutput(key = "Windmill/Distance to Target Trajectory State")
-    public double distanceToTargetTrajectoryState() {
-        return targetTrajectoryState.t2d.getDistance(getWindmillPosition());
+        return Math.abs(getArmVelocity()) >= ARM_VELOCITY_TOLERANCE;
     }
 
     @AutoLogOutput(key = "Windmill/Is at Target Trajectory State?")
     public boolean isAtTargetTrajectoryState() {
-        return distanceToTargetTrajectoryState() < 0.03;
+        return (Math.abs(getElevatorHeight() - targetTrajectoryState.elev) < ELEVATOR_POSITION_TOLERANCE) &&
+               (Math.abs(getArmPosition() - targetTrajectoryState.arm) < ARM_POSITION_TOLERANCE);
+
     }
 
     public double getArmCurrent() {
@@ -308,9 +306,12 @@ public class Windmill extends SubsystemIF {
 
     public void setState(WindmillState state) {
         targetState = state;
+        windmillMechanism.update(state.elevatorState().heightMeters(), state.armState().angleRadians());
 
         setElevatorHeight(state.elevatorState().heightMeters());
-        setArmPosition(Units.radiansToRotations(state.armState().angleRadians()));
+        setArmPosition(state.armState().angleRadians());
+        simElevVelocity = state.elevatorState().velocityMetersPerSecond() * 0.95;
+        simArmVelocity = state.armState().velocityRadiansPerSecond() * 0.95;
     }
 
     public void setElevatorHeight(double height) {
@@ -318,14 +319,10 @@ public class Windmill extends SubsystemIF {
             Logger.error("Cannot move elevator without calibration!");
             return;
         }
-
         targetHeight = MathUtil.clamp(height, ELEVATOR_MIN_POSE, ELEVATOR_MAX_POSE);
-        elevatorRightMotor.setControl(
-            new Follower(RobotMap.ELEVATOR_LEFT_MOTOR, true)
-        );
-        elevatorLeftMotor.setControl(
-            elevatorPositionControl.withPosition(targetHeight)
-        );
+        elevatorRightMotor.setControl(new Follower(RobotMap.ELEVATOR_LEFT_MOTOR, true));
+        elevatorLeftMotor.setControl(elevatorPositionControl.withPosition(targetHeight));
+        simHeight = height;
     }
 
     public void setArmPosition(double position) {
@@ -335,7 +332,8 @@ public class Windmill extends SubsystemIF {
         }
 
         targetAngle = position;
-        armMotor.setControl(armPositionControl.withPosition(targetAngle));
+        armMotor.setControl(armPositionControl.withPosition(Units.radiansToRotations(targetAngle)));
+        simAngle = position;
     }
 
     public Command createSyncCollectionModeCommand() {
@@ -364,6 +362,7 @@ public class Windmill extends SubsystemIF {
 
             Optional<Command> output = WindmillMoveCommand.fromTo(targetTrajectoryState, target);
             if (output.isEmpty()) {
+                output = WindmillMoveCommand.fromTo(targetTrajectoryState, TrajectoryState.STOW);
                 Logger.error("WindmillMoveCommand from " + targetTrajectoryState + " to " + target + " failed.");
             }
             return output.orElseGet(Commands::none);
@@ -387,12 +386,8 @@ public class Windmill extends SubsystemIF {
     public Command createResetToPreviousState() {
         return Commands.runOnce(
             () -> {
-                try {
-                    Logger.info("Windmill attempting to go to " + targetTrajectoryState);
-                    setState(WindmillKinematics.inverseKinematics(0, targetTrajectoryState.t2d, null));
-                } catch (WindmillKinematics.KinematicsException e) {
-                    Logger.error("Windmill could not go back to " + targetTrajectoryState + ": " + e);
-                }
+                Logger.info("Windmill attempting to go to " + targetTrajectoryState);
+                setState(targetTrajectoryState.state);
             }, this
         ).withName("Windmill - Reset to Target State");
     }
@@ -411,6 +406,7 @@ public class Windmill extends SubsystemIF {
     public void periodic() {
         LoggedStatusSignal.refreshAll(statusSignals);
         LoggedStatusSignal.log("Windmill/", statusSignals);
+
     }
 
     // -- Overrides --
@@ -443,4 +439,33 @@ public class Windmill extends SubsystemIF {
             )
         );
     }
+
+    private class WindmillMechanism {
+        private final MechanismLigament2d elevator;
+        private final MechanismLigament2d arm;
+        private static final double ELEV_OFFSET = Units.inchesToMeters(24);
+        private double prevHeight = 0;
+        private double prevAngle = 0;
+
+        public WindmillMechanism() {
+            Mechanism2d mech = new Mechanism2d(3, 3);
+            MechanismRoot2d root = mech.getRoot("climber", 2, 0);
+            elevator = root.append(new MechanismLigament2d("elevator", ELEV_OFFSET, 90));
+            arm = elevator.append(new MechanismLigament2d("wrist", ARM_LENGTH, 90, 6, new Color8Bit(Color.kPurple)));
+
+            SmartDashboard.putData("Windmill", mech);
+        }
+
+        public void update(double evelHeight, double armAngle) {
+            if (evelHeight != prevHeight || armAngle != prevAngle) {
+                prevHeight = evelHeight;
+                prevAngle = armAngle;
+                elevator.setLength(ELEV_OFFSET + evelHeight);
+                arm.setAngle(Units.radiansToDegrees(armAngle) - 90);
+
+                Logger.info(String.format("Windmill; %7.2f %7.2f", Units.metersToInches(evelHeight), Units.radiansToDegrees(armAngle)));
+            }
+        }
+    }
+
 }

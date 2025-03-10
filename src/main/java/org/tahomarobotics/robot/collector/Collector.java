@@ -10,6 +10,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.RobotState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.tahomarobotics.robot.RobotConfiguration;
@@ -62,7 +63,7 @@ public class Collector extends SubsystemIF {
     @AutoLogOutput(key = "Collector/Target Collector State")
     private TargetCollectorState targetCollectorState = TargetCollectorState.DISABLED;
     @AutoLogOutput(key = "Game Piece Mode")
-    private GamePiece collectionMode = GamePiece.CORAL;
+    private GamePiece collectionMode;
 
     // -- Initialization --
 
@@ -105,6 +106,8 @@ public class Collector extends SubsystemIF {
 
         LoggedStatusSignal.setUpdateFrequencyForAll(statusSignals, RobotConfiguration.MECHANISM_UPDATE_FREQUENCY);
         ParentDevice.optimizeBusUtilizationForAll(leftMotor, rightMotor, collectorMotor);
+
+        setCollectionMode(GamePiece.CORAL);
     }
 
     public static Collector getInstance() {
@@ -330,6 +333,7 @@ public class Collector extends SubsystemIF {
 
     public void setCollectionMode(GamePiece collectionMode) {
         this.collectionMode = collectionMode;
+        SmartDashboard.putString("CollectionMode", collectionMode.name() );
         syncDeploymentControl();
     }
 

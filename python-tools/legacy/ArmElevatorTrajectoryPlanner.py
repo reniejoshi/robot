@@ -439,7 +439,7 @@ config = TrajectoryConfig(
     maxAcceleration=2.0  # meters per second squared
 )
 limits = create_limits()
-points =    [(-0.1, 0.01), (0.145, 0.3), (0.5, 0.4), (0.2, 1.1), (-0.5, 1.32)]
+points =    [(0, 0), (0.145, 0.3), (0.5, 0.4), (0.2, 1.1), (-0.5, 1.32)]
 tangents =  [(-0.1, 0.0),  (0, 0),       (0, 0),     (0, 0),    (-0.25, -0.01)]
 
 selected_point = None
@@ -467,6 +467,5 @@ time_slider.on_changed(slider_redraw)
 
 main_plot()
 
-if os.path.isfile("last.traj"):
-    load_from_file("last.traj")
+
 plt.show()
