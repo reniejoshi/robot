@@ -5,9 +5,6 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
-import com.pathplanner.lib.config.ModuleConfig;
-import com.pathplanner.lib.config.PIDConstants;
-import com.pathplanner.lib.config.RobotConfig;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
@@ -76,9 +73,6 @@ public class ChassisConstants {
     public static final double ACCELERATION_LIMIT = 6.0;
     /** Max average acceleration across all modules in <strong>meters per second squared</strong> when arm is in a scoring position. */
     public static final double SLOW_ACCELERATION_LIMIT = 3.0;
-    //Placeholder PID values
-    public static final PIDConstants AUTO_TRANSLATION_PID = new PIDConstants(7.5, 0, 0.5);
-    public static final PIDConstants AUTO_ROTATION_PID = new PIDConstants(5, 0, 0.5);
 
     // Control Loops
 
@@ -93,23 +87,6 @@ public class ChassisConstants {
     private static final double STEER_STATOR_CURRENT_LIMIT = 30;
 
     // Configuration
-
-    public static final RobotConfig robotConfig = new RobotConfig(
-        MASS,
-        ROBOT_MOI,
-        new ModuleConfig(
-            WHEEL_RADIUS,
-            MAX_VELOCITY * 0.95,
-            WHEEL_COF,
-            DRIVE_MOTOR.withReduction(1.0 / DRIVE_REDUCTION),
-            DRIVE_SUPPLY_CURRENT_LIMIT,  // This is used when calculating current available at Nominal Voltage (@12V) which is limited via the supply current
-            1
-        ),
-        FRONT_LEFT_OFFSET,
-        FRONT_RIGHT_OFFSET,
-        BACK_LEFT_OFFSET,
-        BACK_RIGHT_OFFSET
-    );
 
     /** @return The configuration for the drive motor. */
     public static TalonFXConfiguration createDriveMotorConfiguration() {

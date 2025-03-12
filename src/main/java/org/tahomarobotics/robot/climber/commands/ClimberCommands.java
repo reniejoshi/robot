@@ -5,8 +5,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import org.tahomarobotics.robot.climber.Climber;
 import org.tahomarobotics.robot.climber.ClimberConstants;
-import org.tahomarobotics.robot.collector.Collector;
-import org.tahomarobotics.robot.collector.CollectorConstants;
 import org.tahomarobotics.robot.windmill.Windmill;
 
 public class ClimberCommands {
@@ -14,11 +12,11 @@ public class ClimberCommands {
 
     public static Command createZeroCommand(Climber climber) {
         return climber.runOnce(climber::zeroPosition)
-                      .andThen(Commands.waitUntil(
-                          () ->
-                              Collector.getInstance().getTargetDeploymentState() == CollectorConstants.TargetDeploymentState.CORAL_COLLECT ||
-                              Collector.getInstance().getTargetDeploymentState() == CollectorConstants.TargetDeploymentState.ALGAE_COLLECT))
-                      .andThen(climber.runOnce(climber::stow))
+//                      .andThen(Commands.waitUntil(
+//                          () ->
+//                              Collector.getInstance().getTargetDeploymentState() == CollectorConstants.TargetDeploymentState.CORAL_COLLECT ||
+//                              Collector.getInstance().getTargetDeploymentState() == CollectorConstants.TargetDeploymentState.ALGAE_COLLECT))
+//                      .andThen(climber.runOnce(climber::stow))
                       .onlyIf(() -> climber.getClimbState() == Climber.ClimberState.ZEROED);
     }
 

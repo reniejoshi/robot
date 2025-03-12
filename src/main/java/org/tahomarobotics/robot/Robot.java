@@ -1,9 +1,15 @@
 package org.tahomarobotics.robot;
 
+import edu.wpi.first.hal.AllianceStationID;
+import edu.wpi.first.wpilibj.IterativeRobotBase;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Watchdog;
+import edu.wpi.first.wpilibj.simulation.DriverStationSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import org.littletonrobotics.junction.AutoLogOutputManager;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
@@ -11,7 +17,6 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import org.tahomarobotics.robot.auto.Autonomous;
 import org.tahomarobotics.robot.chassis.Chassis;
 import org.tahomarobotics.robot.check.SystemCheck;
-import org.tahomarobotics.robot.climber.Climber;
 import org.tahomarobotics.robot.collector.Collector;
 import org.tahomarobotics.robot.grabber.Grabber;
 import org.tahomarobotics.robot.indexer.Indexer;
@@ -34,7 +39,7 @@ public class Robot extends LoggedRobot {
         Windmill.getInstance().initialize(),
         Indexer.getInstance().initialize(),
         Collector.getInstance().initialize(),
-        Climber.getInstance().initialize(),
+//        Climber.getInstance().initialize(),
         Grabber.getInstance().initialize(),
         LED.getInstance().initialize(),
         OI.getInstance().initialize()
@@ -45,6 +50,11 @@ public class Robot extends LoggedRobot {
     // Robot
 
     public Robot() {
+        // Disable watchdogs
+        disableWatchdog(this, IterativeRobotBase.class);
+        disableWatchdog(CommandScheduler.getInstance(), CommandScheduler.class);
+
+        // Auto log outputs
         subsystems.forEach(AutoLogOutputManager::addObject);
 
         // Log various aspects of our robot
@@ -56,6 +66,23 @@ public class Robot extends LoggedRobot {
         // TODO: Lazy load them so they don't impact startup times
         WindmillTrajectories.initialize();
         SystemCheck.initialize();
+
+        // Simulate Helper Commands
+        SmartDashboard.putData(
+            "Enable Autonomous Simulation", Commands.runOnce(() -> {
+                DriverStationSim.setAutonomous(true);
+                DriverStationSim.setEnabled(true);
+                DriverStationSim.setAllianceStationId(AllianceStationID.Red1);
+
+                DriverStationSim.notifyNewData();
+            }).ignoringDisable(true)
+        );
+        SmartDashboard.putData(
+            "Disable Simulation", Commands.runOnce(() -> {
+                DriverStationSim.setEnabled(false);
+                DriverStationSim.notifyNewData();
+            }).ignoringDisable(true)
+        );
 
         Logger.info("--- Robot Initialized ---");
     }
@@ -164,4 +191,29 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void simulationPeriodic() {}
+
+    // Helpers
+
+    private <T> void disableWatchdog(T inst, Class<?> clazz) {
+        try {
+            var field = clazz.getDeclaredField("m_watchdog");
+            field.setAccessible(true);
+            field.set(
+                inst, new Watchdog(0, () -> {}) {
+                    @Override
+                    public void addEpoch(String epochName) {}
+
+                    @Override
+                    public void printEpochs() {}
+
+                    @Override
+                    public void enable() {}
+
+                    @Override
+                    public void disable() {}
+                }
+            );
+            Logger.warn("Disabled " + inst.getClass() + "'s watchdog!");
+        } catch (NoSuchFieldException | IllegalAccessException ignored) {}
+    }
 }

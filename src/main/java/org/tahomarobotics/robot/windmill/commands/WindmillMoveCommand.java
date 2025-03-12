@@ -5,8 +5,10 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import org.tahomarobotics.robot.windmill.*;
+import org.tahomarobotics.robot.windmill.Windmill;
 import org.tahomarobotics.robot.windmill.WindmillConstants.TrajectoryState;
+import org.tahomarobotics.robot.windmill.WindmillState;
+import org.tahomarobotics.robot.windmill.WindmillTrajectory;
 import org.tinylog.Logger;
 
 import java.util.ArrayList;
@@ -31,6 +33,8 @@ public class WindmillMoveCommand extends Command {
     private final Timer timer = new Timer();
     List<double[]> data = new ArrayList<>();
 
+    boolean broken = false;
+
     // Command
 
     private WindmillMoveCommand(Pair<TrajectoryState, TrajectoryState> fromTo, WindmillTrajectory trajectory) {
@@ -45,11 +49,11 @@ public class WindmillMoveCommand extends Command {
     @Override
     public void initialize() {
         // TODO: why are we checking for at target state
-        if (!windmill.isAtTargetTrajectoryState()) {
+        if (!windmill.getTargetTrajectoryState().equals(fromTo.getFirst())) {
             Logger.error(
-                "Windmill was not within tolerance for starting state! Arm was at ({}, {}) but needs to be at ({}, {})", windmill.getElevatorHeight(),
-                windmill.getArmPosition(), fromTo.getFirst().elev, fromTo.getFirst().arm );
-            cancel();
+                "Windmill's target state {} does not equal the starting state {}!", windmill.getTargetTrajectoryState(), fromTo.getFirst()
+            );
+            broken = true;
             return;
         }
 
@@ -61,13 +65,15 @@ public class WindmillMoveCommand extends Command {
 
     @Override
     public void execute() {
+        if (broken) { return; }
+
         double time = timer.get();
         WindmillState state = trajectory.sample(time);
         windmill.setState(state);
 
         var current = windmill.getCurrentState();
 
-        data.add(new double[] {
+        data.add(new double[]{
             time,
             state.elevatorState().heightMeters(),
             state.elevatorState().velocityMetersPerSecond(),
@@ -83,8 +89,8 @@ public class WindmillMoveCommand extends Command {
         if (DEBUG) {
             Logger.info(
                 """
-                Endpoint ({0.0} seconds): State: ({+0.000;-0.000} meters, {+0.000;-0.000} degrees)
-                """.trim(), time, state.elevatorState().heightMeters(),
+                    Endpoint ({0.0} seconds): State: ({+0.000;-0.000} meters, {+0.000;-0.000} degrees)
+                    """.trim(), time, state.elevatorState().heightMeters(),
                 Units.radiansToDegrees(state.armState().angleRadians())
             );
         }
@@ -92,7 +98,7 @@ public class WindmillMoveCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return windmill.isAtTargetTrajectoryState() || timer.hasElapsed(trajectory.getTotalTimeSeconds() + TIME_ELAPSED_TOLERANCE);
+        return broken || windmill.isAtTargetTrajectoryState() || timer.hasElapsed(trajectory.getTotalTimeSeconds() + TIME_ELAPSED_TOLERANCE);
     }
 
     @Override
@@ -107,6 +113,8 @@ public class WindmillMoveCommand extends Command {
             }
             SmartDashboard.putNumberArray("WindmillMoveCommand", raw);
         }
+
+        Logger.info("Ran trajectory: '{}'", trajectory.name);
     }
 
     @Override

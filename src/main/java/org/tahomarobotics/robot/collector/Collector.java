@@ -6,6 +6,9 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -26,6 +29,8 @@ import java.util.List;
 
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
+import static org.tahomarobotics.robot.auto.AutonomousConstants.RED_REEF_APPROACH_POLES;
+import static org.tahomarobotics.robot.auto.AutonomousConstants.RED_REEF_SCORE_POLES;
 import static org.tahomarobotics.robot.collector.CollectorConstants.*;
 
 public class Collector extends SubsystemIF {
@@ -307,6 +312,10 @@ public class Collector extends SubsystemIF {
 
     @Override
     public void periodic() {
+        List<Pose2d> approachPoles = RED_REEF_APPROACH_POLES.stream().map(t -> new Pose2d(t, new Rotation2d())).toList();
+        List<Pose2d> scorePoles = RED_REEF_SCORE_POLES.stream().map(t -> new Pose2d(t, new Rotation2d())).toList();
+        org.littletonrobotics.junction.Logger.recordOutput("Autonomous/Approach Poles", Pose2d.struct, approachPoles.toArray(new Pose2d[0]));
+        org.littletonrobotics.junction.Logger.recordOutput("Autonomous/Score Poles", Pose2d.struct, scorePoles.toArray(new Pose2d[0]));
         LoggedStatusSignal.refreshAll(statusSignals);
         LoggedStatusSignal.log("Collector/", statusSignals);
 

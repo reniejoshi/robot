@@ -6,6 +6,7 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -50,7 +51,8 @@ public class Grabber extends SubsystemIF {
     private final VoltageOut voltageControl = new VoltageOut(0);
 
     // Commands
-    private final Command windmillToStow = Windmill.getInstance().createTransitionCommand(WindmillConstants.TrajectoryState.STOW, false);
+    private final Command windmillToStow = (Windmill.getInstance().createTransitionCommand(WindmillConstants.TrajectoryState.STOW))
+        .onlyIf(() -> Windmill.getInstance().getTargetTrajectoryState() == WindmillConstants.TrajectoryState.COLLECT);
 
     // State
 
@@ -58,6 +60,7 @@ public class Grabber extends SubsystemIF {
     private GrabberState state = GrabberState.DISABLED;
 
     final Timer collectionTimer = new Timer();
+    private final Timer belowTimer = new Timer();
 
     // -- Initialization --
 
@@ -106,14 +109,22 @@ public class Grabber extends SubsystemIF {
             if (current.getValueAsDouble() > COLLECTION_CURRENT_THRESHOLD &&
                 Collector.getInstance().getCollectionMode() != GamePiece.ALGAE) {
                 collectionTimer.start();
-            } else {
+
+                belowTimer.reset();
+                belowTimer.stop();
+            } else if (belowTimer.hasElapsed(0.1)) {
                 collectionTimer.stop();
                 collectionTimer.reset();
+            } else {
+                belowTimer.restart();
             }
         }
 
         if (collectionTimer.hasElapsed(COLLECTION_DELAY)) {
-            windmillToStow.schedule();
+            if (RobotState.isTeleop()) {
+                windmillToStow.schedule();
+            }
+
             transitionToHolding();
             indexer.transitionToDisabled();
 

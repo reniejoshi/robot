@@ -83,7 +83,7 @@ public class Chassis extends SubsystemIF {
     // Models
 
     private final SwerveDriveKinematics kinematics;
-    private final SwerveDrivePoseEstimator poseEstimator, delayedPoseEstimator;
+    private final SwerveDrivePoseEstimator poseEstimator/*, delayedPoseEstimator*/;
 
     private final Timer delayedPoseUpdateTimer = new Timer();
 
@@ -123,14 +123,14 @@ public class Chassis extends SubsystemIF {
             VecBuilder.fill(0.02, 0.02, 0.02),
             VecBuilder.fill(1, 1, 1)
         );
-        delayedPoseEstimator = new SwerveDrivePoseEstimator(
-            kinematics,
-            new Rotation2d(),
-            getSwerveModulePositions(),
-            new Pose2d(),
-            VecBuilder.fill(0.02, 0.02, 0.02),
-            VecBuilder.fill(1, 1, 1)
-        );
+//        delayedPoseEstimator = new SwerveDrivePoseEstimator(
+//            kinematics,
+//            new Rotation2d(),
+//            getSwerveModulePositions(),
+//            new Pose2d(),
+//            VecBuilder.fill(0.02, 0.02, 0.02),
+//            VecBuilder.fill(1, 1, 1)
+//        );
 
         accelerationLimiter = new SwerveDriveLimiter(getSwerveModuleStates());
 
@@ -199,12 +199,12 @@ public class Chassis extends SubsystemIF {
         }
     }
 
-    @AutoLogOutput(key = "Chassis/Delayed Odometry Pose")
-    public Pose2d getDelayedPose() {
-        synchronized (delayedPoseEstimator) {
-            return delayedPoseEstimator.getEstimatedPosition();
-        }
-    }
+//    @AutoLogOutput(key = "Chassis/Delayed Odometry Pose")
+//    public Pose2d getDelayedPose() {
+//        synchronized (delayedPoseEstimator) {
+//            return delayedPoseEstimator.getEstimatedPosition();
+//        }
+//    }
 
     public List<SwerveModule> getModules() { return modules; }
 
@@ -352,13 +352,13 @@ public class Chassis extends SubsystemIF {
             poseEstimator.update(heading, positions);
         }
 
-        synchronized (delayedPoseEstimator) {
-            delayedPoseEstimator.update(heading, positions);
-            if (delayedPoseUpdateTimer.hasElapsed(ChassisConstants.ODOMETRY_EVAL_DELAY)) {
-                delayedPoseEstimator.resetPose(getPose());
-                delayedPoseUpdateTimer.restart();
-            }
-        }
+//        synchronized (delayedPoseEstimator) {
+//            delayedPoseEstimator.update(heading, positions);
+//            if (delayedPoseUpdateTimer.hasElapsed(ChassisConstants.ODOMETRY_EVAL_DELAY)) {
+//                delayedPoseEstimator.resetPose(getPose());
+//                delayedPoseUpdateTimer.restart();
+//            }
+//        }
     }
 
     public void processVisionUpdate(AprilTagCamera.EstimatedRobotPose estimatedRobotPose) {

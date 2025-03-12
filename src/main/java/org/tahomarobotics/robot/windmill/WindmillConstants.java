@@ -2,7 +2,6 @@ package org.tahomarobotics.robot.windmill;
 
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.signals.*;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import org.tahomarobotics.robot.RobotConfiguration;
 import org.tahomarobotics.robot.RobotMap;
@@ -14,14 +13,14 @@ public class WindmillConstants {
     // States
 
     public enum TrajectoryState {
-        HIGH_DESCORE( Units.inchesToMeters(15.257), Units.degreesToRadians( 127.820)),  // ALGAE: B button
-        LOW_DESCORE(  Units.inchesToMeters( 0.815), Units.degreesToRadians( 127.742)),  // ALGAE: A button
-        COLLECT(      Units.inchesToMeters(17.069), Units.degreesToRadians( 267.809)),  // X button toggle
-        STOW(         Units.inchesToMeters( 1.901), Units.degreesToRadians(  89.913)),  // X button toggle
-        L4(           Units.inchesToMeters(40.344), Units.degreesToRadians( 120.548)),  // Y button
-        L3(           Units.inchesToMeters(17.500), Units.degreesToRadians( 124.398)),  // CORAL: B button
-        L2(           Units.inchesToMeters( 1.364), Units.degreesToRadians( 124.791)),  // CORAL: A button
-        START(        Units.inchesToMeters( 0.468), Units.degreesToRadians(  90.089));  // startup only
+        HIGH_DESCORE(Units.inchesToMeters(15.257), Units.degreesToRadians(127.820)),  // ALGAE: B button
+        LOW_DESCORE(Units.inchesToMeters(0.815), Units.degreesToRadians(127.742)),  // ALGAE: A button
+        COLLECT(Units.inchesToMeters(17.069), Units.degreesToRadians(267.809)),  // X button toggle
+        STOW(Units.inchesToMeters(1.901), Units.degreesToRadians(89.913)),  // X button toggle
+        L4(Units.inchesToMeters(40.344), Units.degreesToRadians(120.548)),  // Y button
+        L3(Units.inchesToMeters(17.500), Units.degreesToRadians(124.398)),  // CORAL: B button
+        L2(Units.inchesToMeters(1.364), Units.degreesToRadians(124.791)),  // CORAL: A button
+        START(Units.inchesToMeters(0.468), Units.degreesToRadians(90.089));  // startup only
 
         public final double elev;
         public final double arm;
@@ -30,9 +29,11 @@ public class WindmillConstants {
         TrajectoryState(double elev, double arm) {
             this.elev = elev;
             this.arm = arm;
-            this.state = new WindmillState(0,
-                                           new WindmillState.ElevatorState(elev,0,0),
-                                           new WindmillState.ArmState(arm, 0,0));
+            this.state = new WindmillState(
+                0,
+                new WindmillState.ElevatorState(elev, 0, 0),
+                new WindmillState.ArmState(arm, 0, 0)
+            );
         }
     }
 
@@ -63,15 +64,15 @@ public class WindmillConstants {
 
     // Motion
 
-    public static final double ELEVATOR_MAX_VELOCITY = 4; // Meters / sec
-    public static final double ELEVATOR_MAX_ACCELERATION = ELEVATOR_MAX_VELOCITY * 4; // Meters / sec^2
+    public static final double ELEVATOR_MAX_VELOCITY = 2; // Meters / sec
+    public static final double ELEVATOR_MAX_ACCELERATION = ELEVATOR_MAX_VELOCITY * 4 * 2; // Meters / sec^2
     public static final double ELEVATOR_MAX_JERK = ELEVATOR_MAX_ACCELERATION * 4.0; // Meters / sec^3
 
     // -- Arm --
 
     // Gearing
     public static final double ARM_BELT_REDUCTION = 18d / 72d;
-    public static final double ARM_GEAR_REDUCTION;
+    public static final double ARM_ROTOR_TO_ENCODER;
 
     // Poses
 
@@ -87,8 +88,8 @@ public class WindmillConstants {
 
     // Motion
 
-    public static final double ARM_MAX_VELOCITY = Units.rotationsToRadians(1.5); // Radians / sec
-    public static final double ARM_MAX_ACCELERATION = Units.rotationsToRadians(4); // Radians / sec^2
+    public static final double ARM_MAX_VELOCITY = Units.rotationsToRadians(4); // Radians / sec
+    public static final double ARM_MAX_ACCELERATION = ARM_MAX_VELOCITY * 4 * 4; // Radians / sec^2
     public static final double ARM_MAX_JERK = ARM_MAX_ACCELERATION * 4; // Radians / sec^3
 
     // Constants
@@ -109,11 +110,11 @@ public class WindmillConstants {
         switch (Identity.robotID) {
             case BEEF, BEARRACUDA -> {
                 ELEVATOR_GEAR_REDUCTION = 10d / 52d;
-                ARM_GEAR_REDUCTION = 8d / 60d * 24d / 50d * ARM_BELT_REDUCTION;
+                ARM_ROTOR_TO_ENCODER = 8d / 60d * 24d / 50d;
             }
             default -> {
                 ELEVATOR_GEAR_REDUCTION = 12d / 52d;
-                ARM_GEAR_REDUCTION = 10d / 60d * 24d / 50d * ARM_BELT_REDUCTION;
+                ARM_ROTOR_TO_ENCODER = 10d / 60d * 24d / 50d;
             }
         }
     }
@@ -149,9 +150,10 @@ public class WindmillConstants {
                 .withContinuousWrap(false)
         ).withFeedback(new FeedbackConfigs()
                            .withSensorToMechanismRatio(1 / ELEVATOR_MAIN_PULLEY_CIRCUMFERENCE)
+                           .withRotorToSensorRatio(1 / ELEVATOR_GEAR_REDUCTION)
                            .withFeedbackRemoteSensorID(RobotMap.ELEVATOR_ENCODER)
                            .withFeedbackSensorSource(
-                               RobotConfiguration.RIO_PHOENIX_PRO ? FeedbackSensorSourceValue.FusedCANcoder : FeedbackSensorSourceValue.RemoteCANcoder)
+                               RobotConfiguration.WINDMILL_PHOENIX_PRO ? FeedbackSensorSourceValue.FusedCANcoder : FeedbackSensorSourceValue.RotorSensor)
         ).withAudio(
             new AudioConfigs().withBeepOnBoot(true).withBeepOnConfig(true)
         );
@@ -173,17 +175,18 @@ public class WindmillConstants {
                 .withInverted(InvertedValue.CounterClockwise_Positive)
         ).withMotionMagic(
             new MotionMagicConfigs()
-                .withMotionMagicCruiseVelocity(ARM_MAX_VELOCITY)
-                .withMotionMagicAcceleration(ARM_MAX_ACCELERATION)
-                .withMotionMagicJerk(ARM_MAX_JERK)
+                .withMotionMagicCruiseVelocity(Units.radiansToRotations(ARM_MAX_VELOCITY))
+                .withMotionMagicAcceleration(Units.radiansToRotations(ARM_MAX_ACCELERATION))
+                .withMotionMagicJerk(Units.radiansToRotations(ARM_MAX_JERK))
         ).withClosedLoopGeneral(
             new ClosedLoopGeneralConfigs()
                 .withContinuousWrap(true)
         ).withFeedback(new FeedbackConfigs()
                            .withSensorToMechanismRatio(1 / ARM_BELT_REDUCTION)
+                           .withRotorToSensorRatio(1 / ARM_ROTOR_TO_ENCODER)
                            .withFeedbackRemoteSensorID(RobotMap.ARM_ENCODER)
                            .withFeedbackSensorSource(
-                               RobotConfiguration.RIO_PHOENIX_PRO ? FeedbackSensorSourceValue.FusedCANcoder : FeedbackSensorSourceValue.RemoteCANcoder)
+                               RobotConfiguration.WINDMILL_PHOENIX_PRO ? FeedbackSensorSourceValue.FusedCANcoder : FeedbackSensorSourceValue.RotorSensor)
         ).withAudio(
             new AudioConfigs()
                 .withBeepOnBoot(true)

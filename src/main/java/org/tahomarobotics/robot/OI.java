@@ -3,6 +3,7 @@ package org.tahomarobotics.robot;
 import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -11,11 +12,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import org.tahomarobotics.robot.auto.AutonomousConstants;
-import org.tahomarobotics.robot.auto.DriveToPoseV3Command;
+import org.tahomarobotics.robot.auto.commands.DriveToPoseV4Command;
 import org.tahomarobotics.robot.chassis.Chassis;
 import org.tahomarobotics.robot.chassis.ChassisCommands;
-import org.tahomarobotics.robot.climber.Climber;
-import org.tahomarobotics.robot.climber.commands.ClimberCommands;
 import org.tahomarobotics.robot.collector.Collector;
 import org.tahomarobotics.robot.collector.CollectorCommands;
 import org.tahomarobotics.robot.grabber.Grabber;
@@ -25,8 +24,10 @@ import org.tahomarobotics.robot.indexer.IndexerCommands;
 import org.tahomarobotics.robot.util.SubsystemIF;
 import org.tahomarobotics.robot.util.game.GamePiece;
 import org.tahomarobotics.robot.util.sysid.SysIdTests;
+import org.tahomarobotics.robot.vision.Vision;
 import org.tahomarobotics.robot.windmill.Windmill;
 import org.tahomarobotics.robot.windmill.WindmillConstants;
+import org.tinylog.Logger;
 
 import java.util.List;
 import java.util.function.Function;
@@ -44,13 +45,13 @@ public class OI extends SubsystemIF {
     // -- Subsystems --
 
     private final Indexer indexer = Indexer.getInstance();
-    private final Climber climber = Climber.getInstance();
+    //    private final Climber climber = Climber.getInstance();
     private final Collector collector = Collector.getInstance();
     private final Chassis chassis = Chassis.getInstance();
     private final Windmill windmill = Windmill.getInstance();
     private final Grabber grabber = Grabber.getInstance();
 
-    private final List<SubsystemIF> subsystems = List.of(indexer, collector, chassis, climber, windmill, grabber);
+    private final List<SubsystemIF> subsystems = List.of(indexer, collector, chassis/*, climber*/, windmill, grabber);
 
     // -- Controllers --
 
@@ -78,9 +79,53 @@ public class OI extends SubsystemIF {
 
         controller.povDown().onTrue(Commands.runOnce(chassis::orientToZeroHeading));
 
-        controller.rightBumper().whileTrue(Commands.deferredProxy(() -> new DriveToPoseV3Command(
-            AutonomousConstants.getNearestReefPoleScorePosition(Chassis.getInstance().getPose().getTranslation())
-        )));
+        controller.rightBumper().whileTrue(
+            Commands.deferredProxy(
+                () -> {
+                    AutonomousConstants.Objective pole =
+                        AutonomousConstants.getNearestReefPoleScorePosition(
+                            Chassis.getInstance().getPose().getTranslation()
+                        );
+
+                    DriveToPoseV4Command dtp = new DriveToPoseV4Command(
+                        pole.tag(), AutonomousConstants.APPROACH_DISTANCE_BLEND_FACTOR,
+                        pole.approachPose(),
+                        pole.scorePose()
+                    ) {
+                        @Override
+                        public void end(boolean interrupted) {
+                            super.end(interrupted);
+                            Logger.error(grabber.isHolding());
+                            grabber.runOnce(grabber::transitionToDisabled);
+                        }
+                    };
+
+                    return Commands.parallel(
+                        dtp,
+                        dtp.runWhen(
+                            () -> dtp.getTargetWaypoint() == 1 && dtp.getDistanceToWaypoint() < AutonomousConstants.AUTO_SCORE_DISTANCE,
+                            grabber.runOnce(grabber::transitionToScoring)
+                        )
+                    );
+                }
+            )
+        );
+
+        controller.povUp().whileTrue(
+            Commands.deferredProxy(
+                () -> {
+                    var coralOpt = Vision.getInstance().getCoralPosition();
+                    if (coralOpt.isEmpty()) {
+                        return Commands.none();
+                    }
+
+                    return new DriveToPoseV4Command(
+                        -1, AutonomousConstants.APPROACH_DISTANCE_BLEND_FACTOR,
+                        new Pose2d(coralOpt.get(), Chassis.getInstance().getPose().getRotation())
+                    );
+                }
+            )
+        );
 
         // Collector
 
@@ -135,7 +180,7 @@ public class OI extends SubsystemIF {
         // Arm
         // TODO: Temporary Controls
 
-        controller.start().onTrue(ClimberCommands.getClimberCommand());
+//        controller.start().onTrue(ClimberCommands.getClimberCommand());
 
         SmartDashboard.putData(
             "Arm Upright", Commands.runOnce(

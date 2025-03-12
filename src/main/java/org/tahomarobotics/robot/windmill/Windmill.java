@@ -180,8 +180,10 @@ public class Windmill extends SubsystemIF {
         simHeight = TrajectoryState.START.elev;
         simAngle = TrajectoryState.START.arm;
         zeroed = true;
+
         Logger.info("Windmill Calibrated");
         enableBrakeMode();
+
         setTargetState(TrajectoryState.STOW);
     }
 
@@ -360,20 +362,16 @@ public class Windmill extends SubsystemIF {
     }
 
     public Command createTransitionCommand(TrajectoryState to) {
-        return createTransitionCommand(to, true);
-    }
-
-    public Command createTransitionCommand(TrajectoryState to, boolean defaultCollect) {
         return Commands.deferredProxy(() -> {
             // Default to COLLECT if at target state (i.e. L4 -x> L4 -> COLLECT)
-            TrajectoryState target = targetTrajectoryState == to && defaultCollect ? TrajectoryState.COLLECT : to;
+            TrajectoryState target = targetTrajectoryState == to ? TrajectoryState.COLLECT : to;
 
             Optional<Command> output = WindmillMoveCommand.fromTo(targetTrajectoryState, target);
             if (output.isEmpty()) {
                 output = WindmillMoveCommand.fromTo(targetTrajectoryState, TrajectoryState.STOW);
                 Logger.error("WindmillMoveCommand from " + targetTrajectoryState + " to " + target + " failed.");
             }
-            return output.orElseGet(Commands::none);
+            return output.map(c -> (Command) c.withName("Windmill to " + to)).orElseGet(Commands::none);
         });
     }
 

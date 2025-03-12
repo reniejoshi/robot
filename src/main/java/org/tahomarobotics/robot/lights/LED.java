@@ -1,6 +1,7 @@
 package org.tahomarobotics.robot.lights;
 
 import com.ctre.phoenix.CANifier;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.util.Color;
 import org.tahomarobotics.robot.RobotMap;
@@ -16,9 +17,14 @@ LED Channels
 public class LED extends SubsystemIF {
     private static final LED INSTANCE = new LED();
 
-    private final CANifier canifier = new CANifier(RobotMap.LED);
+    private CANifier canifier = null;
 
     private LED() {
+        if (RobotBase.isSimulation() || true) {
+            return;
+        }
+
+        canifier = new CANifier(RobotMap.LED);
     }
 
     @Override
@@ -44,6 +50,8 @@ public class LED extends SubsystemIF {
     }
 
     public void setColor(Color color) {
+        if (canifier == null) { return; }
+
         canifier.setLEDOutput(color.red, CANifier.LEDChannel.LEDChannelB);
         canifier.setLEDOutput(color.green, CANifier.LEDChannel.LEDChannelA);
         canifier.setLEDOutput(color.blue, CANifier.LEDChannel.LEDChannelC);

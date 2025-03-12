@@ -157,7 +157,7 @@ public class SystemCheck {
         SmartDashboard.putData("Checks/Run Collector", createCollectorTestCommand(Collector.getInstance()));
         SmartDashboard.putData("Checks/Run Indexer", createIndexerTestCommand(Indexer.getInstance()));
         SmartDashboard.putData("Checks/Run Grabber", createGrabberTestCommand(Grabber.getInstance()));
-        SmartDashboard.putData("Checks/Run Climber", createClimberTestCommand(Climber.getInstance()));
+//        SmartDashboard.putData("Checks/Run Climber", createClimberTestCommand(Climber.getInstance()));
         SmartDashboard.putData("Checks/Run Windmill", createWindmillTestCommand(Windmill.getInstance()));
         SmartDashboard.putData("Checks/Run Chassis", createChassisTestCommand(Chassis.getInstance()));
     }

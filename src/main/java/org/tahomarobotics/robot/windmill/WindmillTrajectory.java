@@ -1,7 +1,6 @@
 package org.tahomarobotics.robot.windmill;
 
 import edu.wpi.first.math.Pair;
-import edu.wpi.first.math.util.Units;
 import org.tahomarobotics.robot.util.motion.MotionProfile;
 import org.tahomarobotics.robot.util.motion.MotionState;
 import org.tahomarobotics.robot.util.motion.TrapezoidalMotionProfile;
@@ -13,8 +12,8 @@ public class WindmillTrajectory {
 
     private static final double ELEV_MAX_VEL = WindmillConstants.ELEVATOR_MAX_VELOCITY;
     private static final double ELEV_MAX_ACC = WindmillConstants.ELEVATOR_MAX_ACCELERATION;
-    private static final double ARM_MAX_VEL = Units.rotationsToRadians(WindmillConstants.ARM_MAX_VELOCITY);
-    private static final double ARM_MAX_ACC = Units.rotationsToRadians(WindmillConstants.ARM_MAX_ACCELERATION);
+    private static final double ARM_MAX_VEL = WindmillConstants.ARM_MAX_VELOCITY;
+    private static final double ARM_MAX_ACC = WindmillConstants.ARM_MAX_ACCELERATION;
 
     protected record WindmillProfile(MotionProfile elev, MotionProfile arm) {}
 

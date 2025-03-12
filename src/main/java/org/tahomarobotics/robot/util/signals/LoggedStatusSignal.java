@@ -31,6 +31,7 @@ public record LoggedStatusSignal(String name, BaseStatusSignal signal) {
             Logger.recordOutput(prefix_ + "value", signal.signal().getValueAsDouble());
             Logger.recordOutput(prefix_ + "status", signal.signal().getStatus());
             Logger.recordOutput(prefix_ + "units", signal.signal().getUnits());
+            Logger.recordOutput(prefix_ + "latency", signal.signal().getTimestamp().getLatency());
         }
     }
 }

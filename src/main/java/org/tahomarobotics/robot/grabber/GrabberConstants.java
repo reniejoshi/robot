@@ -21,7 +21,15 @@ public class GrabberConstants {
         }
     }
 
-    public static final double COLLECTION_CURRENT_THRESHOLD = 16;
+    public static double COLLECTION_CURRENT_THRESHOLD;
+
+    static {
+        COLLECTION_CURRENT_THRESHOLD = switch (Identity.robotID) {
+            case BEEF -> 18;
+            case BEARRACUDA -> 16;
+            default -> 20;
+        };
+    }
 
     // -- States --
 

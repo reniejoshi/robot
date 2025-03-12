@@ -93,29 +93,29 @@
             "/photonvision/Elevator Swerve/rawBytes/targets/0/detectedCorners/1",
             "/photonvision/Elevator Swerve/rawBytes/targets/0/detectedCorners/2",
             "/photonvision/Elevator Swerve/rawBytes/targets/0/detectedCorners/3",
-            "/AdvantageKit",
-            "/AdvantageKit/RealOutputs/Climber/Status Signals",
-            "/AdvantageKit/RealOutputs/Climber/Status Signals/Climber Motor Position",
-            "/AdvantageKit/RealOutputs/Climber/Status Signals/Climber Motor Current",
-            "/AdvantageKit/RealOutputs/Grabber/Status Signals",
-            "/AdvantageKit/RealOutputs/Grabber/Status Signals/Grabber Velocity",
-            "/AdvantageKit/RealOutputs/Grabber/Status Signals/Grabber Current",
-            "/AdvantageKit/RealOutputs/Collector/Status Signals",
-            "/AdvantageKit/RealOutputs",
-            "/AdvantageKit/RealOutputs/Indexer/Status Signals",
-            "/AdvantageKit/RealOutputs/Indexer/Status Signals/Current",
-            "/AdvantageKit/RealOutputs/Indexer/Status Signals/Velocity",
-            "/AdvantageKit/RadioStatus/Status/networkStatus24",
-            "/AdvantageKit/RealOutputs/Vision/Climber Swerve",
-            "/AdvantageKit/RealOutputs/Vision/Elevator Swerve",
-            "/AdvantageKit/RealOutputs/Windmill",
-            "/AdvantageKit/RealOutputs/Windmill/Status Signals/Arm Position",
-            "/AdvantageKit/RealOutputs/Windmill/Status Signals/Arm Encoder Position",
-            "/AdvantageKit/RealOutputs/Windmill/Status Signals/Elevator Position",
-            "/AdvantageKit/RealOutputs/Windmill/Status Signals/Elevator Encoder Position",
-            "/AdvantageKit/RealOutputs/Chassis",
-            "/AdvantageKit/RealOutputs/Autonomous",
-            "/AdvantageKit/RealOutputs/Autonomous/Drive To Pose"
+            "",
+            "/RealOutputs/Climber/Status Signals",
+            "/RealOutputs/Climber/Status Signals/Climber Motor Position",
+            "/RealOutputs/Climber/Status Signals/Climber Motor Current",
+            "/RealOutputs/Grabber/Status Signals",
+            "/RealOutputs/Grabber/Status Signals/Grabber Velocity",
+            "/RealOutputs/Grabber/Status Signals/Grabber Current",
+            "/RealOutputs/Collector/Status Signals",
+            "/RealOutputs",
+            "/RealOutputs/Indexer/Status Signals",
+            "/RealOutputs/Indexer/Status Signals/Current",
+            "/RealOutputs/Indexer/Status Signals/Velocity",
+            "/RadioStatus/Status/networkStatus24",
+            "/RealOutputs/Vision/Climber Swerve",
+            "/RealOutputs/Vision/Elevator Swerve",
+            "/RealOutputs/Windmill",
+            "/RealOutputs/Windmill/Status Signals/Arm Position",
+            "/RealOutputs/Windmill/Status Signals/Arm Encoder Position",
+            "/RealOutputs/Windmill/Status Signals/Elevator Position",
+            "/RealOutputs/Windmill/Status Signals/Elevator Encoder Position",
+            "/RealOutputs/Chassis",
+            "/RealOutputs/Autonomous",
+            "/RealOutputs/Autonomous/Drive To Pose"
           ]
         },
         "tabs": {
@@ -136,7 +136,7 @@
                 "leftSources": [
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Climber Swerve/Multi-Tag Updates",
+                    "logKey": "/RealOutputs/Vision/Climber Swerve/Multi-Tag Updates",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -146,7 +146,7 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Climber Swerve/Single-Tag Updates",
+                    "logKey": "/RealOutputs/Vision/Climber Swerve/Single-Tag Updates",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -156,7 +156,7 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Elevator Swerve/Multi-Tag Updates",
+                    "logKey": "/RealOutputs/Vision/Elevator Swerve/Multi-Tag Updates",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -166,7 +166,7 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Elevator Swerve/Single-Tag Updates",
+                    "logKey": "/RealOutputs/Vision/Elevator Swerve/Single-Tag Updates",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -178,7 +178,7 @@
                 "rightSources": [
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Climber Swerve/Failed Updates",
+                    "logKey": "/RealOutputs/Vision/Climber Swerve/Failed Updates",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -188,7 +188,7 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Elevator Swerve/Failed Updates",
+                    "logKey": "/RealOutputs/Vision/Elevator Swerve/Failed Updates",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -200,7 +200,7 @@
                 "discreteSources": [
                   {
                     "type": "stripes",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Climber Swerve/Connected?",
+                    "logKey": "/RealOutputs/Vision/Climber Swerve/Connected?",
                     "logType": "Boolean",
                     "visible": true,
                     "options": {
@@ -209,7 +209,7 @@
                   },
                   {
                     "type": "stripes",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Elevator Swerve/Connected?",
+                    "logKey": "/RealOutputs/Vision/Elevator Swerve/Connected?",
                     "logType": "Boolean",
                     "visible": true,
                     "options": {
@@ -218,7 +218,7 @@
                   },
                   {
                     "type": "stripes",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Climber Swerve/Isolated Tag",
+                    "logKey": "/RealOutputs/Vision/Climber Swerve/Isolated Tag",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -227,7 +227,7 @@
                   },
                   {
                     "type": "stripes",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Elevator Swerve/Isolated Tag",
+                    "logKey": "/RealOutputs/Vision/Elevator Swerve/Isolated Tag",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -259,7 +259,7 @@
                 "leftSources": [
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Collector/Status Signals//Left Deployment Position/value",
+                    "logKey": "/RealOutputs/Collector/Status Signals//Left Deployment Position/value",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -269,7 +269,7 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Collector/Status Signals//Right Deployment Position/value",
+                    "logKey": "/RealOutputs/Collector/Status Signals//Right Deployment Position/value",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -281,7 +281,7 @@
                 "rightSources": [
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Collector/Status Signals//Collector Velocity/value",
+                    "logKey": "/RealOutputs/Collector/Status Signals//Collector Velocity/value",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -293,7 +293,7 @@
                 "discreteSources": [
                   {
                     "type": "stripes",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Collector/Target Collector State",
+                    "logKey": "/RealOutputs/Collector/Target Collector State",
                     "logType": "String",
                     "visible": true,
                     "options": {
@@ -302,7 +302,7 @@
                   },
                   {
                     "type": "stripes",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Collector/Target Deploy State",
+                    "logKey": "/RealOutputs/Collector/Target Deploy State",
                     "logType": "String",
                     "visible": true,
                     "options": {
@@ -334,7 +334,7 @@
                 "leftSources": [
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Climber/Target Position",
+                    "logKey": "/RealOutputs/Climber/Target Position",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -344,7 +344,7 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Climber/Status Signals//Climber Motor Position/value",
+                    "logKey": "/RealOutputs/Climber/Status Signals//Climber Motor Position/value",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -356,7 +356,7 @@
                 "rightSources": [
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Climber/Solenoid Voltage",
+                    "logKey": "/RealOutputs/Climber/Solenoid Voltage",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -366,7 +366,7 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Climber/Status Signals//Climber Motor Current/value",
+                    "logKey": "/RealOutputs/Climber/Status Signals//Climber Motor Current/value",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -378,7 +378,7 @@
                 "discreteSources": [
                   {
                     "type": "stripes",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Climber/Is at Target Position?",
+                    "logKey": "/RealOutputs/Climber/Is at Target Position?",
                     "logType": "Boolean",
                     "visible": true,
                     "options": {
@@ -387,7 +387,7 @@
                   },
                   {
                     "type": "stripes",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Climber/State",
+                    "logKey": "/RealOutputs/Climber/State",
                     "logType": "String",
                     "visible": true,
                     "options": {
@@ -421,7 +421,7 @@
                 "leftSources": [
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Chassis/Chassis Speeds/vx",
+                    "logKey": "/RealOutputs/Chassis/Chassis Speeds/vx",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -431,7 +431,7 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Chassis/Chassis Speeds/vy",
+                    "logKey": "/RealOutputs/Chassis/Chassis Speeds/vy",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -443,7 +443,7 @@
                 "rightSources": [
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Chassis/Total Drive Current",
+                    "logKey": "/RealOutputs/Chassis/Total Drive Current",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -455,7 +455,7 @@
                 "discreteSources": [
                   {
                     "type": "stripes",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Chassis/Auto Aligning?",
+                    "logKey": "/RealOutputs/Chassis/Auto Aligning?",
                     "logType": "Boolean",
                     "visible": true,
                     "options": {
@@ -487,7 +487,7 @@
                 "leftSources": [
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Grabber/Status Signals//Grabber Velocity/value",
+                    "logKey": "/RealOutputs/Grabber/Status Signals//Grabber Velocity/value",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -499,7 +499,7 @@
                 "rightSources": [
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Grabber/Status Signals//Grabber Current/value",
+                    "logKey": "/RealOutputs/Grabber/Status Signals//Grabber Current/value",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -511,7 +511,7 @@
                 "discreteSources": [
                   {
                     "type": "stripes",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Grabber/State",
+                    "logKey": "/RealOutputs/Grabber/State",
                     "logType": "String",
                     "visible": true,
                     "options": {
@@ -543,7 +543,7 @@
                 "leftSources": [
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Indexer/Status Signals//Velocity/value",
+                    "logKey": "/RealOutputs/Indexer/Status Signals//Velocity/value",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -555,7 +555,7 @@
                 "rightSources": [
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Indexer/Status Signals//Current/value",
+                    "logKey": "/RealOutputs/Indexer/Status Signals//Current/value",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -567,7 +567,7 @@
                 "discreteSources": [
                   {
                     "type": "stripes",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Indexer/Beam Brake Tripped?",
+                    "logKey": "/RealOutputs/Indexer/Beam Brake Tripped?",
                     "logType": "Boolean",
                     "visible": true,
                     "options": {
@@ -576,7 +576,7 @@
                   },
                   {
                     "type": "stripes",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Indexer/State",
+                    "logKey": "/RealOutputs/Indexer/State",
                     "logType": "String",
                     "visible": true,
                     "options": {
@@ -608,7 +608,7 @@
                 "leftSources": [
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Windmill/Arm/Position",
+                    "logKey": "/RealOutputs/Windmill/Arm/Position",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -618,7 +618,7 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Windmill/Arm/Target Position",
+                    "logKey": "/RealOutputs/Windmill/Arm/Target Position",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -630,7 +630,7 @@
                 "rightSources": [
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Windmill/Elevator/Height",
+                    "logKey": "/RealOutputs/Windmill/Elevator/Height",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -640,7 +640,7 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Windmill/Elevator/Target Height",
+                    "logKey": "/RealOutputs/Windmill/Elevator/Target Height",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -652,7 +652,7 @@
                 "discreteSources": [
                   {
                     "type": "stripes",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Windmill/Is at Target Trajectory State?",
+                    "logKey": "/RealOutputs/Windmill/Is at Target Trajectory State?",
                     "logType": "Boolean",
                     "visible": true,
                     "options": {
@@ -661,7 +661,7 @@
                   },
                   {
                     "type": "stripes",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Windmill/Arm/Is at Position?",
+                    "logKey": "/RealOutputs/Windmill/Arm/Is at Position?",
                     "logType": "Boolean",
                     "visible": true,
                     "options": {
@@ -670,7 +670,7 @@
                   },
                   {
                     "type": "stripes",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Windmill/Elevator/Is at Position?",
+                    "logKey": "/RealOutputs/Windmill/Elevator/Is at Position?",
                     "logType": "Boolean",
                     "visible": true,
                     "options": {
@@ -679,7 +679,7 @@
                   },
                   {
                     "type": "stripes",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Windmill/Target Trajectory State",
+                    "logKey": "/RealOutputs/Windmill/Target Trajectory State",
                     "logType": "String",
                     "visible": true,
                     "options": {
@@ -711,14 +711,14 @@
                 "sources": [
                   {
                     "type": "robot",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Chassis/Integrated Pose",
+                    "logKey": "/RealOutputs/Chassis/Integrated Pose",
                     "logType": "Pose2d",
                     "visible": true,
                     "options": {}
                   },
                   {
                     "type": "vision",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Elevator Swerve/AprilTags",
+                    "logKey": "/RealOutputs/Vision/Elevator Swerve/AprilTags",
                     "logType": "Pose3d[]",
                     "visible": true,
                     "options": {
@@ -728,7 +728,7 @@
                   },
                   {
                     "type": "vision",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Climber Swerve/AprilTags",
+                    "logKey": "/RealOutputs/Vision/Climber Swerve/AprilTags",
                     "logType": "Pose3d[]",
                     "visible": true,
                     "options": {
@@ -738,7 +738,7 @@
                   },
                   {
                     "type": "ghost",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Climber Swerve/Multi-Tag Pose",
+                    "logKey": "/RealOutputs/Vision/Climber Swerve/Multi-Tag Pose",
                     "logType": "Pose2d",
                     "visible": true,
                     "options": {
@@ -747,7 +747,7 @@
                   },
                   {
                     "type": "ghost",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Elevator Swerve/Multi-Tag Pose",
+                    "logKey": "/RealOutputs/Vision/Elevator Swerve/Multi-Tag Pose",
                     "logType": "Pose2d",
                     "visible": true,
                     "options": {
@@ -756,7 +756,7 @@
                   },
                   {
                     "type": "ghost",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Climber Swerve/Single-Tag Pose",
+                    "logKey": "/RealOutputs/Vision/Climber Swerve/Single-Tag Pose",
                     "logType": "Pose2d",
                     "visible": true,
                     "options": {
@@ -765,7 +765,7 @@
                   },
                   {
                     "type": "ghost",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Elevator Swerve/Single-Tag Pose",
+                    "logKey": "/RealOutputs/Vision/Elevator Swerve/Single-Tag Pose",
                     "logType": "Pose2d",
                     "visible": true,
                     "options": {
@@ -774,7 +774,7 @@
                   },
                   {
                     "type": "trajectory",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Autonomous/Approach Poles",
+                    "logKey": "/RealOutputs/Autonomous/Approach Poles",
                     "logType": "Pose2d[]",
                     "visible": false,
                     "options": {
@@ -784,7 +784,7 @@
                   },
                   {
                     "type": "trajectory",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Autonomous/Score Poles",
+                    "logKey": "/RealOutputs/Autonomous/Score Poles",
                     "logType": "Pose2d[]",
                     "visible": false,
                     "options": {
@@ -794,7 +794,7 @@
                   },
                   {
                     "type": "ghost",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Autonomous/Drive To Pose/Target Waypoint",
+                    "logKey": "/RealOutputs/Autonomous/Drive To Pose/Target Waypoint",
                     "logType": "Pose2d",
                     "visible": true,
                     "options": {
@@ -803,7 +803,7 @@
                   },
                   {
                     "type": "trajectory",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Autonomous/Drive To Pose/Waypoints",
+                    "logKey": "/RealOutputs/Autonomous/Drive To Pose/Waypoints",
                     "logType": "Pose2d[]",
                     "visible": true,
                     "options": {
@@ -825,7 +825,7 @@
             {
               "type": 5,
               "title": "Console",
-              "controller": "NT:/AdvantageKit/RealOutputs/Console",
+              "controller": "/RealOutputs/Console",
               "controllerUUID": "blsg0dl3o2rk2fzqo30hdejhxqawbhiz",
               "renderer": {
                 "highlight": true
@@ -839,7 +839,7 @@
                 "leftSources": [
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/SystemStats/BatteryVoltage",
+                    "logKey": "/SystemStats/BatteryVoltage",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -851,7 +851,7 @@
                 "rightSources": [
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/SystemStats/BatteryCurrent",
+                    "logKey": "/SystemStats/BatteryCurrent",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -863,7 +863,7 @@
                 "discreteSources": [
                   {
                     "type": "stripes",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Game Piece Mode",
+                    "logKey": "/RealOutputs/Game Piece Mode",
                     "logType": "String",
                     "visible": true,
                     "options": {
@@ -872,7 +872,7 @@
                   },
                   {
                     "type": "stripes",
-                    "logKey": "NT:/AdvantageKit/DriverStation/Enabled",
+                    "logKey": "/DriverStation/Enabled",
                     "logType": "Boolean",
                     "visible": true,
                     "options": {
@@ -881,7 +881,7 @@
                   },
                   {
                     "type": "stripes",
-                    "logKey": "NT:/AdvantageKit/SystemStats/BrownedOut",
+                    "logKey": "/SystemStats/BrownedOut",
                     "logType": "Boolean",
                     "visible": true,
                     "options": {
@@ -913,7 +913,7 @@
                 "leftSources": [
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/RadioStatus/Status/networkStatus6/bandwidthUsedMbps",
+                    "logKey": "/RadioStatus/Status/networkStatus6/bandwidthUsedMbps",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -923,7 +923,7 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/RadioStatus/Status/networkStatus24/bandwidthUsedMbps",
+                    "logKey": "/RadioStatus/Status/networkStatus24/bandwidthUsedMbps",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -936,7 +936,7 @@
                 "discreteSources": [
                   {
                     "type": "stripes",
-                    "logKey": "NT:/AdvantageKit/RadioStatus/Connected",
+                    "logKey": "/RadioStatus/Connected",
                     "logType": "Boolean",
                     "visible": true,
                     "options": {
@@ -945,7 +945,7 @@
                   },
                   {
                     "type": "stripes",
-                    "logKey": "NT:/AdvantageKit/DriverStation/Enabled",
+                    "logKey": "/DriverStation/Enabled",
                     "logType": "Boolean",
                     "visible": true,
                     "options": {
@@ -954,7 +954,7 @@
                   },
                   {
                     "type": "stripes",
-                    "logKey": "NT:/AdvantageKit/RadioStatus/Status/networkStatus6/connectionQuality",
+                    "logKey": "/RadioStatus/Status/networkStatus6/connectionQuality",
                     "logType": "String",
                     "visible": true,
                     "options": {
@@ -963,7 +963,7 @@
                   },
                   {
                     "type": "stripes",
-                    "logKey": "NT:/AdvantageKit/RadioStatus/Status/networkStatus24/connectionQuality",
+                    "logKey": "/RadioStatus/Status/networkStatus24/connectionQuality",
                     "logType": "String",
                     "visible": true,
                     "options": {

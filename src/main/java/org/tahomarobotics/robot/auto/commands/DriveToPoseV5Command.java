@@ -1,31 +1,43 @@
-package org.tahomarobotics.robot.auto;
+package org.tahomarobotics.robot.auto.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import org.tahomarobotics.robot.chassis.Chassis;
 import org.tahomarobotics.robot.vision.Vision;
 import org.tinylog.Logger;
 
+import java.util.Optional;
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
+
 import static org.tahomarobotics.robot.auto.AutonomousConstants.*;
 
-public class DriveToPoseV3Command extends Command {
+public class DriveToPoseV5Command extends Command {
+    // -- Requirements --
+
     private final Chassis chassis = Chassis.getInstance();
+
+    // -- Controllers --
 
     private final ProfiledPIDController x, y, r;
 
-    private final Timer readjustmentTimer = new Timer();
+    // -- State --
 
-    private Pose2d goalPose;
-    private boolean scoring = false;
-    private final ReefPole pole;
+    private final int isolationTarget;
 
-    public DriveToPoseV3Command(ReefPole pole) {
-        this.pole = pole;
-        this.goalPose = pole.approachPose();
+    private final Supplier<Optional<Pose2d>> targetPositionSupplier;
+    private Pose2d targetPose;
+
+    // -- Initialization --
+
+    public DriveToPoseV5Command(int isolationTarget, Supplier<Optional<Pose2d>> targetPositionSupplier, Pose2d defaultPose) {
+        this.isolationTarget = isolationTarget;
+        this.targetPose = targetPositionSupplier.get().orElse(defaultPose);
+        this.targetPositionSupplier = targetPositionSupplier;
 
         x = new ProfiledPIDController(
             TRANSLATION_ALIGNMENT_KP, TRANSLATION_ALIGNMENT_KI, TRANSLATION_ALIGNMENT_KD,
@@ -50,37 +62,33 @@ public class DriveToPoseV3Command extends Command {
         addRequirements(chassis);
     }
 
+    // -- Command --
+
     @Override
     public void initialize() {
         Pose2d currentPose = chassis.getPose();
         ChassisSpeeds currentVelocity = chassis.getChassisSpeeds();
 
-        Logger.info("Driving to {} from {}", pole.scorePose(), currentPose);
+        Logger.info("Driving to {} from {}", targetPositionSupplier.get(), currentPose);
 
         x.reset(currentPose.getX(), currentVelocity.vxMetersPerSecond);
         y.reset(currentPose.getY(), currentVelocity.vyMetersPerSecond);
         r.reset(currentPose.getRotation().getRadians(), currentVelocity.omegaRadiansPerSecond);
 
         chassis.setAutoAligning(true);
-        Vision.getInstance().isolate(pole.aprilTagId());
-
-        readjustmentTimer.restart();
+        Vision.getInstance().isolate(isolationTarget);
     }
 
     @Override
     public void execute() {
         Pose2d currentPose = chassis.getPose();
+        targetPose = targetPositionSupplier.get().orElse(targetPose);
 
-        double distanceToGoalPose = currentPose.getTranslation().getDistance(goalPose.getTranslation());
-        if (distanceToGoalPose < APPROACH_DISTANCE_BLEND_FACTOR && !scoring) {
-            goalPose = pole.scorePose();
-            syncGoal();
+        syncGoal();
 
-            scoring = true;
-            Logger.info("Approached scoring location, scoring...");
-        }
+        double distanceToGoalPose = currentPose.getTranslation().getDistance(targetPose.getTranslation());
 
-        double speedReduction = scoring ? MathUtil.clamp(distanceToGoalPose, 0.75, 1.0) : 1;
+        double speedReduction = MathUtil.clamp(distanceToGoalPose, 0.75, 1.0);
 
         double vx = x.calculate(currentPose.getX()) * speedReduction;
         double vy = y.calculate(currentPose.getY()) * speedReduction;
@@ -91,7 +99,7 @@ public class DriveToPoseV3Command extends Command {
 
     @Override
     public boolean isFinished() {
-        return x.atGoal() && y.atGoal() && r.atGoal() && scoring;
+        return x.atGoal() && y.atGoal() && r.atGoal();
     }
 
     @Override
@@ -100,15 +108,37 @@ public class DriveToPoseV3Command extends Command {
         chassis.setAutoAligning(false);
 
         Vision.getInstance().globalize();
-
-        readjustmentTimer.stop();
     }
 
-    // Helper Methods
+    // -- Instance Methods --
+
+    public double getDistanceToWaypoint() {
+        return targetPose.getTranslation().getDistance(chassis.getPose().getTranslation());
+    }
+
+    public double getAngleToWaypoint() {
+        return targetPose.getRotation().getRadians() - chassis.getPose().getRotation().getRadians();
+    }
+
+    public double getRobotHorizontalDistanceToWaypoint() {
+        return getDistanceToWaypoint() * Math.cos(getAngleToWaypoint());
+    }
+
+    public double getRobotVerticalDistanceToWaypoint() {
+        return getDistanceToWaypoint() * Math.sin(getAngleToWaypoint());
+    }
+
+    // -- Command Helpers --
+
+    public Command runWhen(BooleanSupplier condition, Command command) {
+        return Commands.waitUntil(condition).andThen(command);
+    }
+
+    // -- Helpers --
 
     private void syncGoal() {
-        x.setGoal(goalPose.getX());
-        y.setGoal(goalPose.getY());
-        r.setGoal(goalPose.getRotation().getRadians());
+        x.setGoal(targetPose.getX());
+        y.setGoal(targetPose.getY());
+        r.setGoal(targetPose.getRotation().getRadians());
     }
 }

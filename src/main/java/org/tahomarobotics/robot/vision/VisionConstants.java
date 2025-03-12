@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import org.photonvision.simulation.SimCameraProperties;
+import org.tahomarobotics.robot.chassis.ChassisConstants;
 
 /** Constants for the {@link Vision} subsystem. */
 public class VisionConstants {
@@ -45,6 +46,15 @@ public class VisionConstants {
         StandardDeviationScaling.DEFAULT
     );
 
+    public final static CameraConfiguration LIME_LIGHT = new CameraConfiguration(
+        "LimeLight",
+        new Transform3d(
+            new Translation3d(Units.inchesToMeters(6.1875), Units.inchesToMeters(ChassisConstants.HALF_TRACK_WIDTH - 1.5), 0.81),
+            new Rotation3d(0, Units.degreesToRadians(-34), 0)
+        ),
+        StandardDeviationScaling.DEFAULT
+    );
+
     // Standard Deviations
 
     public static final Vector<N3> BASE_MULTI_TAG_STD_DEV = VecBuilder.fill(0.5, 0.5, 1);
@@ -52,6 +62,7 @@ public class VisionConstants {
     public static final Vector<N3> BASE_ISOLATED_SINGLE_TAG_STD_DEV = VecBuilder.fill(0.125, 0.125, 10);
 
     public static final double AMBIGUITY_THRESHOLD = 0.03;
+    public static final double MAX_CORAL_DISTANCE = 3;
 
     // Constraint Punishment
 

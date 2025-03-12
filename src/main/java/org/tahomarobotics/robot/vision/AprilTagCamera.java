@@ -11,6 +11,7 @@ import edu.wpi.first.math.numbers.N8;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
@@ -222,13 +223,21 @@ public class AprilTagCamera implements AutoCloseable {
             PhotonTrackedTarget target = target_.get();
 
             var est = isolationPoseEstimator.update(new PhotonPipelineResult(result.metadata, List.of(target), Optional.empty()));
-            return est.map(e -> new EstimatedRobotPose(
+            Optional<EstimatedRobotPose> estimatedRobotPose = est.map(e -> new EstimatedRobotPose(
                 name, result.getTimestampSeconds(),
                 EstimatedRobotPose.Type.ISOLATED_SINGLE_TAG,
                 e.estimatedPose.toPose2d(),
                 BASE_ISOLATED_SINGLE_TAG_STD_DEV,
                 List.of(target)
             ));
+
+            if (estimatedRobotPose.isPresent()) {
+                singleTagPose = estimatedRobotPose.get().pose();
+                singleTagUpdates++;
+            } else {
+                failedUpdates++;
+            }
+            return estimatedRobotPose;
         }
 
         // CasADi pose estimation
@@ -385,7 +394,7 @@ public class AprilTagCamera implements AutoCloseable {
      *
      * @return Whether the pose is in field bounds
      */
-    private static boolean notInField(Pose3d pose) {
+    public static boolean notInField(Pose3d pose) {
         return pose.getX() < ChassisConstants.HALF_TRACK_WIDTH || pose.getX() > FIELD_LAYOUT.getFieldLength() - ChassisConstants.HALF_TRACK_WIDTH ||
                pose.getY() < ChassisConstants.HALF_WHEELBASE || pose.getY() > FIELD_LAYOUT.getFieldWidth() - ChassisConstants.HALF_WHEELBASE;
     }
