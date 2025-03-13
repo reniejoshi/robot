@@ -28,7 +28,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 public class IndexerConstants {
     // Motion Magic Constraints
 
-    private static final double MAX_VELOCITY = 32; // Rotations per second
+    private static final double MAX_VELOCITY = 48; // Rotations per second
     private static final double MAX_ACCELERATION = MAX_VELOCITY * 4;
     private static final double MAX_JERK = MAX_ACCELERATION * 4;
 
