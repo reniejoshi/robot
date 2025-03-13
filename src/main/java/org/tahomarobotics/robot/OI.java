@@ -69,13 +69,13 @@ public class OI extends SubsystemIF {
     // -- Subsystems --
 
     private final Indexer indexer = Indexer.getInstance();
-    //private final Climber climber = Climber.getInstance();
+    private final Climber climber = Climber.getInstance();
     private final Collector collector = Collector.getInstance();
     private final Chassis chassis = Chassis.getInstance();
     private final Windmill windmill = Windmill.getInstance();
     private final Grabber grabber = Grabber.getInstance();
 
-    private final List<SubsystemIF> subsystems = List.of(indexer, collector, chassis, /*climber,*/ windmill, grabber);
+    private final List<SubsystemIF> subsystems = List.of(indexer, collector, chassis, climber, windmill, grabber);
 
     // -- Controllers --
 
@@ -203,9 +203,9 @@ public class OI extends SubsystemIF {
 
         // Arm
 
-//        controller.start().onTrue(ClimberCommands.getClimberCommand());
-//        controller.leftTrigger().onTrue(climber.runOnce(climber::runRollers).onlyIf(() -> climber.getClimbState() == Climber.ClimberState.DEPLOYED))
-//                  .onFalse(climber.runOnce(climber::disableRollers));
+        controller.start().onTrue(ClimberCommands.getClimberCommand());
+        controller.leftTrigger().onTrue(climber.runOnce(climber::runRollers).onlyIf(() -> climber.getClimbState() == Climber.ClimberState.DEPLOYED))
+                  .onFalse(climber.runOnce(climber::disableRollers));
 
         SmartDashboard.putData(
             "Arm Upright", Commands.runOnce(

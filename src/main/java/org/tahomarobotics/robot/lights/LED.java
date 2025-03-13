@@ -42,7 +42,7 @@ public class LED extends SubsystemIF {
     private CANifier canifier = null;
 
     private LED() {
-        if (RobotBase.isSimulation() || true) {
+        if (RobotBase.isSimulation()) {
             return;
         }
 

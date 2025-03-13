@@ -62,7 +62,7 @@ public class Robot extends LoggedRobot {
         Windmill.getInstance().initialize(),
         Indexer.getInstance().initialize(),
         Collector.getInstance().initialize(),
-        //Climber.getInstance().initialize(),
+        Climber.getInstance().initialize(),
         Grabber.getInstance().initialize(),
         LED.getInstance().initialize(),
         OI.getInstance().initialize()
