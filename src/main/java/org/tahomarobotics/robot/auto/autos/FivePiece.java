@@ -155,11 +155,11 @@ public class FivePiece extends SequentialCommandGroup {
             // Drive to the scoring position
             dtp,
             Commands
-                .waitUntil(grabber::isHolding)
+                .waitUntil(grabber::isHoldingCoral)
                 .andThen(Commands.parallel(
                     // Move the arm to stow once collected
                     WindmillMoveCommand
-                        .fromTo(COLLECT, STOW).orElseThrow()
+                        .fromTo(CORAL_COLLECT, STOW).orElseThrow()
                         .andThen(
                             // Score the coral if collected
                             dtp.runWhen(() -> dtp.getTargetWaypoint() == 0 && dtp.getDistanceToWaypoint() <= ARM_UP_DISTANCE, stowToL4)
@@ -180,8 +180,8 @@ public class FivePiece extends SequentialCommandGroup {
                 Set.of(chassis)
             ),
             Commands.waitSeconds(0.5)
-                    .andThen(WindmillMoveCommand.fromTo(L4, COLLECT).orElseThrow())
-                    .andThen(grabber.runOnce(grabber::transitionToCollecting)),
+                    .andThen(WindmillMoveCommand.fromTo(L4, CORAL_COLLECT).orElseThrow())
+                    .andThen(grabber.runOnce(grabber::transitionToCoralCollecting)),
             // Collect from the collector and indexer
             collector.runOnce(collector::deploymentTransitionToCollect).andThen(collector.runOnce(collector::collectorTransitionToCollecting)),
             indexer.runOnce(indexer::transitionToCollecting)

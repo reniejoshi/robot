@@ -7,7 +7,7 @@
       "height": 1168,
       "state": {
         "sidebar": {
-          "width": 456,
+          "width": 458,
           "expanded": [
             "/Robot/Climber/statusSignals",
             "/Robot/Climber/statusSignals/Climber Motor Position",
@@ -75,7 +75,6 @@
             "/RadioStatus/Status/networkStatus6",
             "/RealOutputs/Windmill/Elevator",
             "/RealOutputs/Windmill/Arm",
-            "/RealOutputs/Collector",
             "/RealOutputs/Collector/Status Signals",
             "/RealOutputs/Collector/Status Signals/Left Deploy Position",
             "/RealOutputs/Collector/Status Signals/Right Deploy Position",
@@ -83,7 +82,6 @@
             "/RealOutputs/Chassis",
             "/RealOutputs",
             "/RealOutputs/Vision",
-            "/RealOutputs/Climber",
             "/RealOutputs/Climber/Status Signals/Climber Motor Current",
             "/DriverStation",
             "/photonvision/Elevator Swerve/rawBytes/targets",
@@ -94,32 +92,34 @@
             "/photonvision/Elevator Swerve/rawBytes/targets/0/detectedCorners/2",
             "/photonvision/Elevator Swerve/rawBytes/targets/0/detectedCorners/3",
             "",
-            "/RealOutputs/Climber/Status Signals",
             "/RealOutputs/Climber/Status Signals/Climber Motor Position",
-            "/RealOutputs/Climber/Status Signals/Climber Motor Current",
-            "/RealOutputs/Grabber/Status Signals",
-            "/RealOutputs/Grabber/Status Signals/Grabber Velocity",
-            "/RealOutputs/Grabber/Status Signals/Grabber Current",
-            "/RealOutputs/Collector/Status Signals",
-            "/RealOutputs",
             "/RealOutputs/Indexer/Status Signals",
             "/RealOutputs/Indexer/Status Signals/Current",
             "/RealOutputs/Indexer/Status Signals/Velocity",
             "/RadioStatus/Status/networkStatus24",
-            "/RealOutputs/Vision/Climber Swerve",
-            "/RealOutputs/Vision/Elevator Swerve",
             "/RealOutputs/Windmill",
             "/RealOutputs/Windmill/Status Signals/Arm Position",
             "/RealOutputs/Windmill/Status Signals/Arm Encoder Position",
             "/RealOutputs/Windmill/Status Signals/Elevator Position",
             "/RealOutputs/Windmill/Status Signals/Elevator Encoder Position",
-            "/RealOutputs/Chassis",
+            "/RealOutputs/Autonomous/Drive To Pose",
+            "/RealOutputs/Chassis/Modules/Back Left/Status Signals/Drive Current",
+            "/RealOutputs/Chassis/Modules/Back Right/Status Signals/Drive Current",
+            "/RealOutputs/Chassis/Modules/Front Left/Status Signals/Drive Current",
+            "/RealOutputs/Chassis/Modules/Front Right/Status Signals/Drive Current",
+            "/RealOutputs/Chassis/Modules/Back Left/Status Signals/Drive Voltage",
+            "/RealOutputs/Chassis/Modules/Back Right/Status Signals/Drive Voltage",
+            "/RealOutputs/Chassis/Modules/Front Left/Status Signals/Drive Voltage",
+            "/RealOutputs/Chassis/Modules/Front Right/Status Signals/Drive Voltage",
             "/RealOutputs/Autonomous",
-            "/RealOutputs/Autonomous/Drive To Pose"
+            "/RealOutputs/Indexer",
+            "/PowerDistribution",
+            "/SystemStats",
+            "/RealOutputs/Collector"
           ]
         },
         "tabs": {
-          "selected": 8,
+          "selected": 9,
           "tabs": [
             {
               "type": 0,
@@ -283,7 +283,7 @@
                     "type": "stepped",
                     "logKey": "/RealOutputs/Collector/Status Signals//Collector Velocity/value",
                     "logType": "Number",
-                    "visible": true,
+                    "visible": false,
                     "options": {
                       "color": "#e48b32",
                       "size": "normal"
@@ -313,12 +313,16 @@
                 "leftLockedRange": null,
                 "rightLockedRange": null,
                 "leftUnitConversion": {
-                  "type": null,
-                  "factor": 1
+                  "type": "angle",
+                  "factor": 1,
+                  "from": "rotations",
+                  "to": "degrees"
                 },
                 "rightUnitConversion": {
-                  "type": null,
-                  "factor": 1
+                  "type": "angle",
+                  "factor": 1,
+                  "from": "radians",
+                  "to": "rotations"
                 },
                 "leftFilter": 0,
                 "rightFilter": 0
@@ -423,7 +427,7 @@
                     "type": "stepped",
                     "logKey": "/RealOutputs/Chassis/Chassis Speeds/vx",
                     "logType": "Number",
-                    "visible": true,
+                    "visible": false,
                     "options": {
                       "color": "#2b66a2",
                       "size": "normal"
@@ -438,6 +442,16 @@
                       "color": "#e5b31b",
                       "size": "normal"
                     }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/Autonomous/Drive To Pose/vx",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#c0b487",
+                      "size": "normal"
+                    }
                   }
                 ],
                 "rightSources": [
@@ -445,7 +459,7 @@
                     "type": "stepped",
                     "logKey": "/RealOutputs/Chassis/Total Drive Current",
                     "logType": "Number",
-                    "visible": true,
+                    "visible": false,
                     "options": {
                       "color": "#af2437",
                       "size": "normal"
@@ -460,6 +474,15 @@
                     "visible": true,
                     "options": {
                       "color": "#80588e"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "/DriverStation/Enabled",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32"
                     }
                   }
                 ],
@@ -477,6 +500,218 @@
                 "rightFilter": 0
               },
               "controllerUUID": "2fya5g3444bica9ib07ikri1jm1rxq72",
+              "renderer": null,
+              "controlsHeight": 200
+            },
+            {
+              "type": 1,
+              "title": "Chassis Power",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/Chassis/Modules/Back Left/Status Signals//Drive Current/value",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#2b66a2",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/Chassis/Modules/Back Right/Status Signals//Drive Current/value",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#e5b31b",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/Chassis/Modules/Front Left/Status Signals//Drive Current/value",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#af2437",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/Chassis/Modules/Front Right/Status Signals//Drive Current/value",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#80588e",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/Chassis/Modules/Back Left/Status Signals//Drive Voltage/value",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/Chassis/Modules/Back Right/Status Signals//Drive Voltage/value",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#c0b487",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/Chassis/Modules/Front Left/Status Signals//Drive Voltage/value",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#858584",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/Chassis/Modules/Front Right/Status Signals//Drive Voltage/value",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/SystemStats/BatteryVoltage",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#5f4528",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "/DriverStation/Enabled",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#d993aa"
+                    }
+                  }
+                ],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "rightUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "jy94151uoy24dpad2tsvjiu6ruvr6xju",
+              "renderer": null,
+              "controlsHeight": 200
+            },
+            {
+              "type": 1,
+              "title": "Drive To Pose",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/Autonomous/Drive To Pose/vx",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#80588e",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/Autonomous/Drive To Pose/vy",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/Autonomous/Drive To Pose/X Distance",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#2b66a2",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/Autonomous/Drive To Pose/Y Distance",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#e5b31b",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/Autonomous/Drive To Pose/vr",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#c0b487",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "/RealOutputs/Chassis/Auto Aligning?",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#af2437"
+                    }
+                  }
+                ],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "rightUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "iq0yo1emec7kkff4ufhk7ppib7knkcrp",
               "renderer": null,
               "controlsHeight": 200
             },
@@ -516,6 +751,24 @@
                     "visible": true,
                     "options": {
                       "color": "#af2437"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "/RealOutputs/Indexer/Beam Brake Tripped?",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#80588e"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "/RealOutputs/Indexer/Beam Brake Tripped?",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32"
                     }
                   }
                 ],
@@ -685,6 +938,15 @@
                     "options": {
                       "color": "#3b875a"
                     }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "/RealOutputs//Autonomous/Moving to L4 on Align?",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#c0b487"
+                    }
                   }
                 ],
                 "leftLockedRange": null,
@@ -722,7 +984,7 @@
                     "logType": "Pose3d[]",
                     "visible": true,
                     "options": {
-                      "color": "#00ff00",
+                      "color": "#ff8c00",
                       "size": "normal"
                     }
                   },
@@ -823,6 +1085,21 @@
               "controlsHeight": 204
             },
             {
+              "type": 8,
+              "title": "Controller",
+              "controller": [
+                "Xbox Controller (White)",
+                "None",
+                "None",
+                "None",
+                "None",
+                "None"
+              ],
+              "controllerUUID": "nua2fhf0pci46ykz26wq23s6l14e9x3i",
+              "renderer": null,
+              "controlsHeight": 85
+            },
+            {
               "type": 5,
               "title": "Console",
               "controller": "/RealOutputs/Console",
@@ -903,6 +1180,40 @@
                 "rightFilter": 0
               },
               "controllerUUID": "opptpvycmxi1wuc3saqmkl4nj9u35ntm",
+              "renderer": null,
+              "controlsHeight": 200
+            },
+            {
+              "type": 1,
+              "title": "Line Graph",
+              "controller": {
+                "leftSources": [],
+                "rightSources": [],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "/DriverStation/AllianceStation",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2"
+                    }
+                  }
+                ],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "rightUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "cdtawkke4zij3kzngjtrg4e1zwu1xenp",
               "renderer": null,
               "controlsHeight": 200
             },

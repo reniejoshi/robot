@@ -24,18 +24,28 @@ package org.tahomarobotics.robot.grabber;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import org.tahomarobotics.robot.collector.Collector;
+import org.tahomarobotics.robot.util.game.GamePiece;
+import org.tahomarobotics.robot.windmill.Windmill;
+import org.tahomarobotics.robot.windmill.WindmillConstants;
+
+import java.util.Set;
 
 public class GrabberCommands {
     public static Pair<Command, Command> createGrabberCommands(Grabber grabber) {
-        Command onTrue = grabber.runOnce(grabber::transitionToCollecting);
-        Command onFalse = grabber.runOnce(grabber::transitionToDisabled);
+        Command onTrue = Commands.defer(() ->
+                                            (Collector.getInstance().getCollectionMode().equals(GamePiece.CORAL)) ? Commands.runOnce(grabber::transitionToCoralCollecting) : Commands.runOnce(grabber::transitionToAlgaeCollecting),
+                                        Set.of(grabber));
+        Command onFalse = grabber.runOnce(grabber::transitionToDisabled).onlyIf(() -> !grabber.isHoldingAlgae() && !grabber.algaeCollectionTimer.isRunning());
 
         return Pair.of(onTrue, onFalse);
     }
 
     public static Pair<Command, Command> createGrabberScoringCommands(Grabber grabber) {
-        Command onTrue = grabber.runOnce(grabber::transitionToScoring);
-        Command onFalse = grabber.runOnce(grabber::transitionToDisabled).onlyIf(() -> !grabber.collectionTimer.isRunning());
+        Command onTrue = Commands.defer(() -> (Windmill.getInstance().getTargetTrajectoryState() == WindmillConstants.TrajectoryState.L1) ?
+            Commands.runOnce(grabber::transitionToScoringL1) : Commands.runOnce(grabber::transitionToScoring), Set.of(grabber));
+        Command onFalse = grabber.runOnce(grabber::transitionToDisabled).onlyIf(() -> !grabber.coralCollectionTimer.isRunning());
 
         return Pair.of(onTrue, onFalse);
     }

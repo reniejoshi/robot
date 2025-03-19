@@ -79,8 +79,8 @@ public class VisionConstants {
                 ELEVATOR_SWERVE = new CameraConfiguration(
                     "Elevator Swerve",
                     new Transform3d(
-                        new Translation3d(Units.inchesToMeters(-9.070), Units.inchesToMeters(10.573), Units.inchesToMeters(7.555)),
-                        new Rotation3d(Units.degreesToRadians(-2.293), Units.degreesToRadians(-7.377), Units.degreesToRadians(-163.829))
+                        new Translation3d(Units.inchesToMeters(-9.29776753219244), Units.inchesToMeters(-11.504534732516685), Units.inchesToMeters(8.21623605229078)),
+                        new Rotation3d(Units.degreesToRadians(2.2248359720093287), Units.degreesToRadians(-9.982763906842235), Units.degreesToRadians(167.19557559491642))
                     ),
                     StandardDeviationScaling.DEFAULT
                 );
@@ -88,8 +88,8 @@ public class VisionConstants {
                 CLIMBER_SWERVE = new CameraConfiguration(
                     "Climber Swerve",
                     new Transform3d(
-                        new Translation3d(Units.inchesToMeters(-9.43), Units.inchesToMeters(-12.801), Units.inchesToMeters(8.115)),
-                        new Rotation3d(Units.degreesToRadians(3.19), Units.degreesToRadians(-10.819), Units.degreesToRadians(162.719))
+                        new Translation3d(Units.inchesToMeters(-9.602577558722281), Units.inchesToMeters(12.751841850668), Units.inchesToMeters(7.88746670060428)),
+                        new Rotation3d(Units.degreesToRadians(-0.4567216903080351), Units.degreesToRadians(-10.880936479962182), Units.degreesToRadians(-166.46753608815487))
                     ),
                     StandardDeviationScaling.DEFAULT
                 );

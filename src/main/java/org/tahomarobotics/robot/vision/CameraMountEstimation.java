@@ -27,6 +27,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import org.photonvision.targeting.PhotonTrackedTarget;
+import org.tinylog.Logger;
 
 import java.util.Map;
 import java.util.function.Consumer;

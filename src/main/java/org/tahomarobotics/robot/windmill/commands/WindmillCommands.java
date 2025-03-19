@@ -22,14 +22,20 @@
 
 package org.tahomarobotics.robot.windmill.commands;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import org.tahomarobotics.robot.collector.Collector;
+import org.tahomarobotics.robot.collector.CollectorCommands;
+import org.tahomarobotics.robot.grabber.Grabber;
+import org.tahomarobotics.robot.grabber.GrabberCommands;
 import org.tahomarobotics.robot.windmill.Windmill;
 import org.tahomarobotics.robot.windmill.WindmillConstants;
+import org.tahomarobotics.robot.windmill.WindmillState;
 import org.tinylog.Logger;
 
 public class WindmillCommands {
@@ -94,5 +100,22 @@ public class WindmillCommands {
             .andThen(
                 windmill.createResetToPreviousState()
             );
+    }
+
+    public static Command createAlgaeThrowCommmand(Windmill windmill) {
+        return WindmillMoveCommand.fromTo(WindmillConstants.TrajectoryState.ALGAE_PRESCORE, WindmillConstants.TrajectoryState.ALGAE_SCORE)
+                                  .orElse(Commands.none())
+            .alongWith(GrabberCommands.createGrabberScoringCommands(Grabber.getInstance()).getFirst());
+    }
+
+    public static Command createAlgaePassoffCommand(Windmill windmill) {
+        return windmill.createTransitionCommand(WindmillConstants.TrajectoryState.ALGAE_PASSOFF)
+                       .andThen(CollectorCommands.createEjectCommands(Collector.getInstance()).getFirst()
+                                    .alongWith(GrabberCommands.createGrabberCommands(Grabber.getInstance()).getFirst()))
+            .andThen(Commands.runOnce(() -> windmill.setState(new WindmillState(0,
+                                                                                new WindmillState.ElevatorState(WindmillConstants.TrajectoryState.ALGAE_PASSOFF.elev, 0, 0),
+                                                                                new WindmillState.ArmState(Units.degreesToRadians(360) + WindmillConstants.TrajectoryState.ALGAE_PRESCORE.arm, 0, 0)))))
+            .andThen(Commands.runOnce(() -> windmill.calibrate(windmill.getElevatorHeight(), windmill.getArmPosition() - Units.degreesToRadians(360))))
+            .andThen(Commands.runOnce(() -> windmill.createTransitionCommand(WindmillConstants.TrajectoryState.ALGAE_PRESCORE)));
     }
 }

@@ -297,7 +297,7 @@ public class Collector extends SubsystemIF {
 
     public void transitionToEjecting() {
         // If we eject while scoring algae keep the current position
-        if (targetDeploymentState != TargetDeploymentState.ALGAE_SCORE) {
+        if (targetDeploymentState != TargetDeploymentState.ALGAE_SCORE && targetDeploymentState != TargetDeploymentState.STOW) {
             deploymentTransitionToEjecting();
         }
         collectorTransitionToEjecting();

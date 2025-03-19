@@ -28,11 +28,14 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import org.tahomarobotics.robot.util.identity.Identity;
 
 public class GrabberConstants {
-    public static final double COLLECT_VELOCITY = -10;
-    public static final double SCORING_VELOCITY = 15;
-    public static final double HOLD_VOLTAGE = -0.25;
+    public static final double CORAL_COLLECT_VELOCITY = -20;
+    public static final double ALGAE_COLLECT_VELOCITY = -10;
+    public static final double SCORING_VELOCITY = 50;
+    public static final double CORAL_HOLD_VOLTAGE = 0;
+    public static final double ALGAE_HOLD_VOLTAGE = -1.35;
 
-    public static final double COLLECTION_DELAY = 0.35;
+    public static final double CORAL_COLLECTION_DELAY = 0.25;
+    public static final double ALGAE_COLLECTION_DELAY = 0.1;
 
     public static final double GEAR_REDUCTION;
 
@@ -43,13 +46,20 @@ public class GrabberConstants {
         }
     }
 
-    public static double COLLECTION_CURRENT_THRESHOLD;
+    public static double CORAL_COLLECTION_CURRENT_THRESHOLD;
+    public static double ALGAE_COLLECTION_CURRENT_THRESHOLD;
 
+    // TODO: Tune with Bearracuda
     static {
-        COLLECTION_CURRENT_THRESHOLD = switch (Identity.robotID) {
-            case BEEF -> 24;
+        CORAL_COLLECTION_CURRENT_THRESHOLD = switch (Identity.robotID) {
+            case BEEF -> 15;
             case BEARRACUDA -> 16;
             default -> 20;
+        };
+        ALGAE_COLLECTION_CURRENT_THRESHOLD = switch (Identity.robotID) {
+            case BEEF -> 60;
+            case BEARRACUDA -> 60;
+            default -> 60;
         };
     }
 
@@ -57,9 +67,12 @@ public class GrabberConstants {
 
     public enum GrabberState {
         DISABLED(MotionType.NONE, 0),
-        HOLDING(MotionType.VOLTAGE, HOLD_VOLTAGE),
-        COLLECTING(MotionType.VELOCITY, COLLECT_VELOCITY),
-        SCORING(MotionType.VELOCITY, SCORING_VELOCITY);
+        CORAL_HOLDING(MotionType.VOLTAGE, CORAL_HOLD_VOLTAGE),
+        CORAL_COLLECTING(MotionType.VELOCITY, CORAL_COLLECT_VELOCITY),
+        ALGAE_HOLDING(MotionType.VOLTAGE, ALGAE_HOLD_VOLTAGE),
+        ALGAE_COLLECTING(MotionType.VELOCITY, ALGAE_COLLECT_VELOCITY),
+        SCORING(MotionType.VELOCITY, SCORING_VELOCITY),
+        L1_SCORING(MotionType.VELOCITY, -SCORING_VELOCITY);
 
         public final MotionType type;
         public final double value;
@@ -79,16 +92,17 @@ public class GrabberConstants {
     public static final TalonFXConfiguration motorConfig = new TalonFXConfiguration()
         // SysId'd 02/11
         .withSlot0(new Slot0Configs()
-                       .withKP(0.5757)
-                       .withKV(0.41844)
-                       .withKA(0.8071))
+                       .withKP(1.048663)
+                       .withKS(0.05988)
+                       .withKV(0.37575)
+                       .withKA(0.0053009))
         .withMotorOutput(new MotorOutputConfigs()
                              .withNeutralMode(NeutralModeValue.Brake)
                              .withInverted(InvertedValue.CounterClockwise_Positive))
         .withMotionMagic(new MotionMagicConfigs()
                              .withMotionMagicCruiseVelocity(5)
-                             .withMotionMagicAcceleration(15)
-                             .withMotionMagicJerk(50))
+                             .withMotionMagicAcceleration(100)
+                             .withMotionMagicJerk(5000))
         .withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(1 / GEAR_REDUCTION))
         .withAudio(new AudioConfigs().withBeepOnBoot(true).withBeepOnConfig(true));
 }

@@ -109,7 +109,7 @@ public class SystemCheck {
     public static Command createGrabberTestCommand(Grabber grabber) {
         return Commands.race(
             ensureNominal(new Measurement("Grabber", grabber::getCurrent, 5.5, 7.5)),
-            grabber.runOnce(grabber::transitionToCollecting).andThen(Commands.waitSeconds(3)).andThen(grabber.runOnce(grabber::transitionToDisabled))
+            grabber.runOnce(grabber::transitionToCoralCollecting).andThen(Commands.waitSeconds(3)).andThen(grabber.runOnce(grabber::transitionToDisabled))
         );
     }
 
@@ -200,15 +200,15 @@ public class SystemCheck {
                 Commands.waitSeconds(0.2),
                 windmill.createTransitionCommand(WindmillConstants.TrajectoryState.L4),
                 Commands.waitSeconds(0.2),
-                windmill.createTransitionCommand(WindmillConstants.TrajectoryState.COLLECT),
+                windmill.createTransitionCommand(WindmillConstants.TrajectoryState.CORAL_COLLECT),
                 Commands.waitSeconds(0.2),
                 windmill.createTransitionCommand(WindmillConstants.TrajectoryState.L2),
                 Commands.waitSeconds(0.2),
-                windmill.createTransitionCommand(WindmillConstants.TrajectoryState.COLLECT),
+                windmill.createTransitionCommand(WindmillConstants.TrajectoryState.CORAL_COLLECT),
                 Commands.waitSeconds(0.2),
                 windmill.createTransitionCommand(WindmillConstants.TrajectoryState.L3),
                 Commands.waitSeconds(0.2),
-                windmill.createTransitionCommand(WindmillConstants.TrajectoryState.COLLECT),
+                windmill.createTransitionCommand(WindmillConstants.TrajectoryState.CORAL_COLLECT),
                 Commands.waitSeconds(0.2),
                 windmill.createTransitionCommand(WindmillConstants.TrajectoryState.L4),
                 Commands.waitSeconds(0.2),

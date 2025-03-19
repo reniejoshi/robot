@@ -55,6 +55,7 @@ import org.tahomarobotics.robot.util.sysid.SysIdTests;
 import org.tahomarobotics.robot.vision.Vision;
 import org.tahomarobotics.robot.windmill.Windmill;
 import org.tahomarobotics.robot.windmill.WindmillConstants;
+import org.tahomarobotics.robot.windmill.commands.WindmillCommands;
 import org.tinylog.Logger;
 
 import java.util.List;
@@ -179,15 +180,38 @@ public class OI extends SubsystemIF {
                     );
                 }
             )
+                .onlyIf(() -> collector.getCollectionMode() == GamePiece.CORAL)
         );
+
+        controller.rightBumper().onTrue(Commands.deferredProxy(() -> (collector.getCollectionMode() == GamePiece.ALGAE) ? WindmillCommands.createAlgaeThrowCommmand(windmill) : Commands.none()));
 
         // -- Joystick Press --
 
         // Left
         controller.leftStick().onTrue(collector.runOnce(collector::toggleCollectionMode).andThen(windmill.createSyncCollectionModeCommand()));
 
-        // Right
-        controller.rightStick().onTrue(CollectorCommands.createDeploymentAlgaeScoreCommand(collector));
+        // Right - Deployment to algae score
+        controller.rightStick().onTrue(CollectorCommands.createDeploymentAlgaeScoreCommand(collector).onlyIf(() -> collector.getCollectionMode() == GamePiece.ALGAE));
+        // Right - Stow <-> Collect / Go to previous state if out of tolerance
+        controller.rightStick().onTrue(Commands.defer(
+                                           () -> {
+                                               moveToL4OnAutoAlign = false;
+                                               if (windmill.isAtTargetTrajectoryState()) {
+                                                   if (collector.getCollectionMode().equals(GamePiece.CORAL)) {
+                                                       return windmill.createTransitionToggleCommand(WindmillConstants.TrajectoryState.CORAL_COLLECT, WindmillConstants.TrajectoryState.STOW);
+                                                   } else {
+                                                       if (windmill.getTargetTrajectoryState() == WindmillConstants.TrajectoryState.STOW) {
+                                                           return windmill.createTransitionCommand(WindmillConstants.TrajectoryState.ALGAE_COLLECT);
+                                                       } else {
+                                                           return windmill.createTransitionCommand(WindmillConstants.TrajectoryState.STOW);
+                                                       }
+                                                   }
+                                               } else {
+                                                   return windmill.createResetToPreviousState();
+                                               }
+                                           }, Set.of(windmill)
+                                       )
+        );
 
         // -- Triggers --
 
@@ -250,34 +274,32 @@ public class OI extends SubsystemIF {
             }, Set.of(windmill)
         ));
 
-        // X - Stow <-> Collect / Go to previous state if out of tolerance
-        controller.x().onTrue(Commands.defer(
-            () -> {
-                moveToL4OnAutoAlign = false;
-                if (windmill.isAtTargetTrajectoryState()) {
-                    return windmill.createTransitionToggleCommand(WindmillConstants.TrajectoryState.COLLECT, WindmillConstants.TrajectoryState.STOW);
-                } else {
-                    return windmill.createResetToPreviousState();
-                }
-            }, Set.of(windmill)
-        ));
+        // X - L1
+        controller.x().onTrue(windmill.createTransitionToggleCommand(WindmillConstants.TrajectoryState.CORAL_COLLECT, WindmillConstants.TrajectoryState.L1));
 
         // Y - L4
         controller.y().onTrue(windmill.createTransitionCommand(WindmillConstants.TrajectoryState.STOW)
-              .onlyIf(() -> windmill.getTargetTrajectoryState() == WindmillConstants.TrajectoryState.COLLECT)
+              .onlyIf(() -> windmill.getTargetTrajectoryState() == WindmillConstants.TrajectoryState.CORAL_COLLECT)
               .andThen(Commands.deferredProxy(() -> {
-                  if (!l4Timer.isRunning() || l4Timer.hasElapsed(DOUBLE_PRESS_TIMEOUT)) {
-                      // We are already at the target state, so return to collect.
-                      if (windmill.getTargetTrajectoryState() == WindmillConstants.TrajectoryState.L4) {
-                          return windmill.createTransitionCommand(WindmillConstants.TrajectoryState.COLLECT);
+                  if (collector.getCollectionMode().equals(GamePiece.CORAL)) {
+                      if (!l4Timer.isRunning() || l4Timer.hasElapsed(DOUBLE_PRESS_TIMEOUT)) {
+                          // We are already at the target state, so return to collect.
+                          if (windmill.getTargetTrajectoryState() == WindmillConstants.TrajectoryState.L4) {
+                              return windmill.createTransitionCommand(WindmillConstants.TrajectoryState.CORAL_COLLECT);
+                          } else {
+                              return Commands.runOnce(() -> {
+                                  l4Timer.restart(); // Reset the double press timer
+                                  toggleL4OnAutoAlign();
+                              });
+                          }
                       } else {
-                          return Commands.runOnce(() -> {
-                              l4Timer.restart(); // Reset the double press timer
-                              toggleL4OnAutoAlign();
-                          });
+                          return windmill.createTransitionCommand(WindmillConstants.TrajectoryState.L4).andThen(Commands.runOnce(this::toggleL4OnAutoAlign));
                       }
                   } else {
-                      return windmill.createTransitionCommand(WindmillConstants.TrajectoryState.L4).andThen(Commands.runOnce(this::toggleL4OnAutoAlign));
+                      if (windmill.getTargetTrajectoryState() == WindmillConstants.TrajectoryState.ALGAE_PRESCORE) {
+                          return windmill.createTransitionCommand(WindmillConstants.TrajectoryState.STOW);
+                      }
+                      return windmill.createTransitionCommand(WindmillConstants.TrajectoryState.ALGAE_PRESCORE);
                   }
               }
         )));

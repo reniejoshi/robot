@@ -196,8 +196,12 @@ public class Windmill extends SubsystemIF {
     }
 
     public void calibrate() {
-        elevatorEncoder.setPosition(0);
-        armEncoder.setPosition(ARM_CALIBRATION_POSE / ARM_BELT_REDUCTION);
+        calibrate(0, ARM_CALIBRATION_POSE / ARM_BELT_REDUCTION);
+    }
+
+    public void calibrate(double elev, double arm) {
+        elevatorEncoder.setPosition(elev);
+        armEncoder.setPosition(arm);
 
         simHeight = TrajectoryState.START.elev;
         simAngle = TrajectoryState.START.arm;
@@ -243,7 +247,7 @@ public class Windmill extends SubsystemIF {
     }
 
     public boolean isScoringCoral() {
-        return !(targetTrajectoryState == WindmillConstants.TrajectoryState.COLLECT || targetTrajectoryState == WindmillConstants.TrajectoryState.STOW) &&
+        return !(targetTrajectoryState == WindmillConstants.TrajectoryState.CORAL_COLLECT || targetTrajectoryState == WindmillConstants.TrajectoryState.STOW) &&
                Collector.getInstance().getCollectionMode() != GamePiece.ALGAE;
     }
 
@@ -386,7 +390,7 @@ public class Windmill extends SubsystemIF {
     public Command createTransitionCommand(TrajectoryState to) {
         return Commands.deferredProxy(() -> {
             // Default to COLLECT if at target state (i.e. L4 -x> L4 -> COLLECT)
-            TrajectoryState target = targetTrajectoryState == to ? TrajectoryState.COLLECT : to;
+            TrajectoryState target = targetTrajectoryState == to ? TrajectoryState.CORAL_COLLECT : to;
 
             Optional<Command> output = WindmillMoveCommand.fromTo(targetTrajectoryState, target);
             if (output.isEmpty()) {

@@ -30,6 +30,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Commands;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.tahomarobotics.robot.RobotConfiguration;
 import org.tahomarobotics.robot.RobotMap;
@@ -38,9 +39,10 @@ import org.tahomarobotics.robot.indexer.Indexer;
 import org.tahomarobotics.robot.util.RobustConfigurator;
 import org.tahomarobotics.robot.util.SubsystemIF;
 import org.tahomarobotics.robot.util.game.GamePiece;
-import org.tahomarobotics.robot.util.identity.Identity;
 import org.tahomarobotics.robot.util.signals.LoggedStatusSignal;
 import org.tahomarobotics.robot.util.sysid.SysIdTests;
+import org.tahomarobotics.robot.windmill.WindmillConstants;
+import org.tahomarobotics.robot.windmill.commands.WindmillMoveCommand;
 
 import java.util.List;
 
@@ -74,7 +76,8 @@ public class Grabber extends SubsystemIF {
     @AutoLogOutput(key = "Grabber/State")
     private GrabberState state = GrabberState.DISABLED;
 
-    final Timer collectionTimer = new Timer();
+    final Timer coralCollectionTimer = new Timer();
+    final Timer algaeCollectionTimer = new Timer();
     private final Timer belowTimer = new Timer();
 
     // -- Initialization --
@@ -120,49 +123,86 @@ public class Grabber extends SubsystemIF {
     }
 
     private void stateMachine() {
-        if (state == GrabberState.COLLECTING) {
-            boolean isTripped = Identity.robotID == Identity.RobotIdentity.BEEF ? getCurrent() > COLLECTION_CURRENT_THRESHOLD : indexer.isBeanBakeTripped();
+        if (state == GrabberState.CORAL_COLLECTING) {
+            boolean isTripped = indexer.isBeanBakeTripped();
 
             if (isTripped && Collector.getInstance().getCollectionMode() != GamePiece.ALGAE) {
-                collectionTimer.start();
+                coralCollectionTimer.start();
 
                 belowTimer.reset();
                 belowTimer.stop();
             } else if (belowTimer.hasElapsed(0.1)) {
-                collectionTimer.stop();
-                collectionTimer.reset();
+                coralCollectionTimer.stop();
+                coralCollectionTimer.reset();
             } else {
                 belowTimer.restart();
             }
         }
+        
+        if (state == GrabberState.ALGAE_COLLECTING) {
+            boolean isTripped = getCurrent() > ALGAE_COLLECTION_CURRENT_THRESHOLD;
 
-        if (collectionTimer.hasElapsed(COLLECTION_DELAY)) {
-            transitionToHolding();
+            if (isTripped && Collector.getInstance().getCollectionMode() != GamePiece.CORAL) {
+                algaeCollectionTimer.start();
+
+                belowTimer.reset();
+                belowTimer.stop();
+            } else if (belowTimer.hasElapsed(0.05)) {
+                algaeCollectionTimer.stop();
+                algaeCollectionTimer.reset();
+            } else {
+                belowTimer.restart();
+            }
+        }
+        
+        if (algaeCollectionTimer.hasElapsed(ALGAE_COLLECTION_DELAY)) {
+            transitionToAlgaeHolding();
+            WindmillMoveCommand.fromTo(WindmillConstants.TrajectoryState.ALGAE_COLLECT, WindmillConstants.TrajectoryState.STOW).orElseGet(Commands::none).schedule();
+
+            algaeCollectionTimer.stop();
+            algaeCollectionTimer.reset();
+        }
+
+        if (coralCollectionTimer.hasElapsed(CORAL_COLLECTION_DELAY)) {
+            transitionToCoralHolding();
             indexer.transitionToDisabled();
 
-            collectionTimer.stop();
-            collectionTimer.reset();
+            coralCollectionTimer.stop();
+            coralCollectionTimer.reset();
         }
     }
 
     // Transitions
 
     public void transitionToDisabled() {
-        if (isHolding()) { return; }
+        if (isHoldingCoral()) { return; }
         setTargetState(GrabberState.DISABLED);
     }
 
-    public void transitionToHolding() {
-        setTargetState(GrabberState.HOLDING);
+    public void transitionToCoralHolding() {
+        setTargetState(GrabberState.CORAL_HOLDING);
     }
 
-    public void transitionToCollecting() {
-        if (!isArmAtPassing() || isHolding()) { return; }
-        setTargetState(GrabberState.COLLECTING);
+    public void transitionToAlgaeHolding() {
+        setTargetState(GrabberState.ALGAE_HOLDING);
+    }
+
+    public void transitionToAlgaeCollecting() {
+        if (!isArmAtPassing() || isHoldingCoral()) { return; }
+        setTargetState(GrabberState.ALGAE_COLLECTING);
+    }
+
+    public void transitionToCoralCollecting() {
+        if (!isArmAtPassing() || isHoldingCoral()) { return; }
+        setTargetState(GrabberState.CORAL_COLLECTING);
     }
 
     public void transitionToScoring() {
         setTargetState(GrabberState.SCORING);
+    }
+
+    public void transitionToScoringL1() {
+        setTargetState(GrabberState.L1_SCORING);
     }
 
     // -- Getters --
@@ -171,8 +211,12 @@ public class Grabber extends SubsystemIF {
         return SmartDashboard.getBoolean("arm at position", true);
     }
 
-    public boolean isHolding() {
-        return state == GrabberState.HOLDING;
+    public boolean isHoldingCoral() {
+        return state == GrabberState.CORAL_HOLDING;
+    }
+
+    public boolean isHoldingAlgae() {
+        return state == GrabberState.ALGAE_HOLDING;
     }
 
     public double getCurrent() {
@@ -198,7 +242,7 @@ public class Grabber extends SubsystemIF {
 
     @Override
     public void onAutonomousInit() {
-        transitionToHolding();
+        transitionToCoralHolding();
     }
 
     // -- SysId --
@@ -210,8 +254,8 @@ public class Grabber extends SubsystemIF {
                 "Grabber",
                 this,
                 motor,
-                Volts.of(0.25).per(Second),
-                Volts.of(1)
+                Volts.of(1).per(Second),
+                Volts.of(3)
             )
         );
     }

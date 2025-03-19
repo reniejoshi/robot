@@ -26,6 +26,7 @@ import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.util.Units;
 import org.tahomarobotics.robot.windmill.WindmillState;
 import org.tahomarobotics.robot.windmill.WindmillTrajectory;
+import org.tinylog.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,15 +44,31 @@ public class WindmillTrajectories {
     }
 
     static {
-        WindmillState collectLift = createWindmillState(Units.inchesToMeters(25), Units.degreesToRadians(267.809));
+        WindmillState collectLift = createWindmillState(Units.inchesToMeters(30), Units.degreesToRadians(267.809));
 
         // Algae
-        create(TrajectoryState.COLLECT, TrajectoryState.HIGH_DESCORE, new WindmillState[]{collectLift});
-        create(TrajectoryState.COLLECT, TrajectoryState.LOW_DESCORE, new WindmillState[]{collectLift});
-        create(TrajectoryState.HIGH_DESCORE, TrajectoryState.COLLECT, new WindmillState[]{collectLift});
-        create(TrajectoryState.LOW_DESCORE, TrajectoryState.COLLECT, new WindmillState[]{collectLift});
+        create(TrajectoryState.CORAL_COLLECT, TrajectoryState.HIGH_DESCORE, new WindmillState[]{collectLift});
+        create(TrajectoryState.CORAL_COLLECT, TrajectoryState.LOW_DESCORE, new WindmillState[]{collectLift});
+        create(TrajectoryState.HIGH_DESCORE, TrajectoryState.CORAL_COLLECT, new WindmillState[]{collectLift});
+        create(TrajectoryState.LOW_DESCORE, TrajectoryState.CORAL_COLLECT, new WindmillState[]{collectLift});
         create(TrajectoryState.HIGH_DESCORE, SMALL_PULLBACK, TrajectoryState.LOW_DESCORE);
         create(TrajectoryState.LOW_DESCORE, SMALL_PULLBACK, TrajectoryState.HIGH_DESCORE);
+
+        create(TrajectoryState.STOW, TrajectoryState.LOW_DESCORE);
+        create(TrajectoryState.STOW, TrajectoryState.HIGH_DESCORE);
+        create(TrajectoryState.LOW_DESCORE, TrajectoryState.STOW);
+        create(TrajectoryState.HIGH_DESCORE, TrajectoryState.STOW);
+
+        create(TrajectoryState.HIGH_DESCORE, SMALL_PULLBACK, TrajectoryState.ALGAE_PRESCORE);
+        create(TrajectoryState.LOW_DESCORE, SMALL_PULLBACK, TrajectoryState.ALGAE_PRESCORE);
+
+        create(TrajectoryState.STOW, TrajectoryState.ALGAE_PRESCORE);
+        create(TrajectoryState.STOW, TrajectoryState.ALGAE_COLLECT);
+
+        create(TrajectoryState.ALGAE_SCORE, TrajectoryState.STOW);
+        create(TrajectoryState.ALGAE_PRESCORE, TrajectoryState.STOW);
+        create(TrajectoryState.ALGAE_COLLECT, TrajectoryState.STOW);
+        create(TrajectoryState.ALGAE_PRESCORE, TrajectoryState.ALGAE_SCORE);
 
         // Algae - Coral
         create(TrajectoryState.L2, SMALL_PULLBACK, TrajectoryState.HIGH_DESCORE);
@@ -69,17 +86,23 @@ public class WindmillTrajectories {
         create(TrajectoryState.LOW_DESCORE, LARGE_PULLBACK, TrajectoryState.L4);
 
         // Coral
-        create(TrajectoryState.COLLECT, TrajectoryState.L2, new WindmillState[]{collectLift});
-        create(TrajectoryState.L2, TrajectoryState.COLLECT, new WindmillState[]{collectLift});
-        create(TrajectoryState.STOW, TrajectoryState.COLLECT, new WindmillState[]{collectLift});
-        create(TrajectoryState.COLLECT, TrajectoryState.STOW, new WindmillState[]{collectLift});
+        create(TrajectoryState.CORAL_COLLECT, TrajectoryState.L2, new WindmillState[]{collectLift});
+        create(TrajectoryState.L2, TrajectoryState.CORAL_COLLECT, new WindmillState[]{collectLift});
 
-        create(TrajectoryState.COLLECT, TrajectoryState.L3);
-        create(TrajectoryState.L3, TrajectoryState.COLLECT);
+        create(TrajectoryState.CORAL_COLLECT, TrajectoryState.L1, new WindmillState[]{collectLift});
+        create(TrajectoryState.L1, TrajectoryState.CORAL_COLLECT, new WindmillState[]{collectLift});
 
-        create(TrajectoryState.COLLECT, TrajectoryState.L4);
-        create(TrajectoryState.L4, TrajectoryState.COLLECT);
+        create(TrajectoryState.STOW, TrajectoryState.CORAL_COLLECT, new WindmillState[]{collectLift});
+        create(TrajectoryState.CORAL_COLLECT, TrajectoryState.STOW, new WindmillState[]{collectLift});
 
+        create(TrajectoryState.CORAL_COLLECT, TrajectoryState.L3, new WindmillState[]{collectLift});
+        create(TrajectoryState.L3, TrajectoryState.CORAL_COLLECT, new WindmillState[]{collectLift});
+
+        create(TrajectoryState.CORAL_COLLECT, TrajectoryState.L4, new WindmillState[]{collectLift});
+        create(TrajectoryState.L4, TrajectoryState.CORAL_COLLECT, new WindmillState[]{collectLift});
+
+//        create(TrajectoryState.L1, LARGE_PULLBACK, TrajectoryState.L3);
+//        create(TrajectoryState.L1, LARGE_PULLBACK, TrajectoryState.L4);
         create(TrajectoryState.L2, LARGE_PULLBACK, TrajectoryState.L3);
         create(TrajectoryState.L2, LARGE_PULLBACK, TrajectoryState.L4);
         create(TrajectoryState.L3, LARGE_PULLBACK, TrajectoryState.L2);
@@ -141,7 +164,8 @@ public class WindmillTrajectories {
         }
         String name = start.name() + "_TO_" + end.name();
         try {
-            trajectories.put(new Pair<>(start, end), new WindmillTrajectory(name, states));
+            WindmillTrajectory trajectory = new WindmillTrajectory(name, states);
+            trajectories.put(new Pair<>(start, end), trajectory);
         } catch (Exception e) {
             System.err.println("Trajectory not found for " + name);
         }

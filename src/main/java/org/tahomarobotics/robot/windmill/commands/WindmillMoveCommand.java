@@ -133,6 +133,9 @@ public class WindmillMoveCommand extends Command {
             }
             SmartDashboard.putNumberArray("WindmillMoveCommand", raw);
         }
+        if (data.isEmpty()) {
+            Logger.error("trajectory was empty");
+        }
 
         Logger.info("Ran trajectory: '{}'", trajectory.name);
     }
