@@ -118,6 +118,9 @@ public class Windmill extends SubsystemIF {
     private double elevFeedForwardVoltage = 0d;
     private double armFeedForwardVoltage = 0d;
 
+    @AutoLogOutput(key = "Windmill/Is Running Trajectory?")
+    private boolean isRunningTrajectory = false;
+
     // -- Initialization --
 
     /**
@@ -257,6 +260,10 @@ public class Windmill extends SubsystemIF {
     public boolean isScoringCoral() {
         return !(targetTrajectoryState == WindmillConstants.TrajectoryState.CORAL_COLLECT || targetTrajectoryState == WindmillConstants.TrajectoryState.STOW) &&
                Collector.getInstance().getCollectionMode() != GamePiece.ALGAE;
+    }
+
+    public boolean isRunningTrajectory() {
+        return isRunningTrajectory;
     }
 
     // Elevator
@@ -411,6 +418,10 @@ public class Windmill extends SubsystemIF {
         targetAngle = position;
         armMotor.setControl(armControlRequest);
         simAngle = position;
+    }
+
+    public void setIsRunningTrajectory(boolean isRunningTrajectory) {
+        this.isRunningTrajectory = isRunningTrajectory;
     }
 
     public Command createSyncCollectionModeCommand() {

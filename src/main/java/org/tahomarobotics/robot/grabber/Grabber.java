@@ -45,7 +45,6 @@ import org.tahomarobotics.robot.util.signals.LoggedStatusSignal;
 import org.tahomarobotics.robot.util.sysid.SysIdTests;
 import org.tahomarobotics.robot.windmill.Windmill;
 import org.tahomarobotics.robot.windmill.WindmillConstants;
-import org.tinylog.Logger;
 
 import java.util.List;
 import java.util.function.DoubleSupplier;
@@ -150,7 +149,7 @@ public class Grabber extends SubsystemIF {
     private void stateMachine() {
         if (state == GrabberState.CORAL_COLLECTING) {
             if (RobotConfiguration.FEATURE_ALGAE_END_EFFECTOR) {
-                if (isCollected()) {
+                if (isCoralDetected()) {
                     transitionToCoralHolding();
                 }
             } else {
@@ -281,10 +280,10 @@ public class Grabber extends SubsystemIF {
             || state == GrabberState.L1_SCORING;
     }
 
-    public boolean isCollected() {
+    public boolean isCoralDetected() {
         return state == GrabberState.CORAL_COLLECTING
                && windmill.getTargetTrajectoryState() == WindmillConstants.TrajectoryState.CORAL_COLLECT
-               && windmill.isAtTargetTrajectoryState()
+               && !windmill.isRunningTrajectory()
                && isInRange();
     }
 
