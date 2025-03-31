@@ -341,7 +341,7 @@ public class OI extends SubsystemIF {
             this::getLeftY, this::getLeftX, this::getRightX
         ));
 
-        grabber.setVelocitySupplier(() -> controller.getRightTriggerAxis() - controller.getLeftTriggerAxis());
+        grabber.setVelocitySupplier(() -> MathUtil.applyDeadband(controller.getRightTriggerAxis(), TRIGGER_DEADBAND) - MathUtil.applyDeadband(controller.getLeftTriggerAxis(), TRIGGER_DEADBAND));
     }
 
     // -- Inputs --

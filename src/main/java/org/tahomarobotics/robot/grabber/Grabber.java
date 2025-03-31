@@ -282,6 +282,10 @@ public class Grabber extends SubsystemIF {
             || state == GrabberState.L1_SCORING;
     }
 
+    public GrabberState getState() {
+        return state;
+    }
+
     @AutoLogOutput(key="Grabber/Is Coral Detected?")
     public boolean isCoralDetected() {
         return state == GrabberState.CORAL_COLLECTING

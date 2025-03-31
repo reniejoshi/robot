@@ -53,6 +53,8 @@ import org.tahomarobotics.robot.Robot;
 import org.tahomarobotics.robot.RobotConfiguration;
 import org.tahomarobotics.robot.RobotMap;
 import org.tahomarobotics.robot.collector.Collector;
+import org.tahomarobotics.robot.grabber.Grabber;
+import org.tahomarobotics.robot.grabber.GrabberConstants;
 import org.tahomarobotics.robot.util.RobustConfigurator;
 import org.tahomarobotics.robot.util.SubsystemIF;
 import org.tahomarobotics.robot.util.game.GamePiece;
@@ -356,6 +358,9 @@ public class Windmill extends SubsystemIF {
 
     public void setTargetState(TrajectoryState targetState) {
         this.targetTrajectoryState = targetState;
+        if (targetTrajectoryState == TrajectoryState.CORAL_COLLECT && Grabber.getInstance().getState() == GrabberConstants.GrabberState.L1_SCORING) {
+            Grabber.getInstance().setTargetState(GrabberConstants.GrabberState.CORAL_COLLECTING);
+        }
     }
 
     public void setStateWithFeedForword(WindmillState state, double elevFFVoltage, double armFFVoltage) {
