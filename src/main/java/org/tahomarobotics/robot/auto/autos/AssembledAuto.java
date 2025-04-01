@@ -42,6 +42,7 @@ import org.tinylog.Logger;
 
 import java.util.LinkedHashMap;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.DoubleSupplier;
 
 import static org.tahomarobotics.robot.windmill.WindmillConstants.TrajectoryState.*;
@@ -137,6 +138,7 @@ public class AssembledAuto extends SequentialCommandGroup {
         // Score grabber
         Command scoreGrabber = grabber.runOnce(grabber::transitionToScoring).andThen(Commands.waitSeconds(SCORING_TIME));
 
+        AtomicBoolean cancel = new AtomicBoolean(false);
         Timer timer = new Timer();
         return Commands.parallel(
             Commands.runOnce(timer::restart),
@@ -144,11 +146,11 @@ public class AssembledAuto extends SequentialCommandGroup {
             CollectorCommands.createZeroCommand(Collector.getInstance()),
             Commands.runOnce(windmill::calibrate),
             // Drive
-            dtp,
+            dtp.until(cancel::get),
             dtp.runWhen(() -> dtp.getTargetWaypoint() == 0 && dtp.getDistanceToWaypoint() <= ARM_UP_DISTANCE, stowToL4),
             dtp.runWhen(
                 () -> dtp.getTargetWaypoint() == 1 && dtp.getDistanceToWaypoint() <= SCORING_DISTANCE,
-                scoreGrabber.andThen(Commands.runOnce(() -> Logger.info("Scored grabber.")).andThen(Commands.runOnce(dtp::cancel)))
+                scoreGrabber.andThen(Commands.runOnce(() -> Logger.info("Scored grabber.")).andThen(Commands.runOnce(() -> cancel.set(true))))
             )
         ).andThen(Commands.runOnce(() -> Logger.info("Driving to {} and scoring took {} seconds.", pole, timer.get())));
     }
@@ -167,12 +169,13 @@ public class AssembledAuto extends SequentialCommandGroup {
         // Score grabber
         Command scoreGrabber = grabber.runOnce(grabber::transitionToScoring).andThen(Commands.waitSeconds(SCORING_TIME));
 
+        AtomicBoolean cancel = new AtomicBoolean(false);
         Timer timer = new Timer();
         return Commands.race(
             // Run the timer until the commands are done
             Commands.startRun(timer::restart, () -> {}),
             // Drive to the scoring position
-            dtp,
+            dtp.until(cancel::get),
             Commands
                 .waitUntil(grabber::isHoldingCoral)
                 .andThen(Commands.parallel(
@@ -183,7 +186,7 @@ public class AssembledAuto extends SequentialCommandGroup {
                             // Score the coral if collected
                             dtp.runWhen(() -> dtp.getTargetWaypoint() == 0 && dtp.getDistanceToWaypoint() <= ARM_UP_DISTANCE, stowToL4)
                         ),
-                    dtp.runWhen(() -> dtp.getTargetWaypoint() == 1 && dtp.getDistanceToWaypoint() <= SCORING_DISTANCE, scoreGrabber.andThen(Commands.runOnce(dtp::cancel)))
+                    dtp.runWhen(() -> dtp.getTargetWaypoint() == 1 && dtp.getDistanceToWaypoint() <= SCORING_DISTANCE, scoreGrabber.andThen(Commands.runOnce(() -> cancel.set(true))))
                 ).onlyIf(() -> dtp.getDistanceToWaypoint() > ARM_DOWN_DISTANCE)) // Only move the arm and score the coral if it is safe to do so
         ).andThen(Commands.runOnce(() -> Logger.info("Driving to {} and scoring took {} seconds.", pole, timer.get())));
     }

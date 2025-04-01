@@ -34,7 +34,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import org.tahomarobotics.robot.auto.AutonomousConstants;
-import org.tahomarobotics.robot.auto.commands.DriveToPoseV4Command;
 import org.tahomarobotics.robot.auto.commands.DriveToPoseV5Command;
 import org.tahomarobotics.robot.chassis.Chassis;
 import org.tahomarobotics.robot.chassis.ChassisCommands;
@@ -153,12 +152,8 @@ public class OI extends SubsystemIF {
                             // Drive to Pose
                             AutonomousConstants.Objective pole =
                                 AutonomousConstants.getObjectiveForPole(nearestIndex, AutonomousConstants.getAlliance())
-                                    .fudgeY(switch (windmill.getTargetTrajectoryState()) {
-                                        case L4 -> Units.inchesToMeters(Math.PI / 2);
-                                        case L2, L3 -> AutonomousConstants.getAlliance() == DriverStation.Alliance.Red ? Units.inchesToMeters(2) : 0;
-                                        default -> 0;
-                                    });
-                            DriveToPoseV4Command dtp = pole.driveToPoseV4Command();
+                                    .fudgeY(0);
+                            var dtp = pole.driveToPoseV4Command();
 
                             boolean isHighAlgae = (nearestIndex / 2) % 2 == 0;
 
@@ -176,7 +171,7 @@ public class OI extends SubsystemIF {
                             return Commands.parallel(
                                 dtp.andThen(Commands.waitSeconds(0.75)).finallyDo(grabber::transitionToDisabled),
                                 dtp.runWhen(
-                                    () -> dtp.getTargetWaypoint() == 1 && dtp.getDistanceToWaypoint() < AutonomousConstants.AUTO_SCORE_DISTANCE,
+                                    () -> dtp.getDistanceToWaypoint() < AutonomousConstants.AUTO_SCORE_DISTANCE,
                                     grabber.runOnce(grabber::transitionToScoring)
                                 )
                             ).andThen(scoreToDescore.onlyIf(() -> (controller.y().getAsBoolean() || controller.b().getAsBoolean() || controller.a().getAsBoolean())

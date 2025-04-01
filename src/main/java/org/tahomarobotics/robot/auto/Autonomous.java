@@ -23,7 +23,6 @@
 package org.tahomarobotics.robot.auto;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -101,9 +100,9 @@ public class Autonomous extends SubsystemIF {
 
     public Command assembleFivePiece(boolean isLeft, DriverStation.Alliance alliance) {
         LinkedHashMap<Character, DoubleSupplier> scorePositions = new LinkedHashMap<>();
-        scorePositions.put('J', () -> alliance == DriverStation.Alliance.Red && isLeft ? Units.inchesToMeters(1) : 0);
-        scorePositions.put('K', () -> alliance == DriverStation.Alliance.Red && isLeft ? Units.inchesToMeters(2) : 0);
-        scorePositions.put('L', () -> alliance == DriverStation.Alliance.Red && isLeft ? Units.inchesToMeters(2) : 0);
+        scorePositions.put('J', () -> 0);
+        scorePositions.put('K', () -> 0);
+        scorePositions.put('L', () -> 0);
         scorePositions.put('A', () -> 0);
         return new AssembledAuto(isLeft, scorePositions, alliance, "Five-Piece");
     }
@@ -111,9 +110,9 @@ public class Autonomous extends SubsystemIF {
     public Command assembleCompatibleFivePiece(boolean isLeft, DriverStation.Alliance alliance) {
         LinkedHashMap<Character, DoubleSupplier> scorePositions = new LinkedHashMap<>();
         scorePositions.put('I', () -> 0);
-        scorePositions.put('J', () -> alliance == DriverStation.Alliance.Red && isLeft ? Units.inchesToMeters(1) : 0);
-        scorePositions.put('K', () -> alliance == DriverStation.Alliance.Red && isLeft ? Units.inchesToMeters(2) : 0);
-        scorePositions.put('L', () -> alliance == DriverStation.Alliance.Red && isLeft ? Units.inchesToMeters(2) : 0);
+        scorePositions.put('J', () -> 0);
+        scorePositions.put('K', () -> 0);
+        scorePositions.put('L', () -> 0);
         return new AssembledAuto(isLeft, scorePositions, alliance, "Compatible Five-Piece");
     }
 
@@ -121,8 +120,8 @@ public class Autonomous extends SubsystemIF {
         Chassis chassis = Chassis.getInstance();
         DriverStation.Alliance alliance = DriverStation.getAlliance().orElse(DriverStation.Alliance.Red);
         Pose2d startingPose = switch(command.getName()) {
-            case "5-Piece Left" -> (alliance == DriverStation.Alliance.Red) ? AutonomousConstants.FIVE_PIECE_LEFT_RED_START : AutonomousConstants.FIVE_PIECE_LEFT_BLUE_START;
-            case "5-Piece Right" -> (alliance == DriverStation.Alliance.Red) ? AutonomousConstants.FIVE_PIECE_RIGHT_RED_START : AutonomousConstants.FIVE_PIECE_RIGHT_BLUE_START;
+            case "5-Piece Left, Compatible 5-Piece Left" -> (alliance == DriverStation.Alliance.Red) ? AutonomousConstants.FIVE_PIECE_LEFT_RED_START : AutonomousConstants.FIVE_PIECE_LEFT_BLUE_START;
+            case "5-Piece Right", "Compatible 5-Piece Right" -> (alliance == DriverStation.Alliance.Red) ? AutonomousConstants.FIVE_PIECE_RIGHT_RED_START : AutonomousConstants.FIVE_PIECE_RIGHT_BLUE_START;
             case "Strait" -> (alliance == DriverStation.Alliance.Red) ? AutonomousConstants.STRAIGHT_RED_START : AutonomousConstants.STRAIGHT_BLUE_START;
             default -> chassis.getPose();
         };

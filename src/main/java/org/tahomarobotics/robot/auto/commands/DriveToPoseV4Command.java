@@ -22,7 +22,6 @@
 
 package org.tahomarobotics.robot.auto.commands;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -94,13 +93,14 @@ public class DriveToPoseV4Command extends Command {
     @Override
     public void initialize() {
         Pose2d currentPose = chassis.getPose();
-        ChassisSpeeds currentVelocity = chassis.getChassisSpeeds();
+        ChassisSpeeds currentVelocity = chassis.getFieldChassisSpeeds();
 
         Logger.info("Driving to {} from {} going through {}", waypoints.get(0), waypoints.subList(1, waypoints.size()), currentPose);
 
         x.reset(currentPose.getX(), currentVelocity.vxMetersPerSecond);
         y.reset(currentPose.getY(), currentVelocity.vyMetersPerSecond);
         r.reset(currentPose.getRotation().getRadians(), currentVelocity.omegaRadiansPerSecond);
+        syncGoal();
 
         chassis.setAutoAligning(true);
         Vision.getInstance().isolate(isolationTarget);
@@ -122,10 +122,8 @@ public class DriveToPoseV4Command extends Command {
             Logger.info("Transition to waypoint {}", targetWaypoint);
         }
 
-        double speedReduction = targetWaypoint == waypoints.size() - 1 ? MathUtil.clamp(distanceToGoalPose, 0.75, 1.0) : 1;
-
-        double vx = x.calculate(currentPose.getX()) * speedReduction;
-        double vy = y.calculate(currentPose.getY()) * speedReduction;
+        double vx = x.calculate(currentPose.getX());
+        double vy = y.calculate(currentPose.getY());
         double vr = r.calculate(currentPose.getRotation().getRadians());
 
         chassis.drive(new ChassisSpeeds(vx, vy, vr), true);

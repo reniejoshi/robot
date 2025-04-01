@@ -29,7 +29,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import org.tahomarobotics.robot.Robot;
 import org.tahomarobotics.robot.RobotConfiguration;
 import org.tahomarobotics.robot.auto.AutonomousConstants;
 import org.tahomarobotics.robot.auto.commands.DriveToPoseV4Command;

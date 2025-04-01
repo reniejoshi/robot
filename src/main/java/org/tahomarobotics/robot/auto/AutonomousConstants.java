@@ -54,7 +54,7 @@ public class AutonomousConstants {
     public static final double MAX_JUMP_DISTANCE = 0.35;
 
     // Translational Constraints in Meters
-    public static final TrapezoidProfile.Constraints TRANSLATION_ALIGNMENT_CONSTRAINTS = new TrapezoidProfile.Constraints(3.25, 4.375);
+    public static final TrapezoidProfile.Constraints TRANSLATION_ALIGNMENT_CONSTRAINTS = new TrapezoidProfile.Constraints(4, 5);
     // TODO: OSCILLATIONS
     public static final double TRANSLATION_ALIGNMENT_KP = 5, TRANSLATION_ALIGNMENT_KI = 0, TRANSLATION_ALIGNMENT_KD = 0.25;
     public static final double X_TOLERANCE = Units.inchesToMeters(1.25);
