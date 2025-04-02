@@ -311,6 +311,10 @@ public class OI extends SubsystemIF {
 
         // -- ABXY --
 
+        // Y - Zero elevator
+
+        lessImportantController.y().onTrue(WindmillCommands.createElevatorZeroCommand(windmill));
+
         // X - RESET
         lessImportantController.x().onTrue(
             Commands.runOnce(
