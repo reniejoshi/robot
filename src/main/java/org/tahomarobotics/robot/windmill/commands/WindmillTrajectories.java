@@ -45,6 +45,8 @@ public class WindmillTrajectories {
 
     static {
 
+        WindmillState algaeCollectLift = createWindmillState(TrajectoryState.ALGAE_PROCESSOR.elev + Units.inchesToMeters(2.5), TrajectoryState.ALGAE_PROCESSOR.arm - Units.degreesToRadians(1));
+
         // Algae
         create(TrajectoryState.CORAL_COLLECT, TrajectoryState.HIGH_DESCORE);
 
@@ -70,7 +72,7 @@ public class WindmillTrajectories {
         create(WindmillTrajectory.WindmillConstraints.ALGAE_CONSTRAINTS, TrajectoryState.ALGAE_COLLECT, TrajectoryState.STOW);
         create(WindmillTrajectory.WindmillConstraints.ALGAE_THROW_CONSTRAINTS, TrajectoryState.ALGAE_PRESCORE, TrajectoryState.ALGAE_SCORE);
         create(WindmillTrajectory.WindmillConstraints.ALGAE_CONSTRAINTS, TrajectoryState.STOW, TrajectoryState.ALGAE_PROCESSOR);
-        create(true, TrajectoryState.ALGAE_PROCESSOR, TrajectoryState.CORAL_COLLECT);
+        create(TrajectoryState.ALGAE_PROCESSOR, TrajectoryState.CORAL_COLLECT, new WindmillState[] {algaeCollectLift});
 
         // Algae - Coral
         create(TrajectoryState.L2, SMALL_PULLBACK, TrajectoryState.HIGH_DESCORE);

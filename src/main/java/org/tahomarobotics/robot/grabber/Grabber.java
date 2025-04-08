@@ -165,7 +165,7 @@ public class Grabber extends SubsystemIF {
         if (algaeCollectionTimer.hasElapsed(ALGAE_COLLECTION_DELAY) && RobotConfiguration.FEATURE_ALGAE_END_EFFECTOR) {
             transitionToAlgaeHolding();
 
-            Windmill.getInstance().createTransitionCommand(((WindmillConstants.TrajectoryState.STOW))).schedule();
+            Windmill.getInstance().createTransitionCommand(WindmillConstants.TrajectoryState.STOW).schedule();
 
             algaeCollectionTimer.stop();
             algaeCollectionTimer.reset();

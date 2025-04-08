@@ -89,9 +89,9 @@ public final class WindmillConstants {
     }
 
     // obstruction thresholds
-    public static final double ROBOT_DECK = Units.inchesToMeters(-9.0);
-    public static final double ROBOT_COLLECTOR_X = Units.inchesToMeters(0.0);
-    public static final double ROBOT_COLLECTOR_Y = Units.inchesToMeters(-0.5);
+    public static final double ROBOT_DECK = Units.inchesToMeters(-10.0);
+    public static final double ROBOT_COLLECTOR_X = Units.inchesToMeters(1.0);
+    public static final double ROBOT_COLLECTOR_Y = Units.inchesToMeters(-3.0);
 
     public static final double SMALL_PULLBACK = Units.degreesToRadians(10.0);
     public static final double STANDARD_PULLBACK = Units.degreesToRadians(20.0);
