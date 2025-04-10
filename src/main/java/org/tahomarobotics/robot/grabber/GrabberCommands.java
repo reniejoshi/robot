@@ -35,7 +35,7 @@ import java.util.Set;
 public class GrabberCommands {
     public static Pair<Command, Command> createGrabberCommands(Grabber grabber) {
         Command onTrue = Commands.defer(() -> (Windmill.getInstance().getTargetTrajectoryState() == WindmillConstants.TrajectoryState.L1) ?
-            Commands.runOnce(grabber::transitionToScoringL1) :
+            Commands.runOnce(grabber::transitionToPullingL1) :
             (Collector.getInstance().getCollectionMode().equals(GamePiece.CORAL)) ?
                 Commands.runOnce(grabber::transitionToCoralCollecting).onlyIf(() -> !grabber.isHoldingAlgae()) : Commands.runOnce(grabber::transitionToAlgaeCollecting),
             Set.of(grabber));

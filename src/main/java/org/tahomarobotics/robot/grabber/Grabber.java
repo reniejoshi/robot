@@ -31,7 +31,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.tahomarobotics.robot.RobotConfiguration;
 import org.tahomarobotics.robot.RobotMap;
@@ -46,7 +45,6 @@ import org.tahomarobotics.robot.windmill.Windmill;
 import org.tahomarobotics.robot.windmill.WindmillConstants;
 
 import java.util.List;
-import java.util.function.DoubleSupplier;
 
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
@@ -56,8 +54,6 @@ public class Grabber extends SubsystemIF {
     private final static Grabber INSTANCE = new Grabber();
 
     // -- Member Variables --
-
-    private final Windmill windmill = Windmill.getInstance();
 
     // Hardware
 
@@ -86,9 +82,6 @@ public class Grabber extends SubsystemIF {
     final Timer coralCollectionTimer = new Timer();
     final Timer algaeCollectionTimer = new Timer();
     private final Timer belowTimer = new Timer();
-
-    private boolean isUsingSupplier = false;
-    private DoubleSupplier velocitySupplier;
 
     private final Debouncer coralDetectionDebouncer = new Debouncer(CORAL_COLLECTION_DELAY);
 
@@ -127,8 +120,6 @@ public class Grabber extends SubsystemIF {
 
     public void setTargetState(GrabberState state) {
         this.state = state;
-
-        isUsingSupplier = state.usingSupplier;
 
         switch (state.type) {
             case NONE -> motor.stopMotor();
@@ -220,22 +211,12 @@ public class Grabber extends SubsystemIF {
         algaeCollectionTimer.reset();
     }
 
-    public void transitionToManualScoring() {
-        setTargetState(GrabberState.MANUAL_SCORING);
-
-        collectingCoral = false;
-        coralCollectionTimer.stop();
-        coralCollectionTimer.reset();
-        algaeCollectionTimer.stop();
-        algaeCollectionTimer.reset();
-    }
-
     public void transitionToScoringL1() {
         setTargetState(GrabberState.L1_SCORING);
     }
 
-    public void setVelocitySupplier(DoubleSupplier velocitySupplier) {
-        this.velocitySupplier = velocitySupplier;
+    public void transitionToPullingL1() {
+        setTargetState(GrabberState.L1_PULLING);
     }
 
     // -- Getters --
@@ -253,13 +234,13 @@ public class Grabber extends SubsystemIF {
     }
 
     public boolean isScoringL1() {
-        return state == GrabberState.L1_SCORING;
+        return state == GrabberState.L1_SCORING || state == GrabberState.L1_PULLING;
     }
 
     public boolean isScoring() {
-        return state == GrabberState.MANUAL_SCORING
-            || state == GrabberState.AUTO_SCORING
-            || state == GrabberState.L1_SCORING;
+        return state == GrabberState.AUTO_SCORING
+            || state == GrabberState.L1_SCORING
+            || state == GrabberState.L1_PULLING;
     }
 
     public GrabberState getState() {
@@ -274,10 +255,6 @@ public class Grabber extends SubsystemIF {
         LoggedStatusSignal.log("Grabber/", statusSignals);
 
         stateMachine();
-
-        if (isUsingSupplier) {
-            motor.setControl(velocityControl.withVelocity(state.value * velocitySupplier.getAsDouble()));
-        }
     }
 
     @Override

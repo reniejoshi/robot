@@ -60,7 +60,7 @@ public final class WindmillConstants {
            Units.inchesToMeters(17.500), Units.degreesToRadians(124.398)),  // CORAL: B button
         L2(0.07375, Units.degreesToRadians(122.539),
            Units.inchesToMeters(1.364), Units.degreesToRadians(124.791)),  // CORAL: A button
-        L1(0.572, Units.degreesToRadians(-121.465),
+        L1(0.563, Units.degreesToRadians(-125.772),
            0.572, Units.degreesToRadians(-121.465)),  // CORAL: X button
         START(Units.inchesToMeters(0.468), Units.degreesToRadians(90.089),
               Units.inchesToMeters(0.468), Units.degreesToRadians(90.089));  // startup only
