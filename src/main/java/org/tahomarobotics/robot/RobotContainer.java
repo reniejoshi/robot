@@ -24,12 +24,16 @@
 
 package org.tahomarobotics.robot;
 
+import org.tahomarobotics.robot.arm.Arm;
+
 public class RobotContainer implements AutoCloseable {
 
+    public final Arm arm;
     public final OI oi;
 
 
     public RobotContainer() {
+        arm = new Arm();
         oi = new OI(this);
     }
 
