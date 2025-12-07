@@ -12,4 +12,8 @@ public class ArmConstants {
     // Wrist limits
     public static final Angle WRIST_MIN_POSITION = Degrees.of(0);
     public static final Angle WRIST_MAX_POSITION = Degrees.of(300);
+
+    // Increment values
+    public static final double ARM_INCREMENT = 1;
+    public static final double WRIST_INCREMENT = 1;
 }

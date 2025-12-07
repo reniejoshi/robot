@@ -72,10 +72,14 @@ public class OI {
     // -- Bindings --
 
     public void configureControllerBindings() {
-        /*new Trigger(() -> Math.abs(controller.getRightY()) > DEADBAND)
-            .whileTrue(arm.setArmPosition(controller::getRightY));*/
+        // Up moves arm clockwise, down moves arm counterclockwise
+        arm.setDefaultCommand(arm.setArmPosition(this::getRightY));
 
-        arm.setDefaultCommand(arm.setArmPosition(controller::getRightY));
+        // Moves wrist clockwise
+        controller.rightTrigger().onTrue(arm.setWristPositionClockwise());
+
+        // Moves wrist counterclockwise
+        controller.leftTrigger().onTrue(arm.setWristPositionCounterclockwise());
     }
 
     public void configureLessImportantControllerBindings() {
@@ -99,6 +103,10 @@ public class OI {
         return -desensitizePowerBased(controller.getRightX(), ROTATIONAL_SENSITIVITY);
     }
 
+    public double getRightY() {
+        return -desensitizeDeadbandBased(controller.getRightY());
+    }
+
     // -- Helper Methods --
 
     public double desensitizePowerBased(double value, double power) {
@@ -107,5 +115,8 @@ public class OI {
         return value;
     }
 
-    // TODO: Desensitize getRightY() based on deadband
+    public double desensitizeDeadbandBased(double value) {
+        value = MathUtil.applyDeadband(value, DEADBAND);
+        return value;
+    }
 }
