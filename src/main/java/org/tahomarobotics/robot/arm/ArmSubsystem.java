@@ -18,7 +18,7 @@ public class ArmSubsystem extends AbstractSubsystem {
     private final TalonFX wristMotor = new TalonFX(RobotMap.WRIST_MOTOR);
 
     // Control requests
-    private final PositionVoltage positonControl = new PositionVoltage(0);
+    private final PositionVoltage positionControl = new PositionVoltage(0);
 
     // Status signals
     private final StatusSignal<Angle> armMotorPosition = armMotor.getPosition();
@@ -32,26 +32,24 @@ public class ArmSubsystem extends AbstractSubsystem {
 
         Angle targetPosition = armMotorPosition.getValue();
         if (y > 0) {
-            targetPosition = Degrees.of(armMotorPosition.getValueAsDouble() + 1);
+            targetPosition = Degrees.of(armMotorPosition.getValueAsDouble() + ArmConstants.ARM_INCREMENT);
         } else if (y < 0) {
-            targetPosition = Degrees.of(armMotorPosition.getValueAsDouble() - 1);
+            targetPosition = Degrees.of(armMotorPosition.getValueAsDouble() - ArmConstants.ARM_INCREMENT);
         }
-        armMotor.setControl(positonControl.withPosition(targetPosition));
-        Logger.recordOutput("Arm/Target Position", targetPosition);
+        armMotor.setControl(positionControl.withPosition(targetPosition));
+        Logger.recordOutput("Arm/Target Arm Position", targetPosition);
     }
 
-    public void setWristPosition(Angle position) {
-        wristMotor.setControl(positonControl.withPosition(position));
+    public void setWristPositionClockwise() {
+        Angle targetPosition = Degrees.of(wristMotorPosition.getValueAsDouble() + ArmConstants.WRIST_INCREMENT);
+        wristMotor.setControl(positionControl.withPosition(targetPosition));
+        Logger.recordOutput("Arm/Target Wrist Position", targetPosition);
     }
 
-    // Getters
-
-    public Angle getArmMotorPosition() {
-        return armMotorPosition.getValue();
-    }
-
-    public Angle getWristMotorPosition() {
-        return wristMotorPosition.getValue();
+    public void setWristPositionCounterclockwise() {
+        Angle targetPosition = Degrees.of(wristMotorPosition.getValueAsDouble() - ArmConstants.WRIST_INCREMENT);
+        wristMotor.setControl(positionControl.withPosition(targetPosition));
+        Logger.recordOutput("Arm/Target Wrist Position", targetPosition);
     }
 
     @Override
@@ -59,7 +57,7 @@ public class ArmSubsystem extends AbstractSubsystem {
         armMotorPosition.refresh();
         wristMotorPosition.refresh();
 
-        Logger.recordOutput("Arm/Arm Motor Position", getArmMotorPosition().in(Degrees));
-        Logger.recordOutput("Arm/Wrist Motor Position", getWristMotorPosition().in(Degrees));
+        Logger.recordOutput("Arm/Arm Motor Position", armMotorPosition.getValue().in(Degrees));
+        Logger.recordOutput("Arm/Wrist Motor Position", wristMotorPosition.getValue().in(Degrees));
     }
 }

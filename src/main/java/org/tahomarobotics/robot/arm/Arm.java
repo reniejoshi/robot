@@ -22,8 +22,12 @@ public class Arm {
         return arm.run(() -> arm.setArmPosition(rightYSupplier));
     }
 
-    public Command setWristPosition(Angle position) {
-        return arm.runOnce(() -> arm.setWristPosition(position));
+    public Command setWristPositionClockwise() {
+        return arm.runOnce(arm::setWristPositionClockwise);
+    }
+
+    public Command setWristPositionCounterclockwise() {
+        return arm.runOnce(arm::setWristPositionCounterclockwise);
     }
 
     public void setDefaultCommand(Command command) {

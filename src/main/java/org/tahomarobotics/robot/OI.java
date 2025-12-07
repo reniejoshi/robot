@@ -72,7 +72,14 @@ public class OI {
     // -- Bindings --
 
     public void configureControllerBindings() {
+        // Up moves arm clockwise, down moves arm counterclockwise
         arm.setDefaultCommand(arm.setArmPosition(this::getRightY));
+
+        // Moves wrist clockwise
+        controller.rightTrigger().onTrue(arm.setWristPositionClockwise());
+
+        // Moves wrist counterclockwise
+        controller.leftTrigger().onTrue(arm.setWristPositionCounterclockwise());
     }
 
     public void configureLessImportantControllerBindings() {
