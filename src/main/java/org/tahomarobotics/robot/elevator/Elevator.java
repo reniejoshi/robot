@@ -23,6 +23,7 @@
 package org.tahomarobotics.robot.elevator;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 
 public class Elevator {
     private final ElevatorSubsystem elevator;
@@ -36,11 +37,34 @@ public class Elevator {
     }
 
     public Command moveToMinPosition() {
-        return elevator.runOnce(elevator::moveToMinPosition);
+        return Commands.either(
+            moveToMinPositionDiscrete(),
+            moveToMinPositionContinuous(),
+            elevator.discreteMode);
+    }
+
+    public Command moveToMinPositionDiscrete() {
+        return elevator.runOnce(elevator::moveToMinPositionDiscrete);
+    }
+
+    public Command moveToMinPositionContinuous() {
+        return elevator.runOnce(elevator::moveToMinPositionContinuous);
     }
 
     public Command moveToMaxPosition() {
-        return elevator.runOnce(elevator::moveToMaxPosition);
+        return Commands.either(
+            moveToMaxPositionDiscrete(),
+            moveToMaxPositionContinuous(),
+            elevator.discreteMode
+        );
+    }
+
+    public Command moveToMaxPositionDiscrete() {
+        return elevator.runOnce(elevator::moveToMaxPositionDiscrete);
+    }
+
+    public Command moveToMaxPositionContinuous() {
+        return elevator.runOnce(elevator::moveToMaxPositionContinuous);
     }
 
     public Command toggleMode() {

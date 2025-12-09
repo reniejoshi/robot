@@ -24,33 +24,47 @@ package org.tahomarobotics.robot.elevator;
 
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
+import org.littletonrobotics.junction.Logger;
 import org.tahomarobotics.robot.RobotMap;
 import org.tahomarobotics.robot.util.AbstractSubsystem;
+
+import java.util.function.BooleanSupplier;
 
 public class ElevatorSubsystem extends AbstractSubsystem {
     // Motors
     private final TalonFX leftMotor = new TalonFX(RobotMap.ELEVATOR_LEFT_MOTOR);
     private final TalonFX rightMotor = new TalonFX(RobotMap.ELEVATOR_RIGHT_MOTOR);
 
+    private boolean isDiscreteMode = false;
+    public BooleanSupplier discreteMode = () -> isDiscreteMode;
+
     ElevatorSubsystem() {
         rightMotor.setControl(new Follower(RobotMap.ELEVATOR_LEFT_MOTOR, true));
     }
 
     // Setters
-    public void moveToMinPosition() {
+    public void moveToMinPositionDiscrete() {
 
     }
 
-    public void moveToMaxPosition() {
+    public void moveToMinPositionContinuous() {
+
+    }
+
+    public void moveToMaxPositionDiscrete() {
+
+    }
+
+    public void moveToMaxPositionContinuous() {
 
     }
 
     public void toggleMode() {
-
+        isDiscreteMode = !isDiscreteMode;
     }
 
     @Override
     public void subsystemPeriodic() {
-
+        Logger.recordOutput("Elevator/Discrete Mode", discreteMode);
     }
 }
