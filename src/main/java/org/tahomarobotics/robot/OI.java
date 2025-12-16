@@ -79,10 +79,10 @@ public class OI {
         arm.setDefaultCommand(arm.setArmPosition(this::getRightY));
 
         // Moves wrist clockwise
-        controller.rightTrigger().onTrue(arm.setWristPositionClockwise());
+        controller.rightTrigger().whileTrue(arm.setWristPositionClockwise());
 
         // Moves wrist counterclockwise
-        controller.leftTrigger().onTrue(arm.setWristPositionCounterclockwise());
+        controller.leftTrigger().whileTrue(arm.setWristPositionCounterclockwise());
 
         // Moves elevator to top
         controller.y().onTrue(elevator.moveToMaxPosition());

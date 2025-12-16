@@ -13,5 +13,5 @@ public class ArmConstants {
 
     // Increment values
     public static final double ARM_INCREMENT = 1;
-    public static final double WRIST_INCREMENT = 1;
+    public static final double WRIST_INCREMENT = Units.degreesToRotations(5);
 }

@@ -45,17 +45,18 @@ public class ArmSubsystem extends AbstractSubsystem {
     }
 
     public void setWristPositionClockwise() {
-        targetWristPosition = MathUtil.clamp(
-            targetWristPosition + ArmConstants.WRIST_INCREMENT,
-            ArmConstants.WRIST_MIN_POSITION,
-            ArmConstants.WRIST_MAX_POSITION
-        );
-        wristMotor.setControl(positionControl.withPosition(Degrees.of(targetWristPosition)));
+        moveWristToTargetPosition(ArmConstants.WRIST_INCREMENT);
     }
 
     public void setWristPositionCounterclockwise() {
+        moveWristToTargetPosition(-ArmConstants.WRIST_INCREMENT);
+    }
+
+    // Helpers
+
+    private void moveWristToTargetPosition(double increase) {
         targetWristPosition = MathUtil.clamp(
-            targetWristPosition - ArmConstants.WRIST_INCREMENT,
+            targetWristPosition + increase,
             ArmConstants.WRIST_MIN_POSITION,
             ArmConstants.WRIST_MAX_POSITION
         );
