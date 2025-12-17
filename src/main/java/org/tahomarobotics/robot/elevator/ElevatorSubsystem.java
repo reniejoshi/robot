@@ -59,27 +59,27 @@ public class ElevatorSubsystem extends AbstractSubsystem {
     }
 
     // Setters
-    public void moveToMinPositionDiscrete() {
+    public void moveToBottomPositionDiscrete() {
         org.tinylog.Logger.info("Move elevator to min position in discrete mode");
-        targetPosition = ElevatorConstants.ELEVATOR_MIN_POSITION;
+        targetPosition = ElevatorConstants.ELEVATOR_BOTTOM_POSITION;
         leftMotor.setControl(positionControl.withPosition(targetPosition));
     }
 
-    public void moveToMinPositionContinuous() {
+    public void moveToBottomPositionContinuous() {
         org.tinylog.Logger.info("Move elevator to min position in continuous mode");
-        targetPosition = ElevatorConstants.ELEVATOR_MIN_POSITION;
+        targetPosition = ElevatorConstants.ELEVATOR_BOTTOM_POSITION;
         leftMotor.setControl(velocityControl.withVelocity(RotationsPerSecond.of(-ElevatorConstants.ELEVATOR_RPS)));
     }
 
-    public void moveToMaxPositionDiscrete() {
+    public void moveToTopPositionDiscrete() {
         org.tinylog.Logger.info("Move elevator to max position in discrete mode");
-        targetPosition = ElevatorConstants.ELEVATOR_MAX_POSITION;
+        targetPosition = ElevatorConstants.ELEVATOR_TOP_POSITION;
         leftMotor.setControl(positionControl.withPosition(targetPosition));
     }
 
-    public void moveToMaxPositionContinuous() {
+    public void moveToTopPositionContinuous() {
         org.tinylog.Logger.info("Move elevator to max position in continuous mode");
-        targetPosition = ElevatorConstants.ELEVATOR_MAX_POSITION;
+        targetPosition = ElevatorConstants.ELEVATOR_TOP_POSITION;
         leftMotor.setControl(velocityControl.withVelocity(RotationsPerSecond.of(ElevatorConstants.ELEVATOR_RPS)));
     }
 

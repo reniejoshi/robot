@@ -23,15 +23,11 @@
 package org.tahomarobotics.robot.elevator;
 
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.AngularVelocity;
-
-import static edu.wpi.first.units.Units.Feet;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 public class ElevatorConstants {
     // Elevator limits
-    public static final double ELEVATOR_MIN_POSITION = Units.feetToMeters(1);
-    public static final double ELEVATOR_MAX_POSITION = Units.feetToMeters(9);
+    public static final double ELEVATOR_BOTTOM_POSITION = Units.feetToMeters(1);
+    public static final double ELEVATOR_TOP_POSITION = Units.feetToMeters(9);
 
     // Elevator velocity
     public static final double ELEVATOR_RPS = 1;
