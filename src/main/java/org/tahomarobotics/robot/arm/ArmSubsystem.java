@@ -25,44 +25,51 @@ public class ArmSubsystem extends AbstractSubsystem {
     private final StatusSignal<Angle> armMotorPosition = armMotor.getPosition();
     private final StatusSignal<Angle> wristMotorPosition = wristMotor.getPosition();
 
+    // Target position variables
+    private double targetArmPosition = 0;
+    private double targetWristPosition = 0;
+
     // Setters
 
     public void setArmPosition(DoubleSupplier rightYSupplier) {
         double y = rightYSupplier.getAsDouble();
         Logger.recordOutput("Arm/Right Y Axis", y);
 
-        double targetPositionDouble = armMotorPosition.getValueAsDouble();
-        if (y > 0) {
-            targetPositionDouble += ArmConstants.ARM_INCREMENT;
-        } else if (y < 0) {
-            targetPositionDouble -= ArmConstants.ARM_INCREMENT;
-        }
-
-        Angle targetPosition = Degrees.of(MathUtil.clamp(targetPositionDouble, ArmConstants.ARM_MIN_POSITION, ArmConstants.ARM_MAX_POSITION));
-        armMotor.setControl(positionControl.withPosition(targetPosition));
-        Logger.recordOutput("Arm/Target Arm Position", targetPosition);
+        double increase = y * ArmConstants.ARM_INCREMENT;
+        targetArmPosition = MathUtil.clamp(
+            targetArmPosition + increase,
+            ArmConstants.ARM_MIN_POSITION,
+            ArmConstants.ARM_MAX_POSITION
+        );
+        armMotor.setControl(positionControl.withPosition(Degrees.of(targetArmPosition)));
     }
 
     public void setWristPositionClockwise() {
-        double targetPositionDouble = wristMotorPosition.getValueAsDouble() + ArmConstants.WRIST_INCREMENT;
-        Angle targetPosition = Degrees.of(MathUtil.clamp(targetPositionDouble, ArmConstants.WRIST_MIN_POSITION, ArmConstants.WRIST_MAX_POSITION));
-        wristMotor.setControl(positionControl.withPosition(targetPosition));
-        Logger.recordOutput("Arm/Target Wrist Position", targetPosition);
+        moveWristToTargetPosition(ArmConstants.WRIST_INCREMENT);
     }
 
     public void setWristPositionCounterclockwise() {
-        double targetPositionDouble = wristMotorPosition.getValueAsDouble() - ArmConstants.WRIST_INCREMENT;
-        Angle targetPosition = Degrees.of(MathUtil.clamp(targetPositionDouble, ArmConstants.WRIST_MIN_POSITION, ArmConstants.WRIST_MAX_POSITION));
-        wristMotor.setControl(positionControl.withPosition(targetPosition));
-        Logger.recordOutput("Arm/Target Wrist Position", targetPosition);
+        moveWristToTargetPosition(-ArmConstants.WRIST_INCREMENT);
+    }
+
+    // Helpers
+
+    private void moveWristToTargetPosition(double increase) {
+        targetWristPosition = MathUtil.clamp(
+            targetWristPosition + increase,
+            ArmConstants.WRIST_MIN_POSITION,
+            ArmConstants.WRIST_MAX_POSITION
+        );
+        wristMotor.setControl(positionControl.withPosition(Degrees.of(targetWristPosition)));
     }
 
     @Override
     public void subsystemPeriodic() {
-        armMotorPosition.refresh();
-        wristMotorPosition.refresh();
+        StatusSignal.refreshAll(armMotorPosition, wristMotorPosition);
 
         Logger.recordOutput("Arm/Arm Motor Position", armMotorPosition.getValue().in(Degrees));
+        Logger.recordOutput("Arm/Target Arm Position", targetArmPosition);
         Logger.recordOutput("Arm/Wrist Motor Position", wristMotorPosition.getValue().in(Degrees));
+        Logger.recordOutput("Arm/Target Wrist Position", targetWristPosition);
     }
 }

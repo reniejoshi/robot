@@ -23,11 +23,11 @@ public class Arm {
     }
 
     public Command setWristPositionClockwise() {
-        return arm.runOnce(arm::setWristPositionClockwise);
+        return arm.run(arm::setWristPositionClockwise);
     }
 
     public Command setWristPositionCounterclockwise() {
-        return arm.runOnce(arm::setWristPositionCounterclockwise);
+        return arm.run(arm::setWristPositionCounterclockwise);
     }
 
     public void setDefaultCommand(Command command) {
