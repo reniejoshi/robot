@@ -40,7 +40,8 @@ public class Elevator {
         return Commands.either(
             moveToMinPositionDiscrete(),
             moveToMinPositionContinuous(),
-            elevator.discreteMode);
+            elevator.discreteMode)
+               .andThen(Commands.waitUntil(elevator::isAtTargetPosition));
     }
 
     public Command moveToMinPositionDiscrete() {
@@ -55,8 +56,8 @@ public class Elevator {
         return Commands.either(
             moveToMaxPositionDiscrete(),
             moveToMaxPositionContinuous(),
-            elevator.discreteMode
-        );
+            elevator.discreteMode)
+               .andThen(Commands.waitUntil(elevator::isAtTargetPosition));
     }
 
     public Command moveToMaxPositionDiscrete() {
