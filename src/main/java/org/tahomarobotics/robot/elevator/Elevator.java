@@ -36,35 +36,36 @@ public class Elevator {
         this.elevator = elevator;
     }
 
-    public Command moveToMinPosition() {
+    public Command moveToBottomPosition() {
         return Commands.either(
-            moveToMinPositionDiscrete(),
-            moveToMinPositionContinuous(),
-            elevator.discreteMode);
+            moveToBottomPositionDiscrete(),
+            moveToBottomPositionContinuous(),
+            elevator.discreteMode)
+               .andThen(Commands.waitUntil(elevator::isAtTargetPosition));
     }
 
-    public Command moveToMinPositionDiscrete() {
-        return elevator.runOnce(elevator::moveToMinPositionDiscrete);
+    public Command moveToBottomPositionDiscrete() {
+        return elevator.runOnce(elevator::moveToBottomPositionDiscrete);
     }
 
-    public Command moveToMinPositionContinuous() {
-        return elevator.runOnce(elevator::moveToMinPositionContinuous);
+    public Command moveToBottomPositionContinuous() {
+        return elevator.runOnce(elevator::moveToBottomPositionContinuous);
     }
 
-    public Command moveToMaxPosition() {
+    public Command moveToTopPosition() {
         return Commands.either(
-            moveToMaxPositionDiscrete(),
-            moveToMaxPositionContinuous(),
-            elevator.discreteMode
-        );
+                           moveToTopPositionDiscrete(),
+                           moveToTopPositionContinuous(),
+                           elevator.discreteMode)
+               .andThen(Commands.waitUntil(elevator::isAtTargetPosition));
     }
 
-    public Command moveToMaxPositionDiscrete() {
-        return elevator.runOnce(elevator::moveToMaxPositionDiscrete);
+    public Command moveToTopPositionDiscrete() {
+        return elevator.runOnce(elevator::moveToTopPositionDiscrete);
     }
 
-    public Command moveToMaxPositionContinuous() {
-        return elevator.runOnce(elevator::moveToMaxPositionContinuous);
+    public Command moveToTopPositionContinuous() {
+        return elevator.runOnce(elevator::moveToTopPositionContinuous);
     }
 
     public Command toggleMode() {

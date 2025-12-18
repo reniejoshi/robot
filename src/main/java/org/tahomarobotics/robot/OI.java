@@ -85,10 +85,10 @@ public class OI {
         controller.leftTrigger().whileTrue(arm.setWristPositionCounterclockwise());
 
         // Moves elevator to top
-        controller.y().onTrue(elevator.moveToMaxPosition());
+        controller.y().onTrue(elevator.moveToTopPosition());
 
         // Moves elevator to bottom
-        controller.a().onTrue(elevator.moveToMinPosition());
+        controller.a().onTrue(elevator.moveToBottomPosition());
 
         // Toggle continuous vs discrete mode
         controller.b().onTrue(elevator.toggleMode());
