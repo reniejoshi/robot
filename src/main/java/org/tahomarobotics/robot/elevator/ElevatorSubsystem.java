@@ -83,6 +83,11 @@ public class ElevatorSubsystem extends AbstractSubsystem {
         leftMotor.setControl(velocityControl.withVelocity(RotationsPerSecond.of(ElevatorConstants.ELEVATOR_RPS)));
     }
 
+    public void stopElevatorMotors() {
+        org.tinylog.Logger.info("Stop elevator motors");
+        leftMotor.setControl(velocityControl.withVelocity(0));
+    }
+
     public void toggleMode() {
         isDiscreteMode = !isDiscreteMode;
     }
