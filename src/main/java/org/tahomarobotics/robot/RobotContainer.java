@@ -25,17 +25,20 @@
 package org.tahomarobotics.robot;
 
 import org.tahomarobotics.robot.arm.Arm;
+import org.tahomarobotics.robot.diffyarm.DiffyArm;
 import org.tahomarobotics.robot.elevator.Elevator;
 
 public class RobotContainer implements AutoCloseable {
 
     public final Arm arm;
+    public final DiffyArm diffyArm;
     public final Elevator elevator;
     public final OI oi;
 
 
     public RobotContainer() {
         arm = new Arm();
+        diffyArm = new DiffyArm();
         elevator = new Elevator();
         oi = new OI(this);
     }

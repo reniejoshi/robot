@@ -20,19 +20,28 @@
  * THE SOFTWARE.
  */
 
-package org.tahomarobotics.robot;
+package org.tahomarobotics.robot.diffyarm;
 
-import edu.wpi.first.math.geometry.Translation2d;
+import com.ctre.phoenix6.hardware.TalonFX;
+import org.tahomarobotics.robot.RobotMap;
+import org.tahomarobotics.robot.util.AbstractSubsystem;
+import org.tinylog.Logger;
 
-public final class RobotMap {
-    public final static int PIGEON = 0; // Internal IMU. Will not be used in Extra Programming Projects (Robot)
+public class DiffyArmSubsystem extends AbstractSubsystem {
+    // Motors
+    private final TalonFX topMotor;
+    private final TalonFX bottomMotor;
 
-    public final static int ARM_MOTOR = 1;
-    public final static int WRIST_MOTOR = 2;
+    public DiffyArmSubsystem() {
+        // Initialize hardware
+        topMotor = new TalonFX(RobotMap.DIFFY_ARM_TOP_MOTOR);
+        bottomMotor = new TalonFX(RobotMap.DIFFY_ARM_BOTTOM_MOTOR);
 
-    public final static int ELEVATOR_LEFT_MOTOR = 3;
-    public final static int ELEVATOR_RIGHT_MOTOR = 4;
+        Logger.info("Creating an instance of DiffyArmSubsystem...");
+    }
 
-    public final static int DIFFY_ARM_TOP_MOTOR = 5;
-    public final static int DIFFY_ARM_BOTTOM_MOTOR = 6;
+    @Override
+    public void subsystemPeriodic() {
+
+    }
 }

@@ -20,19 +20,19 @@
  * THE SOFTWARE.
  */
 
-package org.tahomarobotics.robot;
+package org.tahomarobotics.robot.diffyarm;
 
-import edu.wpi.first.math.geometry.Translation2d;
+import org.tinylog.Logger;
 
-public final class RobotMap {
-    public final static int PIGEON = 0; // Internal IMU. Will not be used in Extra Programming Projects (Robot)
+public class DiffyArm {
+    private final DiffyArmSubsystem diffyArm;
 
-    public final static int ARM_MOTOR = 1;
-    public final static int WRIST_MOTOR = 2;
+    public DiffyArm() {
+        this(new DiffyArmSubsystem());
+        Logger.info("Creating an instance of DiffyArm...");
+    }
 
-    public final static int ELEVATOR_LEFT_MOTOR = 3;
-    public final static int ELEVATOR_RIGHT_MOTOR = 4;
-
-    public final static int DIFFY_ARM_TOP_MOTOR = 5;
-    public final static int DIFFY_ARM_BOTTOM_MOTOR = 6;
+    DiffyArm(DiffyArmSubsystem diffyArm) {
+        this.diffyArm = diffyArm;
+    }
 }
