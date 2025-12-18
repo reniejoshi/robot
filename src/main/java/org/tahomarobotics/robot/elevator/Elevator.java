@@ -41,7 +41,8 @@ public class Elevator {
             moveToBottomPositionDiscrete(),
             moveToBottomPositionContinuous(),
             elevator.discreteMode)
-               .andThen(Commands.waitUntil(elevator::isAtTargetPosition));
+               .andThen(Commands.waitUntil(elevator::isAtTargetPosition)
+                    .andThen(Commands.runOnce(elevator::stopElevatorMotors)));
     }
 
     public Command moveToBottomPositionDiscrete() {
@@ -54,10 +55,11 @@ public class Elevator {
 
     public Command moveToTopPosition() {
         return Commands.either(
-                           moveToTopPositionDiscrete(),
-                           moveToTopPositionContinuous(),
-                           elevator.discreteMode)
-               .andThen(Commands.waitUntil(elevator::isAtTargetPosition));
+           moveToTopPositionDiscrete(),
+           moveToTopPositionContinuous(),
+           elevator.discreteMode)
+               .andThen(Commands.waitUntil(elevator::isAtTargetPosition)
+                    .andThen(Commands.runOnce(elevator::stopElevatorMotors)));
     }
 
     public Command moveToTopPositionDiscrete() {
