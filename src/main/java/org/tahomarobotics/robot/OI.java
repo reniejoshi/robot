@@ -37,6 +37,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.tahomarobotics.robot.arm.Arm;
+import org.tahomarobotics.robot.diffyarm.DiffyArm;
 import org.tahomarobotics.robot.elevator.Elevator;
 import org.tinylog.Logger;
 
@@ -47,6 +48,7 @@ import java.util.function.Function;
 public class OI {
     // Subsystems
     private final Arm arm;
+    private final DiffyArm diffyArm;
     private final Elevator elevator;
 
     // -- Constants --
@@ -64,6 +66,7 @@ public class OI {
         DriverStation.silenceJoystickConnectionWarning(true);
 
         this.arm = robotContainer.arm;
+        this.diffyArm = robotContainer.diffyArm;
         this.elevator = robotContainer.elevator;
 
         configureControllerBindings();
