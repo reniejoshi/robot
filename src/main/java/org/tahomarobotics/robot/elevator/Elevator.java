@@ -40,34 +40,36 @@ public class Elevator {
         return Commands.either(
             moveToBottomPositionDiscrete(),
             moveToBottomPositionContinuous(),
-            elevator.discreteMode)
-               .andThen(Commands.waitUntil(elevator::isAtTargetPosition)
-                    .andThen(Commands.runOnce(elevator::stopElevatorMotors)));
+            elevator.discreteMode);
     }
 
     public Command moveToBottomPositionDiscrete() {
-        return elevator.runOnce(elevator::moveToBottomPositionDiscrete);
+        return elevator.runOnce(elevator::moveToBottomPositionDiscrete)
+           .andThen(Commands.waitUntil(elevator::isAtTargetPosition));
     }
 
     public Command moveToBottomPositionContinuous() {
-        return elevator.runOnce(elevator::moveToBottomPositionContinuous);
+        return elevator.runOnce(elevator::moveToBottomPositionContinuous)
+           .andThen(Commands.waitUntil(elevator::isAtTargetPosition)
+                .andThen(Commands.runOnce(elevator::stopElevatorMotors)));
     }
 
     public Command moveToTopPosition() {
         return Commands.either(
            moveToTopPositionDiscrete(),
            moveToTopPositionContinuous(),
-           elevator.discreteMode)
-               .andThen(Commands.waitUntil(elevator::isAtTargetPosition)
-                    .andThen(Commands.runOnce(elevator::stopElevatorMotors)));
+           elevator.discreteMode);
     }
 
     public Command moveToTopPositionDiscrete() {
-        return elevator.runOnce(elevator::moveToTopPositionDiscrete);
+        return elevator.runOnce(elevator::moveToTopPositionDiscrete)
+           .andThen(Commands.waitUntil(elevator::isAtTargetPosition));
     }
 
     public Command moveToTopPositionContinuous() {
-        return elevator.runOnce(elevator::moveToTopPositionContinuous);
+        return elevator.runOnce(elevator::moveToTopPositionContinuous)
+           .andThen(Commands.waitUntil(elevator::isAtTargetPosition)
+                .andThen(Commands.runOnce(elevator::stopElevatorMotors)));
     }
 
     public Command toggleMode() {
