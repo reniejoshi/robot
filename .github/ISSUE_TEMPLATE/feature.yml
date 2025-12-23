@@ -1,0 +1,37 @@
+name: Feature
+description: Create a feature as part of an epic, planned every 2-3 weeks.
+title: "[Feature] "
+labels: ["Feature"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Feature Description
+      description: Detailed description of the feature (e.g., "Add swerve drive path following").
+    validations:
+      required: true
+  - type: input
+    id: parent_epic
+    attributes:
+      label: Parent Epic
+      description: Link to the parent epic issue (e.g., #123).
+  - type: input
+    id: timeline
+    attributes:
+      label: Planned Timeline
+      description: 2-3 week window (e.g., "Weeks 3-5").
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance Criteria
+      description: Criteria for feature completion (e.g., "Path follows accurately in simulation").
+  - type: textarea
+    id: stories
+    attributes:
+      label: Breakdown into Stories
+      description: List of child story issues or brief descriptions.
+  - type: textarea
+    id: related_links
+    attributes:
+      label: Related Links
+      description: Links to code, docs, or tests.
