@@ -17,8 +17,8 @@ jobs:
           PR_BODY=$(echo "$PR_BODY" | tr -d '\r')
           MIN_LENGTH=50
           
-          # Remove markdown formatting for length check
-          CLEAN_BODY=$(echo "$PR_BODY" | sed 's/<!--.*-->//g' | sed 's/`//g' | sed 's/\*\*//g' | sed 's/\*//g' | sed 's/###*//g' | sed 's/---*//g')
+          # Remove markdown formatting and HTML comments for length check
+          CLEAN_BODY=$(echo "$PR_BODY" | perl -0777 -pe 's/<!--.*?-->//gs' | sed 's/`//g' | sed 's/\*\*//g' | sed 's/\*//g' | sed 's/###*//g' | sed 's/---*//g')
           
           if [ ${#CLEAN_BODY} -lt $MIN_LENGTH ]; then
             echo "❌ PR description is too short (${#CLEAN_BODY} characters). Please provide a detailed description of at least $MIN_LENGTH characters explaining the changes."
