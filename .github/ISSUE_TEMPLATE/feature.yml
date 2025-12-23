@@ -14,7 +14,7 @@ body:
     id: parent_epic
     attributes:
       label: Parent Epic
-      description: Link to the parent epic issue (e.g., #123).
+      description: Link to the parent epic issue (e.g., "#123").
   - type: input
     id: timeline
     attributes:
