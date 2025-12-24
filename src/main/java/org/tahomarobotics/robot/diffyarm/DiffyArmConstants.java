@@ -22,6 +22,7 @@
 
 package org.tahomarobotics.robot.diffyarm;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 
 import static edu.wpi.first.units.Units.Degrees;
@@ -35,8 +36,13 @@ public class DiffyArmConstants {
     public static final Angle WRIST_MIN_POSITION = Degrees.of(0);
     public static final Angle WRIST_MAX_POSITION = Degrees.of(300);
 
+    // Gear ratios
     public static final double ELBOW_GEARBOX_RATIO = 60d / 10d * 48d / 12d;
     public static final double WRIST_GEARBOX_RATIO = ELBOW_GEARBOX_RATIO * 45d / 15d;
+
+    // Increment values
+    public static final Angle ELBOW_INCREMENT = Degrees.of(5);
+    public static final Angle WRIST_INCREMENT = Degrees.of(5);
 
     public static final double VOLTAGE = 12.0;
 }
