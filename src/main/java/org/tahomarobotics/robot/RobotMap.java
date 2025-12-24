@@ -35,4 +35,6 @@ public final class RobotMap {
 
     public final static int DIFFY_ARM_TOP_MOTOR = 5;
     public final static int DIFFY_ARM_BOTTOM_MOTOR = 6;
+    public final static int DIFFY_ARM_TOP_ENCODER = 7;
+    public final static int DIFFY_ARM_BOTTOM_ENCODER = 8;
 }

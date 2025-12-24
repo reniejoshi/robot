@@ -22,6 +22,7 @@
 
 package org.tahomarobotics.robot.diffyarm;
 
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import org.tahomarobotics.robot.RobotMap;
 import org.tahomarobotics.robot.util.AbstractSubsystem;
@@ -32,17 +33,25 @@ public class DiffyArmSubsystem extends AbstractSubsystem {
     private final TalonFX topMotor;
     private final TalonFX bottomMotor;
 
+    // Absolute encoders
+    private final CANcoder topEncoder;
+    private final CANcoder bottomEncoder;
+
     public DiffyArmSubsystem() {
         // Initialize hardware
         topMotor = new TalonFX(RobotMap.DIFFY_ARM_TOP_MOTOR);
         bottomMotor = new TalonFX(RobotMap.DIFFY_ARM_BOTTOM_MOTOR);
+        topEncoder = new CANcoder(RobotMap.DIFFY_ARM_TOP_ENCODER);
+        bottomEncoder = new CANcoder(RobotMap.DIFFY_ARM_BOTTOM_ENCODER);
 
         Logger.info("Creating an instance of DiffyArmSubsystem...");
     }
 
-    DiffyArmSubsystem(TalonFX topMotor, TalonFX bottomMotor) {
+    DiffyArmSubsystem(TalonFX topMotor, TalonFX bottomMotor, CANcoder topEncoder, CANcoder bottomEncoder) {
         this.topMotor = topMotor;
         this.bottomMotor = bottomMotor;
+        this.topEncoder = topEncoder;
+        this.bottomEncoder = bottomEncoder;
     }
 
     @Override
