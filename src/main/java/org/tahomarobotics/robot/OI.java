@@ -96,6 +96,8 @@ public class OI {
         // Toggle continuous vs discrete mode
         controller.b().onTrue(elevator.toggleMode());
 
+        // x-axis controls elbow position, y-axis controls wrist position
+        // Up moves diffy arm joint clockwise, down moves diffy arm joint counterclockwise
         diffyArm.setDefaultCommand(diffyArm.setArmPosition(this::getLeftX, this::getLeftY));
     }
 
