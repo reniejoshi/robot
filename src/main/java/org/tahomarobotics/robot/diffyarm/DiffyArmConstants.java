@@ -22,15 +22,14 @@
 
 package org.tahomarobotics.robot.diffyarm;
 
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 
 import static edu.wpi.first.units.Units.Degrees;
 
 public class DiffyArmConstants {
-    // Arm limits
-    public static final Angle ARM_MIN_POSITION = Degrees.of(0);
-    public static final Angle ARM_MAX_POSITION = Degrees.of(180);
+    // Elbow limits
+    public static final Angle ELBOW_MIN_POSITION = Degrees.of(0);
+    public static final Angle ELBOW_MAX_POSITION = Degrees.of(180);
 
     // Wrist limits
     public static final Angle WRIST_MIN_POSITION = Degrees.of(0);

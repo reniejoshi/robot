@@ -25,7 +25,7 @@ package org.tahomarobotics.robot.diffyarm;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import edu.wpi.first.units.Units;
+import edu.wpi.first.math.MathUtil;
 import org.tahomarobotics.robot.RobotMap;
 import org.tahomarobotics.robot.util.AbstractSubsystem;
 import org.littletonrobotics.junction.Logger;
@@ -45,6 +45,10 @@ public class DiffyArmSubsystem extends AbstractSubsystem {
 
     // Control requests
     private final PositionVoltage positionControl = new PositionVoltage(0);
+
+    // Target angles
+    private double targetElbowPosition = 0;
+    private double targetWristPosition = 0;
 
     public DiffyArmSubsystem() {
         // Initialize hardware
@@ -71,14 +75,23 @@ public class DiffyArmSubsystem extends AbstractSubsystem {
         double y = rightYSupplier.getAsDouble();
         Logger.recordOutput("Diffy Arm/Right Y Axis", y);
 
-        double elbowAngle = x * DiffyArmConstants.ARM_MAX_POSITION.in(Units.Degrees);
-        Logger.recordOutput("Diffy Arm/Elbow Angle", elbowAngle);
-        double wristAngle = y * DiffyArmConstants.WRIST_MAX_POSITION.in(Degrees);
-        Logger.recordOutput("Diffy Arm/Wrist Angle", wristAngle);
+        double elbowIncrease = x * DiffyArmConstants.ELBOW_INCREMENT.in(Degrees);
+        double wristIncrease = y * DiffyArmConstants.WRIST_INCREMENT.in(Degrees);
 
-        double topMotorPosition = (elbowAngle + wristAngle) * DiffyArmConstants.ELBOW_GEARBOX_RATIO;
+        targetElbowPosition = MathUtil.clamp(
+            targetElbowPosition + elbowIncrease,
+             DiffyArmConstants.ELBOW_MIN_POSITION.in(Degrees),
+             DiffyArmConstants.ELBOW_MAX_POSITION.in(Degrees)
+        );
+        targetWristPosition = MathUtil.clamp(
+            targetWristPosition + wristIncrease,
+            DiffyArmConstants.WRIST_MIN_POSITION.in(Degrees),
+            DiffyArmConstants.WRIST_MAX_POSITION.in(Degrees)
+        );
+
+        double topMotorPosition = (targetElbowPosition + targetWristPosition) * DiffyArmConstants.ELBOW_GEARBOX_RATIO;
         Logger.recordOutput("Diffy Arm/Top Motor Position", Degrees.of(topMotorPosition));
-        double bottomMotorPosition = (elbowAngle - wristAngle) * DiffyArmConstants.ELBOW_GEARBOX_RATIO;
+        double bottomMotorPosition = Math.abs((targetElbowPosition - targetWristPosition) * DiffyArmConstants.ELBOW_GEARBOX_RATIO);
         Logger.recordOutput("Diffy Arm/Bottom Motor Position", Degrees.of(bottomMotorPosition));
 
         topMotor.setControl(positionControl.withPosition(Degrees.of(topMotorPosition)));
@@ -87,6 +100,7 @@ public class DiffyArmSubsystem extends AbstractSubsystem {
 
     @Override
     public void subsystemPeriodic() {
-
+        Logger.recordOutput("Diffy Arm/Target Elbow Position", targetElbowPosition);
+        Logger.recordOutput("Diffy Arm/Target Wrist Position", targetWristPosition);
     }
 }
