@@ -39,8 +39,8 @@ public class DiffyArm {
         this.diffyArm = diffyArm;
     }
 
-    public Command setArmPosition(DoubleSupplier rightXSupplier, DoubleSupplier rightYSupplier) {
-        return diffyArm.run(() -> diffyArm.setArmPosition(rightXSupplier, rightYSupplier));
+    public Command setArmPosition(DoubleSupplier leftXSupplier, DoubleSupplier leftYSupplier) {
+        return diffyArm.run(() -> diffyArm.setArmPosition(leftXSupplier, leftYSupplier));
     }
 
     public void setDefaultCommand(Command defaultCommand) {

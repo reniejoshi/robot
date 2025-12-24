@@ -69,11 +69,11 @@ public class DiffyArmSubsystem extends AbstractSubsystem {
 
     // Setters
 
-    public void setArmPosition(DoubleSupplier rightXSupplier, DoubleSupplier rightYSupplier) {
-        double x = rightXSupplier.getAsDouble();
-        Logger.recordOutput("Diffy Arm/Right X Axis", x);
-        double y = rightYSupplier.getAsDouble();
-        Logger.recordOutput("Diffy Arm/Right Y Axis", y);
+    public void setArmPosition(DoubleSupplier leftXSupplier, DoubleSupplier leftYSupplier) {
+        double x = leftXSupplier.getAsDouble();
+        Logger.recordOutput("Diffy Arm/Left X Axis", x);
+        double y = leftYSupplier.getAsDouble();
+        Logger.recordOutput("Diffy Arm/Left Y Axis", y);
 
         double elbowIncrease = x * DiffyArmConstants.ELBOW_INCREMENT.in(Degrees);
         double wristIncrease = y * DiffyArmConstants.WRIST_INCREMENT.in(Degrees);
