@@ -22,11 +22,17 @@
 
 package org.tahomarobotics.robot.diffyarm;
 
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.units.Units;
 import org.tahomarobotics.robot.RobotMap;
 import org.tahomarobotics.robot.util.AbstractSubsystem;
-import org.tinylog.Logger;
+import org.littletonrobotics.junction.Logger;
+
+import java.util.function.DoubleSupplier;
+
+import static edu.wpi.first.units.Units.Degrees;
 
 public class DiffyArmSubsystem extends AbstractSubsystem {
     // Motors
@@ -37,6 +43,9 @@ public class DiffyArmSubsystem extends AbstractSubsystem {
     private final CANcoder topEncoder;
     private final CANcoder bottomEncoder;
 
+    // Control requests
+    private final PositionVoltage positionControl = new PositionVoltage(0);
+
     public DiffyArmSubsystem() {
         // Initialize hardware
         topMotor = new TalonFX(RobotMap.DIFFY_ARM_TOP_MOTOR);
@@ -44,7 +53,7 @@ public class DiffyArmSubsystem extends AbstractSubsystem {
         topEncoder = new CANcoder(RobotMap.DIFFY_ARM_TOP_ENCODER);
         bottomEncoder = new CANcoder(RobotMap.DIFFY_ARM_BOTTOM_ENCODER);
 
-        Logger.info("Creating an instance of DiffyArmSubsystem...");
+        org.tinylog.Logger.info("Creating an instance of DiffyArmSubsystem...");
     }
 
     DiffyArmSubsystem(TalonFX topMotor, TalonFX bottomMotor, CANcoder topEncoder, CANcoder bottomEncoder) {
@@ -52,6 +61,28 @@ public class DiffyArmSubsystem extends AbstractSubsystem {
         this.bottomMotor = bottomMotor;
         this.topEncoder = topEncoder;
         this.bottomEncoder = bottomEncoder;
+    }
+
+    // Setters
+
+    public void setArmPosition(DoubleSupplier rightXSupplier, DoubleSupplier rightYSupplier) {
+        double x = rightXSupplier.getAsDouble();
+        Logger.recordOutput("Diffy Arm/Right X Axis", x);
+        double y = rightYSupplier.getAsDouble();
+        Logger.recordOutput("Diffy Arm/Right Y Axis", y);
+
+        double elbowAngle = x * DiffyArmConstants.ARM_MAX_POSITION.in(Units.Degrees);
+        Logger.recordOutput("Diffy Arm/Elbow Angle", Degrees.of(elbowAngle));
+        double wristAngle = y * DiffyArmConstants.WRIST_MAX_POSITION.in(Degrees);
+        Logger.recordOutput("Diffy Arm/Wrist Angle", Degrees.of(wristAngle));
+
+        double topMotorPosition = (elbowAngle + wristAngle) * DiffyArmConstants.ELBOW_GEARBOX_RATIO;
+        Logger.recordOutput("Diffy Arm/Top Motor Position", Degrees.of(topMotorPosition));
+        double bottomMotorPosition = (elbowAngle - wristAngle) * DiffyArmConstants.ELBOW_GEARBOX_RATIO;
+        Logger.recordOutput("Diffy Arm/Bottom Motor Position", Degrees.of(bottomMotorPosition));
+
+        topMotor.setControl(positionControl.withPosition(Degrees.of(topMotorPosition)));
+        bottomMotor.setControl(positionControl.withPosition(Degrees.of(bottomMotorPosition)));
     }
 
     @Override
