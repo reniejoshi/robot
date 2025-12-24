@@ -20,21 +20,26 @@
  * THE SOFTWARE.
  */
 
-package org.tahomarobotics.robot;
+package org.tahomarobotics.robot.diffyarm;
 
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.units.measure.Angle;
 
-public final class RobotMap {
-    public final static int PIGEON = 0; // Internal IMU. Will not be used in Extra Programming Projects (Robot)
+import static edu.wpi.first.units.Units.Degrees;
 
-    public final static int ARM_MOTOR = 1;
-    public final static int WRIST_MOTOR = 2;
+public class DiffyArmConstants {
+    // Elbow limits
+    public static final Angle ELBOW_MIN_POSITION = Degrees.of(0);
+    public static final Angle ELBOW_MAX_POSITION = Degrees.of(180);
 
-    public final static int ELEVATOR_LEFT_MOTOR = 3;
-    public final static int ELEVATOR_RIGHT_MOTOR = 4;
+    // Wrist limits
+    public static final Angle WRIST_MIN_POSITION = Degrees.of(0);
+    public static final Angle WRIST_MAX_POSITION = Degrees.of(300);
 
-    public final static int DIFFY_ARM_TOP_MOTOR = 5;
-    public final static int DIFFY_ARM_BOTTOM_MOTOR = 6;
-    public final static int DIFFY_ARM_TOP_ENCODER = 7;
-    public final static int DIFFY_ARM_BOTTOM_ENCODER = 8;
+    // Gear ratios
+    public static final double ELBOW_GEARBOX_RATIO = 60d / 10d * 48d / 12d;
+    public static final double WRIST_GEARBOX_RATIO = ELBOW_GEARBOX_RATIO * 45d / 15d;
+
+    // Increment values
+    public static final Angle ELBOW_INCREMENT = Degrees.of(5);
+    public static final Angle WRIST_INCREMENT = Degrees.of(5);
 }
