@@ -40,6 +40,11 @@ public class DiffyArmSubsystem extends AbstractSubsystem {
         Logger.info("Creating an instance of DiffyArmSubsystem...");
     }
 
+    DiffyArmSubsystem(TalonFX topMotor, TalonFX bottomMotor) {
+        this.topMotor = topMotor;
+        this.bottomMotor = bottomMotor;
+    }
+
     @Override
     public void subsystemPeriodic() {
 
