@@ -22,10 +22,13 @@
 
 package org.tahomarobotics.robot.diffyarm;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.units.measure.Angle;
 import org.tahomarobotics.robot.RobotMap;
 import org.tahomarobotics.robot.util.AbstractSubsystem;
 import org.littletonrobotics.junction.Logger;
@@ -40,11 +43,15 @@ public class DiffyArmSubsystem extends AbstractSubsystem {
     private final TalonFX bottomMotor;
 
     // Absolute encoders
-    private final CANcoder topEncoder;
-    private final CANcoder bottomEncoder;
+    private final CANcoder elbowEncoder;
+    private final CANcoder wristEncoder;
 
     // Control requests
     private final PositionVoltage positionControl = new PositionVoltage(0);
+
+    // Status signals
+    private StatusSignal<Angle> elbowPosition;
+    private StatusSignal<Angle> wristPosition;
 
     // Target angles
     private double targetElbowPosition = 0;
@@ -54,17 +61,20 @@ public class DiffyArmSubsystem extends AbstractSubsystem {
         // Initialize hardware
         topMotor = new TalonFX(RobotMap.DIFFY_ARM_TOP_MOTOR);
         bottomMotor = new TalonFX(RobotMap.DIFFY_ARM_BOTTOM_MOTOR);
-        topEncoder = new CANcoder(RobotMap.DIFFY_ARM_TOP_ENCODER);
-        bottomEncoder = new CANcoder(RobotMap.DIFFY_ARM_BOTTOM_ENCODER);
+        elbowEncoder = new CANcoder(RobotMap.DIFFY_ARM_TOP_ENCODER);
+        wristEncoder = new CANcoder(RobotMap.DIFFY_ARM_BOTTOM_ENCODER);
+
+        elbowPosition = elbowEncoder.getPosition();
+        wristPosition = wristEncoder.getPosition();
 
         org.tinylog.Logger.info("Creating an instance of DiffyArmSubsystem...");
     }
 
-    DiffyArmSubsystem(TalonFX topMotor, TalonFX bottomMotor, CANcoder topEncoder, CANcoder bottomEncoder) {
+    DiffyArmSubsystem(TalonFX topMotor, TalonFX bottomMotor, CANcoder elbowEncoder, CANcoder wristEncoder) {
         this.topMotor = topMotor;
         this.bottomMotor = bottomMotor;
-        this.topEncoder = topEncoder;
-        this.bottomEncoder = bottomEncoder;
+        this.elbowEncoder = elbowEncoder;
+        this.wristEncoder = wristEncoder;
     }
 
     // Setters
@@ -100,7 +110,11 @@ public class DiffyArmSubsystem extends AbstractSubsystem {
 
     @Override
     public void subsystemPeriodic() {
+        BaseStatusSignal.refreshAll(elbowEncoder.getPosition(), wristEncoder.getPosition());
+
         Logger.recordOutput("Diffy Arm/Target Elbow Position", targetElbowPosition);
         Logger.recordOutput("Diffy Arm/Target Wrist Position", targetWristPosition);
+        Logger.recordOutput("Diffy Arm/Elbow Position", elbowPosition.getValue().in(Degrees));
+        Logger.recordOutput("Diffy Arm/Wrist Position", wristPosition.getValue().in(Degrees));
     }
 }
