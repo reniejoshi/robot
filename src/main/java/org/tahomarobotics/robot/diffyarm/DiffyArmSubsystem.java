@@ -72,9 +72,9 @@ public class DiffyArmSubsystem extends AbstractSubsystem {
         Logger.recordOutput("Diffy Arm/Right Y Axis", y);
 
         double elbowAngle = x * DiffyArmConstants.ARM_MAX_POSITION.in(Units.Degrees);
-        Logger.recordOutput("Diffy Arm/Elbow Angle", Degrees.of(elbowAngle));
+        Logger.recordOutput("Diffy Arm/Elbow Angle", elbowAngle);
         double wristAngle = y * DiffyArmConstants.WRIST_MAX_POSITION.in(Degrees);
-        Logger.recordOutput("Diffy Arm/Wrist Angle", Degrees.of(wristAngle));
+        Logger.recordOutput("Diffy Arm/Wrist Angle", wristAngle);
 
         double topMotorPosition = (elbowAngle + wristAngle) * DiffyArmConstants.ELBOW_GEARBOX_RATIO;
         Logger.recordOutput("Diffy Arm/Top Motor Position", Degrees.of(topMotorPosition));

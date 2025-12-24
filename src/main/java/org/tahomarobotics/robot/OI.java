@@ -95,6 +95,8 @@ public class OI {
 
         // Toggle continuous vs discrete mode
         controller.b().onTrue(elevator.toggleMode());
+
+        diffyArm.setDefaultCommand(diffyArm.setArmPosition(this::getLeftX, this::getLeftY));
     }
 
     public void configureLessImportantControllerBindings() {

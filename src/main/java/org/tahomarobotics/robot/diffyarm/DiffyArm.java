@@ -22,7 +22,10 @@
 
 package org.tahomarobotics.robot.diffyarm;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import org.tinylog.Logger;
+
+import java.util.function.DoubleSupplier;
 
 public class DiffyArm {
     private final DiffyArmSubsystem diffyArm;
@@ -34,5 +37,13 @@ public class DiffyArm {
 
     DiffyArm(DiffyArmSubsystem diffyArm) {
         this.diffyArm = diffyArm;
+    }
+
+    public Command setArmPosition(DoubleSupplier rightXSupplier, DoubleSupplier rightYSupplier) {
+        return diffyArm.run(() -> diffyArm.setArmPosition(rightXSupplier, rightYSupplier));
+    }
+
+    public void setDefaultCommand(Command defaultCommand) {
+        diffyArm.setDefaultCommand(defaultCommand);
     }
 }
