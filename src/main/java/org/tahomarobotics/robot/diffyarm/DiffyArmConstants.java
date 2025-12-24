@@ -42,6 +42,4 @@ public class DiffyArmConstants {
     // Increment values
     public static final Angle ELBOW_INCREMENT = Degrees.of(5);
     public static final Angle WRIST_INCREMENT = Degrees.of(5);
-
-    public static final double VOLTAGE = 12.0;
 }
