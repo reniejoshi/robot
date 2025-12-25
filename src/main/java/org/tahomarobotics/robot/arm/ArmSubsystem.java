@@ -35,21 +35,21 @@ public class ArmSubsystem extends AbstractSubsystem {
         double y = rightYSupplier.getAsDouble();
         Logger.recordOutput("Arm/Right Y Axis", y);
 
-        double increase = y * ArmConstants.ARM_INCREMENT;
+        double increase = y * ArmConstants.ARM_INCREMENT.in(Degrees);
         targetArmPosition = MathUtil.clamp(
             targetArmPosition + increase,
-            ArmConstants.ARM_MIN_POSITION,
-            ArmConstants.ARM_MAX_POSITION
+            ArmConstants.ARM_MIN_POSITION.in(Degrees),
+            ArmConstants.ARM_MAX_POSITION.in(Degrees)
         );
         armMotor.setControl(positionControl.withPosition(Degrees.of(targetArmPosition)));
     }
 
     public void setWristPositionClockwise() {
-        moveWristToTargetPosition(ArmConstants.WRIST_INCREMENT);
+        moveWristToTargetPosition(ArmConstants.WRIST_INCREMENT.in(Degrees));
     }
 
     public void setWristPositionCounterclockwise() {
-        moveWristToTargetPosition(-ArmConstants.WRIST_INCREMENT);
+        moveWristToTargetPosition(-ArmConstants.WRIST_INCREMENT.in(Degrees));
     }
 
     // Helpers
@@ -57,8 +57,8 @@ public class ArmSubsystem extends AbstractSubsystem {
     private void moveWristToTargetPosition(double increase) {
         targetWristPosition = MathUtil.clamp(
             targetWristPosition + increase,
-            ArmConstants.WRIST_MIN_POSITION,
-            ArmConstants.WRIST_MAX_POSITION
+            ArmConstants.WRIST_MIN_POSITION.in(Degrees),
+            ArmConstants.WRIST_MAX_POSITION.in(Degrees)
         );
         wristMotor.setControl(positionControl.withPosition(Degrees.of(targetWristPosition)));
     }
