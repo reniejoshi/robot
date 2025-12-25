@@ -39,6 +39,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.tahomarobotics.robot.arm.Arm;
 import org.tahomarobotics.robot.diffyarm.DiffyArm;
 import org.tahomarobotics.robot.elevator.Elevator;
+import org.tahomarobotics.robot.shooter.Shooter;
 import org.tinylog.Logger;
 
 import java.util.List;
@@ -50,6 +51,7 @@ public class OI {
     private final Arm arm;
     private final DiffyArm diffyArm;
     private final Elevator elevator;
+    private final Shooter shooter;
 
     // -- Constants --
 
@@ -68,6 +70,7 @@ public class OI {
         this.arm = robotContainer.arm;
         this.diffyArm = robotContainer.diffyArm;
         this.elevator = robotContainer.elevator;
+        this.shooter = robotContainer.shooter;
 
         configureControllerBindings();
         configureLessImportantControllerBindings();
