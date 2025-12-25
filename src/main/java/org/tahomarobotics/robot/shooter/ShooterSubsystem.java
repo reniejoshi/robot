@@ -22,6 +22,8 @@
 
 package org.tahomarobotics.robot.shooter;
 
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import org.tahomarobotics.robot.RobotMap;
 import org.tahomarobotics.robot.util.AbstractSubsystem;
@@ -31,6 +33,10 @@ public class ShooterSubsystem extends AbstractSubsystem {
     private final TalonFX pivotMotor;
     private final TalonFX flywheelMotor;
     private final TalonFX passthroughMotor;
+
+    // Control requests
+    private final PositionVoltage positionControl = new PositionVoltage(0);
+    private final VelocityVoltage velocityControl = new VelocityVoltage(0);
 
     public ShooterSubsystem() {
         // Initialize hardware
@@ -45,6 +51,12 @@ public class ShooterSubsystem extends AbstractSubsystem {
         this.pivotMotor = pivotMotor;
         this.flywheelMotor = flywheelMotor;
         this.passthroughMotor = passthroughMotor;
+    }
+
+    // Setters
+    public void shoot() {
+        passthroughMotor.setControl(velocityControl.withVelocity(ShooterConstants.PASSTHROUGH_VELOCITY));
+        flywheelMotor.setControl(velocityControl.withVelocity(ShooterConstants.FLYWHEEL_VELOCITY));
     }
 
     @Override

@@ -34,4 +34,5 @@ public class ShooterConstants {
     public static final Angle PIVOT_MAX_POSITION = Degrees.of(135);
 
     public static final AngularVelocity FLYWHEEL_VELOCITY = RotationsPerSecond.of(300);
+    public static final AngularVelocity PASSTHROUGH_VELOCITY = RotationsPerSecond.of(1);
 }
