@@ -20,25 +20,7 @@
  * THE SOFTWARE.
  */
 
-package org.tahomarobotics.robot;
+package org.tahomarobotics.robot.shooter;
 
-import edu.wpi.first.math.geometry.Translation2d;
-
-public final class RobotMap {
-    public final static int PIGEON = 0; // Internal IMU. Will not be used in Extra Programming Projects (Robot)
-
-    public final static int ARM_MOTOR = 1;
-    public final static int WRIST_MOTOR = 2;
-
-    public final static int ELEVATOR_LEFT_MOTOR = 3;
-    public final static int ELEVATOR_RIGHT_MOTOR = 4;
-
-    public final static int DIFFY_ARM_TOP_MOTOR = 5;
-    public final static int DIFFY_ARM_BOTTOM_MOTOR = 6;
-    public final static int DIFFY_ARM_TOP_ENCODER = 7;
-    public final static int DIFFY_ARM_BOTTOM_ENCODER = 8;
-
-    public final static int SHOOTER_PIVOT_MOTOR = 9;
-    public final static int SHOOTER_FLYWHEEL_MOTOR = 10;
-    public final static int SHOOTER_PASSTHROUGH_MOTOR = 11;
+public class Shooter {
 }

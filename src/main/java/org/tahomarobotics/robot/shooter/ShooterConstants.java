@@ -20,25 +20,18 @@
  * THE SOFTWARE.
  */
 
-package org.tahomarobotics.robot;
+package org.tahomarobotics.robot.shooter;
 
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 
-public final class RobotMap {
-    public final static int PIGEON = 0; // Internal IMU. Will not be used in Extra Programming Projects (Robot)
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 
-    public final static int ARM_MOTOR = 1;
-    public final static int WRIST_MOTOR = 2;
+public class ShooterConstants {
+    // Pivot limits
+    public static final Angle PIVOT_MIN_POSITION = Degrees.of(45);
+    public static final Angle PIVOT_MAX_POSITION = Degrees.of(135);
 
-    public final static int ELEVATOR_LEFT_MOTOR = 3;
-    public final static int ELEVATOR_RIGHT_MOTOR = 4;
-
-    public final static int DIFFY_ARM_TOP_MOTOR = 5;
-    public final static int DIFFY_ARM_BOTTOM_MOTOR = 6;
-    public final static int DIFFY_ARM_TOP_ENCODER = 7;
-    public final static int DIFFY_ARM_BOTTOM_ENCODER = 8;
-
-    public final static int SHOOTER_PIVOT_MOTOR = 9;
-    public final static int SHOOTER_FLYWHEEL_MOTOR = 10;
-    public final static int SHOOTER_PASSTHROUGH_MOTOR = 11;
+    public static final AngularVelocity FLYWHEEL_VELOCITY = RotationsPerSecond.of(300);
 }
