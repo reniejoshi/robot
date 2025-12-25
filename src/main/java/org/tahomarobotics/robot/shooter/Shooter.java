@@ -23,4 +23,13 @@
 package org.tahomarobotics.robot.shooter;
 
 public class Shooter {
+    private final ShooterSubsystem shooter;
+
+    public Shooter() {
+        this(new ShooterSubsystem());
+    }
+
+    Shooter(ShooterSubsystem shooter) {
+        this.shooter = shooter;
+    }
 }
