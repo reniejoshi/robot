@@ -54,8 +54,12 @@ public class ShooterSubsystem extends AbstractSubsystem {
     }
 
     // Setters
-    public void shoot() {
+
+    public void setPassthroughIntakingVelocity() {
         passthroughMotor.setControl(velocityControl.withVelocity(ShooterConstants.PASSTHROUGH_VELOCITY));
+    }
+
+    public void setFlywheelShootingVelocity() {
         flywheelMotor.setControl(velocityControl.withVelocity(ShooterConstants.FLYWHEEL_VELOCITY));
     }
 
