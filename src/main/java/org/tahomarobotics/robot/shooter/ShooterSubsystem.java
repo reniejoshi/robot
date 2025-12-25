@@ -37,6 +37,8 @@ public class ShooterSubsystem extends AbstractSubsystem {
         pivotMotor = new TalonFX(RobotMap.SHOOTER_PIVOT_MOTOR);
         flywheelMotor = new TalonFX(RobotMap.SHOOTER_FLYWHEEL_MOTOR);
         passthroughMotor = new TalonFX(RobotMap.SHOOTER_PASSTHROUGH_MOTOR);
+
+        org.tinylog.Logger.info("Creating an instance of ShooterSubsystem....");
     }
 
     ShooterSubsystem(TalonFX pivotMotor, TalonFX flywheelMotor, TalonFX passthroughMotor) {

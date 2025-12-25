@@ -22,11 +22,14 @@
 
 package org.tahomarobotics.robot.shooter;
 
+import org.tinylog.Logger;
+
 public class Shooter {
     private final ShooterSubsystem shooter;
 
     public Shooter() {
         this(new ShooterSubsystem());
+        Logger.info("Creating an instance of Shooter....");
     }
 
     Shooter(ShooterSubsystem shooter) {
