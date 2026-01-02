@@ -35,4 +35,6 @@ public class ShooterConstants {
 
     public static final AngularVelocity FLYWHEEL_VELOCITY = RotationsPerSecond.of(300);
     public static final AngularVelocity PASSTHROUGH_VELOCITY = RotationsPerSecond.of(1);
+
+    public static final AngularVelocity THRESHOLD = RotationsPerSecond.of(0.5);
 }

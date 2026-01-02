@@ -22,6 +22,8 @@
 
 package org.tahomarobotics.robot.shooter;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import org.tinylog.Logger;
 
 public class Shooter {
@@ -34,5 +36,13 @@ public class Shooter {
 
     Shooter(ShooterSubsystem shooter) {
         this.shooter = shooter;
+    }
+
+    public Command shoot() {
+        return shooter.runOnce(shooter::setFlywheelShootingVelocity)
+                      .andThen(Commands.waitUntil(shooter::isFlywheelAtShootingVelocity))
+                      .andThen(shooter.runOnce(shooter::setPassthroughIntakingVelocity))
+                      .andThen(Commands.waitUntil(shooter::isPassthroughAtIntakingVelocity))
+                      .andThen(Commands.waitSeconds(1));
     }
 }

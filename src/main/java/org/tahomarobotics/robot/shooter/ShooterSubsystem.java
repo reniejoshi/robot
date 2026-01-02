@@ -22,9 +22,12 @@
 
 package org.tahomarobotics.robot.shooter;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.units.measure.AngularVelocity;
 import org.tahomarobotics.robot.RobotMap;
 import org.tahomarobotics.robot.util.AbstractSubsystem;
 
@@ -38,11 +41,18 @@ public class ShooterSubsystem extends AbstractSubsystem {
     private final PositionVoltage positionControl = new PositionVoltage(0);
     private final VelocityVoltage velocityControl = new VelocityVoltage(0);
 
+    // Status signals
+    private final StatusSignal<AngularVelocity> flywheelVelocity, passthroughVelocity;
+
     public ShooterSubsystem() {
         // Initialize hardware
         pivotMotor = new TalonFX(RobotMap.SHOOTER_PIVOT_MOTOR);
         flywheelMotor = new TalonFX(RobotMap.SHOOTER_FLYWHEEL_MOTOR);
         passthroughMotor = new TalonFX(RobotMap.SHOOTER_PASSTHROUGH_MOTOR);
+
+        // Initialize status signals
+        flywheelVelocity = flywheelMotor.getVelocity();
+        passthroughVelocity = passthroughMotor.getVelocity();
 
         org.tinylog.Logger.info("Creating an instance of ShooterSubsystem....");
     }
@@ -51,6 +61,10 @@ public class ShooterSubsystem extends AbstractSubsystem {
         this.pivotMotor = pivotMotor;
         this.flywheelMotor = flywheelMotor;
         this.passthroughMotor = passthroughMotor;
+
+        // Initialize status signals
+        flywheelVelocity = this.flywheelMotor.getVelocity();
+        passthroughVelocity = this.passthroughMotor.getVelocity();
     }
 
     // Setters
@@ -63,8 +77,18 @@ public class ShooterSubsystem extends AbstractSubsystem {
         flywheelMotor.setControl(velocityControl.withVelocity(ShooterConstants.FLYWHEEL_VELOCITY));
     }
 
+    // Getters
+
+    public boolean isFlywheelAtShootingVelocity() {
+        return flywheelVelocity.getValue().isNear(ShooterConstants.FLYWHEEL_VELOCITY, ShooterConstants.THRESHOLD);
+    }
+
+    public boolean isPassthroughAtIntakingVelocity() {
+        return passthroughVelocity.getValue().isNear(ShooterConstants.PASSTHROUGH_VELOCITY, ShooterConstants.THRESHOLD);
+    }
+
     @Override
     public void subsystemPeriodic() {
-
+        BaseStatusSignal.refreshAll(flywheelVelocity, passthroughVelocity);
     }
 }
