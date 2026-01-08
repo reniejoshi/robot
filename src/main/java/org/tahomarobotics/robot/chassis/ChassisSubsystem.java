@@ -41,6 +41,15 @@ public class ChassisSubsystem extends AbstractSubsystem {
         rightMotorFollower = new TalonFX(RobotMap.BACK_RIGHT_MOTOR);
     }
 
+    public void arcadeDrive(double forward, double rotate) {
+        double leftPower = forward + rotate;
+        double rightPower = forward - rotate;
+
+        leftMotorLeader.set(leftPower);
+        rightMotorLeader.set(rightPower);
+
+    }
+
     @Override
     public void subsystemPeriodic() {
 
