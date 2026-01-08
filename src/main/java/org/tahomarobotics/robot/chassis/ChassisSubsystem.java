@@ -22,6 +22,7 @@
 
 package org.tahomarobotics.robot.chassis;
 
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import org.tahomarobotics.robot.RobotMap;
 import org.tahomarobotics.robot.util.AbstractSubsystem;
@@ -39,6 +40,9 @@ public class ChassisSubsystem extends AbstractSubsystem {
         leftMotorFollower = new TalonFX(RobotMap.BACK_LEFT_MOTOR);
         rightMotorLeader = new TalonFX(RobotMap.FRONT_RIGHT_MOTOR);
         rightMotorFollower = new TalonFX(RobotMap.BACK_RIGHT_MOTOR);
+
+        leftMotorFollower.setControl(new Follower(RobotMap.FRONT_LEFT_MOTOR, false));
+        rightMotorFollower.setControl(new Follower(RobotMap.FRONT_RIGHT_MOTOR, false));
     }
 
     public void arcadeDrive(double forward, double rotate) {
