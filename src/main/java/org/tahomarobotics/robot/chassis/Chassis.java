@@ -40,4 +40,8 @@ public class Chassis {
     public Command teleOpDriveCommand(DoubleSupplier forward, DoubleSupplier rotate) {
         return chassis.run(() -> chassis.arcadeDrive(forward.getAsDouble(), rotate.getAsDouble()));
     }
+
+    public void setDefaultCommand(Command command) {
+        chassis.setDefaultCommand(command);
+    }
 }
