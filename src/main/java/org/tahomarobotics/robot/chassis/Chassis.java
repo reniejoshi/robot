@@ -22,6 +22,10 @@
 
 package org.tahomarobotics.robot.chassis;
 
+import edu.wpi.first.wpilibj2.command.Command;
+
+import java.util.function.DoubleSupplier;
+
 public class Chassis {
     private final ChassisSubsystem chassis;
 
@@ -31,5 +35,9 @@ public class Chassis {
 
     Chassis(ChassisSubsystem chassis) {
         this.chassis = chassis;
+    }
+
+    public Command teleOpDriveCommand(DoubleSupplier forward, DoubleSupplier rotate) {
+        return chassis.run(() -> chassis.arcadeDrive(forward.getAsDouble(), rotate.getAsDouble()));
     }
 }
