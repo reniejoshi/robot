@@ -22,17 +22,23 @@
 
 package org.tahomarobotics.robot.chassis;
 
+import com.ctre.phoenix6.hardware.TalonFX;
+import org.tahomarobotics.robot.RobotMap;
 import org.tahomarobotics.robot.util.AbstractSubsystem;
 
 public class ChassisSubsystem extends AbstractSubsystem {
     // -- Hardware --
+    private final TalonFX leftMotorLeader, leftMotorFollower, rightMotorLeader, rightMotorFollower;
 
     // -- Control requests --
 
     // -- Status signals --
 
     public ChassisSubsystem() {
-
+        leftMotorLeader = new TalonFX(RobotMap.FRONT_LEFT_MOTOR);
+        leftMotorFollower = new TalonFX(RobotMap.BACK_LEFT_MOTOR);
+        rightMotorLeader = new TalonFX(RobotMap.FRONT_RIGHT_MOTOR);
+        rightMotorFollower = new TalonFX(RobotMap.BACK_RIGHT_MOTOR);
     }
 
     @Override
