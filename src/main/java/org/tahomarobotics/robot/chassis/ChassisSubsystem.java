@@ -24,6 +24,7 @@ package org.tahomarobotics.robot.chassis;
 
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
+import org.littletonrobotics.junction.Logger;
 import org.tahomarobotics.robot.RobotMap;
 import org.tahomarobotics.robot.util.AbstractSubsystem;
 
@@ -48,6 +49,11 @@ public class ChassisSubsystem extends AbstractSubsystem {
     public void arcadeDrive(double forward, double rotate) {
         double leftPower = forward + rotate;
         double rightPower = forward - rotate;
+
+        Logger.recordOutput("Chassis/Forward", forward);
+        Logger.recordOutput("Chassis/Rotate", rotate);
+        Logger.recordOutput("Chassis/Left Power", leftPower);
+        Logger.recordOutput("Chassis/Right Power", rightPower);
 
         leftMotorLeader.set(leftPower);
         rightMotorLeader.set(rightPower);
