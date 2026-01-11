@@ -25,7 +25,16 @@ package org.tahomarobotics.robot;
 import edu.wpi.first.math.geometry.Translation2d;
 
 public final class RobotMap {
-    public final static int PIGEON = 0; // Internal IMU. Will not be used in Extra Programming Projects (Robot)
+    public static final String CANBUS_NAME = "CANivore";
+
+    public static final int PIGEON = 0;
+
+    public final static ModuleId FRONT_LEFT_MODULE  = new ModuleId("Front Left Module",  1, 11, 21);
+    public final static ModuleId FRONT_RIGHT_MODULE = new ModuleId("Front Right Module", 2, 12, 22);
+    public final static ModuleId BACK_LEFT_MODULE   = new ModuleId("Back Left Module",   3, 13, 23);
+    public final static ModuleId BACK_RIGHT_MODULE  = new ModuleId("Back Right Module",  4, 14, 24);
+
+    public record ModuleId(String moduleName, int driveId, int steerId, int cancoderId) {}
 
     public final static int ARM_MOTOR = 1;
     public final static int WRIST_MOTOR = 2;
