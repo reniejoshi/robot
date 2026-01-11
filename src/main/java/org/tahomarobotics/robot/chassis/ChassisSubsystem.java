@@ -28,6 +28,7 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import org.littletonrobotics.junction.Logger;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static org.tahomarobotics.robot.RobotMap.*;
@@ -48,5 +49,14 @@ public class ChassisSubsystem extends SwerveDrivetrain<TalonFX, TalonFX, CANcode
                      SwerveDrivetrainConstants drivetrainConstants,
                      SwerveModuleConstants<?, ?, ?>... modules) {
         super(driveMotorConstructor, steerMotorConstructor, encoderConstructor, drivetrainConstants, modules);
+    }
+
+    @Override
+    public void periodic() {
+        SwerveDriveState state = getStateCopy();
+        Logger.recordOutput("Chassis/Odometry Pose", state.Pose);
+        Logger.recordOutput("Chassis/Measured States", state.ModuleStates);
+        Logger.recordOutput("Chassis/Target States", state.ModuleTargets);
+        Logger.recordOutput("Chassis/Measured Speeds", state.Speeds);
     }
 }
