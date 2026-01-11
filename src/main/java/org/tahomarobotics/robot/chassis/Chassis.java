@@ -22,5 +22,20 @@
 
 package org.tahomarobotics.robot.chassis;
 
+import java.util.function.DoubleSupplier;
+
 public class Chassis {
+    private final ChassisSubsystem chassis;
+
+    public Chassis() {
+        this(new ChassisSubsystem());
+    }
+
+    Chassis(ChassisSubsystem chassis) {
+        this.chassis = chassis;
+    }
+
+    public void bindTeleopDrive(DoubleSupplier forward, DoubleSupplier strafe, DoubleSupplier rotate) {
+
+    }
 }
