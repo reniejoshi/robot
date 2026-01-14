@@ -125,29 +125,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain<TalonFX, TalonFX, 
     /* The SysId routine to test */
     private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineTranslation;
 
-    public CommandSwerveDrivetrain() {
-        this(TalonFX::new, TalonFX::new, CANcoder::new, TunerConstants.DrivetrainConstants,
-             TunerConstants.FrontLeft, TunerConstants.FrontRight, TunerConstants.BackLeft, TunerConstants.BackRight);
-    }
-
-    /**
-     * Constructs a CTRE SwerveDrivetrain using the specified constants.
-     * <p>
-     * This constructs the underlying hardware devices, so users should not construct
-     * the devices themselves. If they need the devices, they can access them through
-     * getters in the classes.
-     *
-     * @param drivetrainConstants   Drivetrain-wide constants for the swerve drive
-     * @param modules               Constants for each specific module
-     */
-     CommandSwerveDrivetrain(DeviceConstructor<TalonFX> driveMotorConstructor,
-        DeviceConstructor<TalonFX> steerMotorConstructor,
-        DeviceConstructor<CANcoder> encoderConstructor,
-        SwerveDrivetrainConstants drivetrainConstants,
-        SwerveModuleConstants<?, ?, ?>... modules) {
-        super(driveMotorConstructor, steerMotorConstructor, encoderConstructor, drivetrainConstants, modules);
-    }
-
     /**
      * Returns a command that applies the specified control request to this swerve drivetrain.
      *
