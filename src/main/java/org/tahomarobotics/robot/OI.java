@@ -36,10 +36,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import org.tahomarobotics.robot.arm.Arm;
-import org.tahomarobotics.robot.diffyarm.DiffyArm;
-import org.tahomarobotics.robot.elevator.Elevator;
-import org.tahomarobotics.robot.shooter.Shooter;
 import org.tinylog.Logger;
 
 import java.util.List;
@@ -48,10 +44,7 @@ import java.util.function.Function;
 
 public class OI {
     // Subsystems
-    private final Arm arm;
-    private final DiffyArm diffyArm;
-    private final Elevator elevator;
-    private final Shooter shooter;
+
 
     // -- Constants --
 
@@ -67,11 +60,6 @@ public class OI {
     public OI(RobotContainer robotContainer) {
         DriverStation.silenceJoystickConnectionWarning(true);
 
-        this.arm = robotContainer.arm;
-        this.diffyArm = robotContainer.diffyArm;
-        this.elevator = robotContainer.elevator;
-        this.shooter = robotContainer.shooter;
-
         configureControllerBindings();
         configureLessImportantControllerBindings();
 
@@ -81,27 +69,7 @@ public class OI {
     // -- Bindings --
 
     public void configureControllerBindings() {
-        // Up moves arm clockwise, down moves arm counterclockwise
-        arm.setDefaultCommand(arm.setArmPosition(this::getRightY));
 
-        // Moves wrist clockwise
-        controller.rightTrigger().whileTrue(arm.setWristPositionClockwise());
-
-        // Moves wrist counterclockwise
-        controller.leftTrigger().whileTrue(arm.setWristPositionCounterclockwise());
-
-        // Moves elevator to top
-        controller.y().onTrue(elevator.moveToTopPosition());
-
-        // Moves elevator to bottom
-        controller.a().onTrue(elevator.moveToBottomPosition());
-
-        // Toggle continuous vs discrete mode
-        controller.b().onTrue(elevator.toggleMode());
-
-        // x-axis controls elbow position, y-axis controls wrist position
-        // Up moves diffy arm joint clockwise, down moves diffy arm joint counterclockwise
-        diffyArm.setDefaultCommand(diffyArm.setArmPosition(this::getLeftX, this::getLeftY));
     }
 
     public void configureLessImportantControllerBindings() {
@@ -109,6 +77,7 @@ public class OI {
 
     @SuppressWarnings("SuspiciousNameCombination")
     public void setDefaultCommands() {
+
     }
 
     // -- Inputs --
