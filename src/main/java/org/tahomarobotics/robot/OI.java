@@ -23,8 +23,10 @@
 package org.tahomarobotics.robot;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -35,7 +37,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import org.tahomarobotics.robot.chassis.Chassis;
 import org.tinylog.Logger;
 
 import java.util.List;
@@ -44,7 +49,7 @@ import java.util.function.Function;
 
 public class OI {
     // Subsystems
-
+    private final Chassis chassis;
 
     // -- Constants --
 
@@ -60,6 +65,8 @@ public class OI {
     public OI(RobotContainer robotContainer) {
         DriverStation.silenceJoystickConnectionWarning(true);
 
+        this.chassis = robotContainer.chassis;
+
         configureControllerBindings();
         configureLessImportantControllerBindings();
 
@@ -68,8 +75,42 @@ public class OI {
 
     // -- Bindings --
 
-    public void configureControllerBindings() {
+    private void configureControllerBindings() {
+        // Note that X is defined as forward according to WPILib convention,
+        // and Y is defined as to the left according to WPILib convention.
+        // TODO: Ask if joystick inputs still need to be desensitized since we set deadbands in swerve control request
+        chassis.setTeleopCommand(this::getLeftX, this::getLeftY, this::getRightX);
 
+        // Idle while the robot is disabled. This ensures the configured
+        // neutral mode is applied to the drive motors while disabled.
+        /*final var idle = new SwerveRequest.Idle();
+        RobotModeTriggers.disabled().whileTrue(
+            drivetrain.applyRequest(() -> idle).ignoringDisable(true)
+        );
+
+        joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        joystick.b().whileTrue(drivetrain.applyRequest(() ->
+                                                           point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
+        ));
+
+        joystick.povUp().whileTrue(drivetrain.applyRequest(() ->
+                                                               forwardStraight.withVelocityX(0.5).withVelocityY(0))
+        );
+        joystick.povDown().whileTrue(drivetrain.applyRequest(() ->
+                                                                 forwardStraight.withVelocityX(-0.5).withVelocityY(0))
+        );
+
+        // Run SysId routines when holding back/start and X/Y.
+        // Note that each routine should be run exactly once in a single log.
+        joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward));
+        joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+
+        // Reset the field-centric heading on left bumper press.
+        joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+
+        drivetrain.registerTelemetry(logger::telemeterize);*/
     }
 
     public void configureLessImportantControllerBindings() {

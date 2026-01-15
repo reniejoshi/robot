@@ -22,6 +22,14 @@
 
 package org.tahomarobotics.robot.chassis;
 
+import com.ctre.phoenix6.swerve.SwerveModule;
+import com.ctre.phoenix6.swerve.SwerveRequest;
+import org.tahomarobotics.robot.generated.TunerConstants;
+
+import java.util.function.DoubleSupplier;
+
+import static edu.wpi.first.units.Units.*;
+
 public class Chassis {
     private final ChassisSubsystem chassis;
 
@@ -31,5 +39,22 @@ public class Chassis {
 
     Chassis(ChassisSubsystem chassis) {
         this.chassis = chassis;
+    }
+
+    public void setTeleopCommand(DoubleSupplier forward, DoubleSupplier strafe, DoubleSupplier rotate) {
+        final double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+        final double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+
+        final SwerveRequest.FieldCentric request = new SwerveRequest.FieldCentric()
+            .withDeadband(MaxSpeed * 0.1)
+            .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+            .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+
+
+        chassis.setDefaultCommand(
+            chassis.run(() -> chassis.setControl(request
+                    .withVelocityX(forward.getAsDouble() * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(strafe.getAsDouble() * MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(rotate.getAsDouble() * MaxAngularRate)))); // Drive counterclockwise with negative X (left)
     }
 }
