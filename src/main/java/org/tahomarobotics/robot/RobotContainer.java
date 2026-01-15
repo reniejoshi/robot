@@ -19,14 +19,11 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import org.tahomarobotics.robot.chassis.Chassis;
 import org.tahomarobotics.robot.generated.TunerConstants;
-import org.tahomarobotics.robot.subsystems.CommandSwerveDrivetrain;
 
 public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
-    // TODO: Remove temporary fix for chassis instantiation
-    CommandSwerveDrivetrain drivetrain = new CommandSwerveDrivetrain();
     public final Chassis chassis;
 
     /* Setting up bindings for necessary control of the swerve drive platform */
