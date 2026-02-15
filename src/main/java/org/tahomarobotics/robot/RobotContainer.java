@@ -25,6 +25,7 @@
 package org.tahomarobotics.robot;
 
 import org.tahomarobotics.robot.arm.Arm;
+import org.tahomarobotics.robot.collector.Collector;
 import org.tahomarobotics.robot.diffyarm.DiffyArm;
 import org.tahomarobotics.robot.elevator.Elevator;
 import org.tahomarobotics.robot.shooter.Shooter;
@@ -32,6 +33,7 @@ import org.tahomarobotics.robot.shooter.Shooter;
 public class RobotContainer implements AutoCloseable {
 
     public final Arm arm;
+    public final Collector collector;
     public final DiffyArm diffyArm;
     public final Elevator elevator;
     public final Shooter shooter;
@@ -40,6 +42,7 @@ public class RobotContainer implements AutoCloseable {
 
     public RobotContainer() {
         arm = new Arm();
+        collector = new Collector();
         diffyArm = new DiffyArm();
         elevator = new Elevator();
         shooter = new Shooter();
