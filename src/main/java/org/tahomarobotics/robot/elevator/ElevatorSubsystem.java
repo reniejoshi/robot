@@ -27,6 +27,8 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
+
 import edu.wpi.first.units.measure.Angle;
 import org.littletonrobotics.junction.Logger;
 import org.tahomarobotics.robot.RobotMap;
@@ -55,7 +57,7 @@ public class ElevatorSubsystem extends AbstractSubsystem {
     private double targetPosition = 0;
 
     ElevatorSubsystem() {
-        rightMotor.setControl(new Follower(RobotMap.ELEVATOR_LEFT_MOTOR, true));
+        rightMotor.setControl(new Follower(RobotMap.ELEVATOR_LEFT_MOTOR, MotorAlignmentValue.Opposed));
     }
 
     // Setters
