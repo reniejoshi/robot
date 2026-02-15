@@ -28,10 +28,15 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+
 public class ShooterConstants {
     // Pivot limits
     public static final Angle PIVOT_MIN_POSITION = Degrees.of(45);
     public static final Angle PIVOT_MAX_POSITION = Degrees.of(135);
 
     public static final AngularVelocity FLYWHEEL_VELOCITY = RotationsPerSecond.of(300);
+
+    // Placeholder TalonFXConfiguration object
+    public static final TalonFXConfiguration createShooterMotorConfig = new TalonFXConfiguration();
 }
