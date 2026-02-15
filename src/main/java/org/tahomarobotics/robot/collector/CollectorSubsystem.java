@@ -8,6 +8,7 @@ import org.tahomarobotics.robot.util.RobustConfigurator;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
@@ -15,7 +16,11 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 
+import static edu.wpi.first.units.Units.Volts;
 import static org.tahomarobotics.robot.collector.CollectorConstants.*;
 
 public class CollectorSubsystem extends AbstractSubsystem {
@@ -40,6 +45,9 @@ public class CollectorSubsystem extends AbstractSubsystem {
     private final StatusSignal<AngularVelocity> rightPivotMotorVelocity;
     private final StatusSignal<Voltage> rightPivotMotorVoltage;
     private final StatusSignal<Current> rightPivotMotorCurrent;
+
+    // -- Control requests --
+    private final VoltageOut voltageControl = new VoltageOut(0);
 
     CollectorSubsystem() {
         // Configure motors
@@ -66,6 +74,8 @@ public class CollectorSubsystem extends AbstractSubsystem {
         rightPivotMotorVelocity = rightPivotMotor.getVelocity();
         rightPivotMotorVoltage = rightPivotMotor.getMotorVoltage();
         rightPivotMotorCurrent = rightPivotMotor.getSupplyCurrent();
+
+        zeroPivotMotors();
     }
 
     @Override
@@ -87,5 +97,33 @@ public class CollectorSubsystem extends AbstractSubsystem {
         Logger.recordOutput("Collector/Right Pivot Motor/Velocity", rightPivotMotorVelocity.getValue());
         Logger.recordOutput("Collector/Right Pivot Motor/Voltage", rightPivotMotorVoltage.getValue());
         Logger.recordOutput("Collector/Right Pivot Motor/Current", rightPivotMotorCurrent.getValue());
+    }
+
+    public void zeroPivotMotors() {
+        Command zeroCommand = this.runOnce(() -> setPivotMotorVoltage(PIVOT_ZEROING_VOLTAGE))
+            .andThen(Commands.waitSeconds(PIVOT_ZEROING_WAIT_SECONDS))
+            .andThen(Commands.waitUntil(() -> getPivotMotorVelocity().isNear(PIVOT_ZERO_VELOCITY, PIVOT_ZER0_VELOCITY_THRESHOLD))
+            .andThen(() -> {
+                rightPivotMotor.setPosition(PIVOT_ZERO_ANGLE);
+                leftPivotMotor.setPosition(PIVOT_ZERO_ANGLE);
+            })
+            .andThen(() -> setPivotMotorVoltage(Volts.of(0)))
+        );
+
+        RobotModeTriggers.autonomous()
+            .or(RobotModeTriggers.teleop())
+            .onTrue(zeroCommand);
+    }
+
+    // -- Setters --
+
+    public void setPivotMotorVoltage(Voltage voltage) {
+        rightPivotMotor.setControl(voltageControl.withOutput(voltage));
+    }
+
+    // -- Getters --
+
+    public AngularVelocity getPivotMotorVelocity() {
+        return rightPivotMotorVelocity.getValue();
     }
 }
