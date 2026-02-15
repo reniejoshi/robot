@@ -24,16 +24,25 @@ package org.tahomarobotics.robot.shooter;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Voltage;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
+import static edu.wpi.first.units.Units.*;
+
 public class ShooterConstants {
     // Pivot limits
     public static final Angle PIVOT_MIN_POSITION = Degrees.of(45);
     public static final Angle PIVOT_MAX_POSITION = Degrees.of(135);
+
+    public static final Voltage PIVOT_ZEROING_VOLTAGE = Volts.of(-2);
+    public static final double PIVOT_ZEROING_WAIT_SECONDS = 0.5;
+    public static final AngularVelocity PIVOT_ZERO_VELOCITY = RotationsPerSecond.of(0);
+    public static final AngularVelocity PIVOT_ZERO_VELOCITY_THRESHOLD = RotationsPerSecond.of(0.1);
+    public static final Angle PIVOT_ZERO_ANGLE = Degrees.of(0);
 
     public static final AngularVelocity FLYWHEEL_VELOCITY = RotationsPerSecond.of(300);
 
