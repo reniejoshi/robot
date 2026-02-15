@@ -39,4 +39,8 @@ public final class RobotMap {
     public final static int SHOOTER_PIVOT_MOTOR = 9;
     public final static int SHOOTER_FLYWHEEL_MOTOR = 10;
     public final static int SHOOTER_PASSTHROUGH_MOTOR = 11;
+
+    public static final int COLLECTOR_ROLLER_MOTOR = 12;
+    public static final int COLLECTOR_LEFT_PIVOT_MOTOR = 13;
+    public static final int COLLECTOR_RIGHT_PIVOT_MOTOR = 14;
 }
