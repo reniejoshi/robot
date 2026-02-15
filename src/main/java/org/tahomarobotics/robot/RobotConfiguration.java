@@ -22,7 +22,6 @@
 
 package org.tahomarobotics.robot;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Filesystem;
 
 import java.io.File;

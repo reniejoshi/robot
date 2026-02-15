@@ -1,6 +1,5 @@
 package org.tahomarobotics.robot.arm;
 
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import java.util.function.DoubleSupplier;
