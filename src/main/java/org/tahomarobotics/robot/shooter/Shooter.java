@@ -22,7 +22,11 @@
 
 package org.tahomarobotics.robot.shooter;
 
+import org.tahomarobotics.robot.shooter.ShooterSubsystem.FlywheelMotorState;
+import org.tahomarobotics.robot.shooter.ShooterSubsystem.PivotMotorState;
 import org.tinylog.Logger;
+
+import edu.wpi.first.wpilibj2.command.Command;
 
 public class Shooter {
     private final ShooterSubsystem shooter;
@@ -34,5 +38,15 @@ public class Shooter {
 
     Shooter(ShooterSubsystem shooter) {
         this.shooter = shooter;
+    }
+
+    public Command shoot() {
+        return shooter.runOnce(() -> shooter.setPivotMotorState(PivotMotorState.DEPLOYED))
+            .andThen(shooter.runOnce(() -> shooter.setFlywheelMotorState(FlywheelMotorState.SHOOTING)));
+    }
+
+    public Command stow() {
+        return shooter.runOnce(() ->shooter.setFlywheelMotorState(FlywheelMotorState.IDLE))
+            .andThen(shooter.runOnce(() -> shooter.setPivotMotorState(PivotMotorState.STOWED)));
     }
 }
