@@ -24,6 +24,10 @@ package org.tahomarobotics.robot.shooter;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.controls.ControlRequest;
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -63,6 +67,10 @@ public class ShooterSubsystem extends AbstractSubsystem {
 
     // -- Control requests --
     private final VoltageOut voltageControl = new VoltageOut(0);
+
+    // -- States --
+    private PivotMotorState pivotMotorState = PivotMotorState.STOWED;
+    private FlywheelMotorState flywheelMotorState = FlywheelMotorState.IDLE;
 
     ShooterSubsystem() {
         // Configure motors
@@ -125,13 +133,29 @@ public class ShooterSubsystem extends AbstractSubsystem {
 
     // -- States --
     enum PivotMotorState {
-        DEPLOYED,
-        STOWED,
-        ZEROING
+        DEPLOYED(new MotionMagicVoltage(PIVOT_DEPLOYED_ANGLE), PIVOT_DEPLOYED_ANGLE),
+        STOWED(new MotionMagicVoltage(PIVOT_STOWED_ANGLE), PIVOT_STOWED_ANGLE),
+        ZEROING(new VoltageOut(PIVOT_ZEROING_VOLTAGE), PIVOT_ZERO_ANGLE);
+
+        private final ControlRequest controlRequest;
+        private final Angle angle;
+
+        PivotMotorState(ControlRequest controlRequest, Angle angle) {
+            this.controlRequest = controlRequest;
+            this.angle = angle;
+        }
     }
 
     enum FlywheelMotorState {
-        SHOOTING,
-        IDLE
+        SHOOTING(new MotionMagicVelocityVoltage(FLYWHEEL_SHOOTING_VELOCITY), FLYWHEEL_SHOOTING_VELOCITY),
+        IDLE(new NeutralOut(), FLYWHEEL_IDLE_VELOCITY);
+
+        private final ControlRequest controlRequest;
+        private final AngularVelocity velocity;
+
+        FlywheelMotorState(ControlRequest controlRequest, AngularVelocity velocity) {
+            this.controlRequest = controlRequest;
+            this.velocity = velocity;
+        }
     }
 }

@@ -44,7 +44,13 @@ public class ShooterConstants {
     public static final AngularVelocity PIVOT_ZERO_VELOCITY_THRESHOLD = RotationsPerSecond.of(0.1);
     public static final Angle PIVOT_ZERO_ANGLE = Degrees.of(0);
 
-    public static final AngularVelocity FLYWHEEL_VELOCITY = RotationsPerSecond.of(300);
+    // Flywheel motor constants
+    public static final AngularVelocity FLYWHEEL_SHOOTING_VELOCITY = RotationsPerSecond.of(300);
+    public static final AngularVelocity FLYWHEEL_IDLE_VELOCITY = RotationsPerSecond.of(0);
+
+    // Pivot motor constants
+    public static final Angle PIVOT_DEPLOYED_ANGLE = Degrees.of(45);
+    public static final Angle PIVOT_STOWED_ANGLE = Degrees.of(0);
 
     // Placeholder TalonFXConfiguration object
     public static final TalonFXConfiguration createShooterMotorConfig = new TalonFXConfiguration();
