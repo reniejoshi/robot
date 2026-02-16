@@ -24,6 +24,7 @@ package org.tahomarobotics.robot;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import org.tahomarobotics.robot.arm.Arm;
 import org.tahomarobotics.robot.collector.Collector;
@@ -89,6 +90,9 @@ public class OI {
         // x-axis controls elbow position, y-axis controls wrist position
         // Up moves diffy arm joint clockwise, down moves diffy arm joint counterclockwise
         diffyArm.setDefaultCommand(diffyArm.setArmPosition(this::getLeftX, this::getLeftY));
+
+        // Stow/shoot shooter
+        controller.leftBumper().onTrue(Commands.either(shooter.stow(), shooter.shoot(), shooter.isShooting()));
     }
 
     public void configureLessImportantControllerBindings() {

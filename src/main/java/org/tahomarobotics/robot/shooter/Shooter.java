@@ -27,6 +27,7 @@ import org.tahomarobotics.robot.shooter.ShooterSubsystem.PivotMotorState;
 import org.tinylog.Logger;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class Shooter {
     private final ShooterSubsystem shooter;
@@ -48,5 +49,9 @@ public class Shooter {
     public Command stow() {
         return shooter.runOnce(() ->shooter.setFlywheelMotorState(FlywheelMotorState.IDLE))
             .andThen(shooter.runOnce(() -> shooter.setPivotMotorState(PivotMotorState.STOWED)));
+    }
+
+    public Trigger isShooting() {
+        return new Trigger(() -> shooter.getFlywheelMotorState() == FlywheelMotorState.SHOOTING);
     }
 }

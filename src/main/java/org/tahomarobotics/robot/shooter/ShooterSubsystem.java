@@ -143,6 +143,10 @@ public class ShooterSubsystem extends AbstractSubsystem {
 
     // -- Getters --
 
+    public FlywheelMotorState getFlywheelMotorState() {
+        return flywheelMotorState;
+    }
+
     public AngularVelocity getPivotMotorVelocity() {
         return pivotMotorVelocity.getValue();
     }
