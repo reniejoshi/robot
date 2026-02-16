@@ -54,6 +54,10 @@ public class CollectorSubsystem extends AbstractSubsystem {
     // -- Control requests --
     private final VoltageOut voltageControl = new VoltageOut(0);
 
+    // -- States --
+    private RollerMotorState rollerMotorState = RollerMotorState.IDLE;
+    private PivotMotorState pivotMotorState = PivotMotorState.STOWED;
+
     CollectorSubsystem() {
         // Configure motors
         RobustConfigurator.tryConfigureTalonFX("Roller Collector Motor", rollerMotor, createCollectorMotorConfig);
@@ -121,6 +125,18 @@ public class CollectorSubsystem extends AbstractSubsystem {
     }
 
     // -- Setters --
+
+    public void setRollerMotorState(RollerMotorState rollerMotorState) {
+        this.rollerMotorState = rollerMotorState;
+
+        rollerMotor.setControl(this.rollerMotorState.controlRequest);
+    }
+
+    public void setPivotMotorState(PivotMotorState pivotMotorState) {
+        this.pivotMotorState = pivotMotorState;
+
+        rightPivotMotor.setControl(this.pivotMotorState.controlRequest);
+    }
 
     public void setPivotMotorVoltage(Voltage voltage) {
         rightPivotMotor.setControl(voltageControl.withOutput(voltage));
