@@ -126,4 +126,18 @@ public class CollectorSubsystem extends AbstractSubsystem {
     public AngularVelocity getPivotMotorVelocity() {
         return rightPivotMotorVelocity.getValue();
     }
+
+    // -- States --
+
+    enum RollerMotorState {
+        COLLECTING,
+        IDLE,
+        EJECTING
+    }
+
+    enum PivotMotorState {
+        DEPLOYED,
+        STOWED,
+        ZEROING
+    }
 }
