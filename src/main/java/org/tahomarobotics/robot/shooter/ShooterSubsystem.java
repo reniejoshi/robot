@@ -113,11 +113,11 @@ public class ShooterSubsystem extends AbstractSubsystem {
     }
 
     public void zeroPivotMotor() {
-        Command zeroCommand = this.runOnce(() -> setPivotMotorVoltage(PIVOT_ZEROING_VOLTAGE))
+        Command zeroCommand = this.runOnce(() -> setPivotMotorState(PivotMotorState.ZEROING))
             .andThen(Commands.waitSeconds(PIVOT_ZEROING_WAIT_SECONDS)
             .andThen(Commands.waitUntil(() -> getPivotMotorVelocity().isNear(PIVOT_ZERO_VELOCITY, PIVOT_ZERO_VELOCITY_THRESHOLD)))
             .andThen(() -> pivotMotor.setPosition(PIVOT_ZERO_ANGLE))
-            .andThen(() -> setPivotMotorVoltage(Volts.of(0)))
+            .andThen(() -> setPivotMotorState(PivotMotorState.STOWED))
         );
 
         RobotModeTriggers.autonomous()
