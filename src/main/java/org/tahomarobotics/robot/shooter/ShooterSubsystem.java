@@ -122,4 +122,16 @@ public class ShooterSubsystem extends AbstractSubsystem {
     public AngularVelocity getPivotMotorVelocity() {
         return pivotMotorVelocity.getValue();
     }
+
+    // -- States --
+    enum PivotMotorState {
+        DEPLOYED,
+        STOWED,
+        ZEROING
+    }
+
+    enum FlywheelMotorState {
+        SHOOTING,
+        IDLE
+    }
 }
