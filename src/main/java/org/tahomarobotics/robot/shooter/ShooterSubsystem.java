@@ -100,10 +100,16 @@ public class ShooterSubsystem extends AbstractSubsystem {
         Logger.recordOutput("Shooter/Pivot Motor/Velocity", pivotMotorVelocity.getValue());
         Logger.recordOutput("Shooter/Pivot Motor/Voltage", pivotMotorVoltage.getValue());
         Logger.recordOutput("Shooter/Pivot Motor/Current", pivotMotorCurrent.getValue());
+        Logger.recordOutput("Shooter/Pivot Motor/State", pivotMotorState);
+        Logger.recordOutput("Shooter/Pivot Motor/State/Angle", pivotMotorState.angle);
+        Logger.recordOutput("Shooter/Pivot Motor/Control Request", pivotMotorState.controlRequest.toString());
 
         Logger.recordOutput("Shooter/Flywheel Motor/Velocity", flywheelMotorVelocity.getValue());
         Logger.recordOutput("Shooter/Flywheel Motor/Voltage", flywheelMotorVoltage.getValue());
         Logger.recordOutput("Shooter/Flywheel Motor/Current", flywheelMotorCurrent.getValue());
+        Logger.recordOutput("Shooter/Flywheel Motor/State", flywheelMotorState);
+        Logger.recordOutput("Shooter/Flywheel Motor/State/Velocity", flywheelMotorState.velocity);
+        Logger.recordOutput("Shooter/Flywheel Motor/State/Control Request", flywheelMotorState.controlRequest.toString());
     }
 
     public void zeroPivotMotor() {
@@ -120,6 +126,16 @@ public class ShooterSubsystem extends AbstractSubsystem {
     }
 
     // -- Setters --
+
+    public void setPivotMotorState(PivotMotorState pivotMotorState) {
+        this.pivotMotorState = pivotMotorState;
+        pivotMotor.setControl(pivotMotorState.controlRequest);
+    }
+
+    public void setFlywheelMotorState(FlywheelMotorState flywheelMotorState) {
+        this.flywheelMotorState = flywheelMotorState;
+        flywheelMotor.setControl(flywheelMotorState.controlRequest);
+    }
 
     public void setPivotMotorVoltage(Voltage voltage) {
         pivotMotor.setControl(voltageControl.withOutput(voltage));
