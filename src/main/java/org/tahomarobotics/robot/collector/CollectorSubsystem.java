@@ -7,7 +7,12 @@ import org.tahomarobotics.robot.util.RobustConfigurator;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.NeutralOut;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
@@ -130,14 +135,30 @@ public class CollectorSubsystem extends AbstractSubsystem {
     // -- States --
 
     enum RollerMotorState {
-        COLLECTING,
-        IDLE,
-        EJECTING
+        COLLECTING(new MotionMagicVelocityVoltage(COLLECTING_VELOCITY), COLLECTING_VELOCITY),
+        IDLE(new NeutralOut(), IDLE_VELOCITY),
+        EJECTING(new MotionMagicVelocityVoltage(EJECTING_VELOCITY), EJECTING_VELOCITY);
+
+        private final ControlRequest controlRequest;
+        private final AngularVelocity velocity;
+
+        RollerMotorState(ControlRequest controlRequest, AngularVelocity velocity) {
+            this.controlRequest = controlRequest;
+            this.velocity = velocity;
+        }
     }
 
     enum PivotMotorState {
-        DEPLOYED,
-        STOWED,
-        ZEROING
+        DEPLOYED(new MotionMagicVoltage(DEPLOYED_ANGLE), DEPLOYED_ANGLE),
+        STOWED(new MotionMagicVoltage(STOWED_ANGLE), STOWED_ANGLE),
+        ZEROING(new VoltageOut(PIVOT_ZEROING_VOLTAGE), PIVOT_ZERO_ANGLE);
+
+        private final ControlRequest controlRequest;
+        private final Angle angle;
+
+        PivotMotorState(ControlRequest controlRequest, Angle angle) {
+            this.controlRequest = controlRequest;
+            this.angle = angle;
+        }
     }
 }
